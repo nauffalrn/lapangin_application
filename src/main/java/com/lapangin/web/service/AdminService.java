@@ -1,12 +1,10 @@
 package com.lapangin.web.service;
 
 import com.lapangin.web.model.Admin;
-import com.lapangin.web.model.Lapangan;
-import com.lapangin.web.model.Promo;
 import com.lapangin.web.repository.AdminRepository;
-import com.lapangin.web.repository.LapanganRepository;
-import com.lapangin.web.repository.PromoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -16,20 +14,21 @@ public class AdminService {
     private AdminRepository adminRepository;
 
     @Autowired
-    private LapanganRepository lapanganRepository;
+    private PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private PromoRepository promoRepository;
+    // Menyimpan data admin baru dengan validasi username
+    public Admin register(Admin admin) {
+        if (isUsernameTaken(admin.getUsername())) {
+            throw new IllegalArgumentException("Username already taken");
+        }
 
-    public Admin saveAdmin(Admin admin) {
+        // Hash password sebelum disimpan
+        admin.setPassword(passwordEncoder.encode(admin.getPassword()));
         return adminRepository.save(admin);
     }
 
-    public Lapangan createLapangan(Lapangan lapangan) {
-        return lapanganRepository.save(lapangan);
-    }
-
-    public Promo createPromo(Promo promo) {
-        return promoRepository.save(promo);
+    // Mengecek apakah username sudah ada
+    public boolean isUsernameTaken(String username) {
+        return adminRepository.findByUsername(username) != null;
     }
 }

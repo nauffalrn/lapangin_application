@@ -20,6 +20,10 @@ public class PesananService {
 
     // Method untuk menyimpan data pesanan
     public Pesanan bookLapangan(Pesanan pesanan) {
+        // Cek apakah pesanan sudah ada di waktu yang sama untuk lapangan yang sama
+        if (isPesananExists(pesanan)) {
+            throw new RuntimeException("Lapangan sudah dipesan pada waktu yang dipilih.");
+        }
         return pesananRepository.save(pesanan);
     }
 
@@ -32,11 +36,13 @@ public class PesananService {
 
     // Method untuk mendapatkan detail pesanan berdasarkan ID
     public Pesanan getPesananById(int pesananID) {
-        Optional<Pesanan> pesanan = pesananRepository.findById(pesananID);
-        if (pesanan.isPresent()) {
-            return pesanan.get();
-        } else {
-            throw new RuntimeException("Pesanan dengan ID " + pesananID + " tidak ditemukan.");
-        }
+        return pesananRepository.findById((long) pesananID)
+                .orElseThrow(() -> new RuntimeException("Pesanan dengan ID " + pesananID + " tidak ditemukan."));
+    }
+
+    // Method untuk memeriksa apakah pesanan sudah ada di waktu yang sama pada lapangan yang sama
+    private boolean isPesananExists(Pesanan pesanan) {
+        return pesananRepository.existsByLapanganAndJamMulaiLessThanEqualAndJamSelesaiGreaterThanEqual(
+                pesanan.getLapangan(), pesanan.getJamMulai(), pesanan.getJamSelesai());
     }
 }

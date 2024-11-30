@@ -2,14 +2,13 @@ package com.lapangin.web.repository;
 
 import com.lapangin.web.model.Promo;
 import org.springframework.data.jpa.repository.JpaRepository;
-
-import java.util.Date;
+import org.springframework.data.jpa.repository.Query;
+import java.time.LocalDate;
 import java.util.List;
 
-public interface PromoRepository extends JpaRepository<Promo, Integer> {
+public interface PromoRepository extends JpaRepository<Promo, Long> {
 
-    /**
-     * Temukan semua promo yang aktif pada tanggal tertentu.
-     */
-    List<Promo> findByTanggalMulaiBeforeAndTanggalSelesaiAfter(Date tanggalMulai, Date tanggalSelesai);
+    // Menambahkan query untuk mencari promo dalam rentang tanggal
+    @Query("SELECT p FROM Promo p WHERE p.tanggalMulai BETWEEN :startDate AND :endDate")
+    List<Promo> findByTanggalMulaiBetween(LocalDate startDate, LocalDate endDate);
 }

@@ -1,46 +1,39 @@
 package com.lapangin.web.model;
 
 import jakarta.persistence.*;
-import java.util.List;
 
 @Entity
+@Table(name = "lapangan") // Sesuaikan dengan nama tabel di database Anda
 public class Lapangan {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int lapanganID;
+    private Long ID; // ID lapangan sebagai kunci utama
 
-    private String namaLapangan;
-    private String lokasi;
-    private double hargaPerJam;
+    @Column(name = "name", nullable = false)
+    private String name; // Nama lapangan
 
-    @OneToMany(mappedBy = "lapangan")
-    private List<Review> reviews;
+    @Column(name = "harga_per_jam", nullable = false)
+    private double hargaPerJam; // Harga sewa per jam
 
-    // Getter & Setter
-    public int getLapanganID() {
-        return lapanganID;
+    // Getter dan Setter untuk ID
+    public Long getId() {
+        return ID;
     }
 
-    public void setLapanganID(int lapanganID) {
-        this.lapanganID = lapanganID;
+    public void setId(Long ID) {
+        this.ID = ID;
     }
 
-    public String getNamaLapangan() {
-        return namaLapangan;
+    // Getter dan Setter untuk name
+    public String getName() {
+        return name;
     }
 
-    public void setNamaLapangan(String namaLapangan) {
-        this.namaLapangan = namaLapangan;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getLokasi() {
-        return lokasi;
-    }
-
-    public void setLokasi(String lokasi) {
-        this.lokasi = lokasi;
-    }
-
+    // Getter dan Setter untuk hargaPerJam
     public double getHargaPerJam() {
         return hargaPerJam;
     }

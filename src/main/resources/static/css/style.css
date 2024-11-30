@@ -1,6 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
 
-
 *{
     font-family: 'Poppins', sans-serif;
     margin: 0;
@@ -8,275 +7,253 @@
     box-sizing: border-box;
 }
 
-:root{
-    /* Colors */
-    --body-color: #E4E9F7;
-    --sidebar-color: #FFF;
-    --primary-color: #695CFE;
-    --primary-color-light: #F6F5FF;
-    --toggle-color: #DDDD;
-    --text-color: #707070;
-    
-
-    /*Transisi*/
-    --tran-02: all 0.2s ease;
-    --tran-03: all 0.3s ease;
-    --tran-04: all 0.4s ease;
-    --tran-05: all 0.5s ease;
-}
-
 body{
-    height: 100vh;
-    background: var(--body-color);
-    transition: var(--tran-04);
+    min-height: 100vh;
+    background: linear-gradient(#F1FAFF, #CBE4FF);
 }
 
-body.dark{
-    --body-color: #18191A;
-    --sidebar-color: #242526;
-    --primary-color: #3A3B3C;
-    --primary-color-light: #3A3B3C;
-    --toggle-color: #FFF;
-    --text-color: #CCC;
+.sidebar {
+    width: 270px; 
+    position: fixed; 
+    top: 0; 
+    left: 0; 
+    height: 100vh; 
+    background: #151A2D;
+    z-index: 1000; 
+    transition: 0.4s ease; 
 }
 
-/*== SideBar ====*/
-.sidebar{
-    position: fixed;
-    top: 0;
-    left: 0;
-    height: 100%;
-    width: 250px;
-    padding: 10px 14px;
-    background: var(--sidebar-color);
-    transition: var(--tran-05);
-    z-index: 100;
+.sidebar.collapsed {
+    width: 85px;
 }
 
-.sidebar.close{
-    width: 88px;
-}
-/*== Resuable CSS ====*/
-.sidebar .text{
-    font-size: 16px;
-    font-weight: 500;
-    color: var(--text-color);
-    transition: var(--tran-03);
-    white-space: nowrap;
-    opacity: 1;
-}
-.sidebar.close .text{
-    opacity: 0;
-}
-
-.sidebar .image{
-    min-width: 60px;
-    display: flex;
-    align-items: center;
-    justify-content:center ;
-}
-
-.sidebar li{
-    height: 50px;
-    margin-top: 10px;
-    list-style: none;
-    display: flex;
-    align-items: center;
-}
-
-.sidebar li .icon{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 60px;
-    font-size: 20px;
-
-}
-.sidebar li .icon,
-.sidebar li .text{
-    color: var(--text-color);
-    transition: var(--tran-02);
-    
-}
-
-.sidebar header{
+.sidebar-header{
     position: relative;
-}
-
-.sidebar .image-text img{
-    width: 60px;
-    border-radius: 6px;
-
-}
-
-.sidebar header .image-text{
     display: flex;
+    padding: 25px 20;
+    margin-bottom: 35px;
     align-items: center;
-
-}
-
-header .image-text .header-text{
-    display: flex;
-    flex-direction: column;
-}
-
-.header-text .name{
-    font-weight: 600;    
-    margin-left: 10px;
-}
-
-.header-text .proffession{
-    margin-top: -2px;
-    margin-left: 10px;
-}
-
-.sidebar header .toggle{
-    position: absolute;
-    top: 50%;
-    right: -13%;
-    transform: translateY(-50%)rotate(180deg);
-    height: 25px;
-    width: 25px;
-    background: var(--primary-color);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    color: var(--sidebar-color);
-    font-size: 22px;
-    transition: var(--tran-03);
-}
-
-.sidebar.close header .toggle{
-    transform: translateY(-50%);
-}
-
-body.dark .sidebar header .toggle{
-    color: var(--text-color);
-}
-
-.sidebar .menu{
-    margin-top: 35px;
-}
-
-.sidebar .search-box{
-    background: var(--primary-color-light);
-    border-radius: 6px;
-    transition: var(--tran-05);
-}
-
-.search-box input{
-    height: 100%;
-    width: 100%;
-    outline: none;
-    border: none;
-    border-radius: 6px;
-    font-size: 16px;
-    font-weight: 500;
-    background: var(--primary-color-light);
-    transition: var(--tran-05);
-}
-
-.sidebar li a{
-    height: 100%;
-    width: 100%;
-    display: flex;
-    align-items: center;
-    text-decoration: none;
-    border-radius: 6px;
-    transition: var(--tran-04);
-}
-
-.sidebar li a:hover{
-    background: var(--primary-color);
-}
-
-.sidebar li a:hover .icon
-.sidebar li a:hover .text{
-    color: var(--sidebar-color);
-}
-
-body.dark .sidebar li a:hover .icon,
-body.dark .sidebar li a:hover .text{
-    color: var(--text-color);
-}
-
-.sidebar .menu-bar{
-    height: calc(100% - 100px);
-    display: flex;
-    flex-direction: column;
     justify-content: space-between;
 }
 
-.menu-bar .mode{
-    position: relative;
-    border-radius: 6px;
-    background: var(--primary-color-light);
-}
-
-.menu-bar .mode .moon-sun{
-    height: 50px;
-    width: 60px;
+.sidebar-header .header-logo img{
+    margin-left: 20px;
+    margin-top: 20px;
+    width: 46px;
+    height: 46px;
     display: flex;
     align-items: center;
+    justify-content:center ;
+    border-radius: 50%;
 }
 
-.menu-bar .mode i{
+
+
+.sidebar-header .toggler{
     position: absolute;
-    transition: var(--tran-03);
-}
-
-.menu-bar .mode i.sun{
-    opacity: 0;
-}
-
-body.dark .menu-bar .mode i.sun{
-    opacity: 1;
-}
-
-body.dark .menu-bar .mode i.moon{
-    opacity: 0;
-}
-
-.menu-bar .mode .toggle-switch{
-    position: absolute;
-    right: 0;
+    right: 20px;
+    height: 35px;
+    width: 35px;
+    border: none;
+    color: #151A2D;
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 100%;
-    min-width: 60px;
     cursor: pointer;
-    border-radius: 6px;
-    background: var(--primary-color-light);
-    transition: var(--tran-05);
+    border-radius: 8px;
+    background: #fff;
+    transition: 0.4s ease;
 }
 
-.toggle-switch .switch{
+.sidebar.collapsed .sidebar-header .toggler{
+    transform: translate(-4px, 65px);
+}
+
+.sidebar-header .toggler:hover{
+    background: #dde4fb;
+}
+
+.sidebar-header .toggler span{
+    font-size: 1.75rem;
+}
+
+.sidebar.collapsed .sidebar-header .toggler span {
+    transform: rotate(180deg);
+}
+
+.sidebar-nav .nav-list{
+    list-style: none;
+    display: flex;
+    gap: 4px;
+    padding: 0 15px;
+    flex-direction: column;
+    transform: translateY(15px);
+    transition: 0.4s ease;
+}
+
+.sidebar.collapsed .sidebar-nav .primary-nav{
+    transform: translateY(65px);
+}
+
+.sidebar-nav .nav-link{
+    color: #fff;
+    display: flex;
+    gap: 12px;
+    white-space: nowrap;
+    border-radius: 8px;
+    align-items: center;
+    padding: 12px 15px;
+    text-decoration: none;
+    transition: 0.4s ease;
+}
+
+.sidebar-nav .nav-link:hover {
+    color: #151A2D;
+    background: #fff;
+}
+
+.sidebar-nav .nav-link .nav-label{
+    transition: opacity 0.4s ease;
+}
+
+
+.sidebar.collapsed .sidebar-nav .nav-link .nav-label{
+    opacity: 0;
+    pointer-events: none;
+}
+
+.sidebar-nav .nav-item{
     position: relative;
-    height: 22px;
-    width: 44px;
-    border-radius: 25px;
-    background: var(--toggle-color);
 }
 
-.switch::before{
-    content: '';
+.sidebar-nav .nav-tooltip{
     position: absolute;
-    height: 15px;
-    width: 15px;
+    top: -10px;
+    opacity: 0;
+    display: none;
+    pointer-events: none;
+    left: calc(100% + 25px);
+    color: #151A2D;
+    padding: 6px 12px;
+    border-radius: 8px;
+    background: #fff;
+    white-space: nowrap;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 1);
+    transition: 0s;
+}
+
+.sidebar.collapsed .sidebar-nav .nav-tooltip {
+    display: block;
+}
+
+.sidebar-nav .nav-item:hover .nav-tooltip{
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(50%);
+    transition: 0.4s ease;
+}
+
+.sidebar-nav .secondary-nav{
+    position: absolute;
+    bottom: 30px;
+    width: 100%;
+}
+
+/* darkmode */
+.toggle-dark-mode {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+    border-radius: 8px;
+    transition: background 0.3s ease;
+}
+
+.sidebar.collapsed .toggle-dark-mode {
+    flex-direction: column; /* Stack the label and switch vertically */
+    gap: 10px;
+    padding: 8px;
+    justify-content: center;
+}
+
+.toggle-dark-mode:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* Toggle Switch Styling */
+.toggle-switch {
+    position: relative;
+    width: 50px;
+    height: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.toggle-switch input {
+    display: none;
+}
+
+.toggle-switch .slider {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: #ccc;
+    border-radius: 25px;
+    transition: background 0.3s ease;
+}
+
+.toggle-switch input:checked + .slider {
+    background: #4CAF50;
+}
+
+.toggle-switch .slider::before {
+    content: "";
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 19px;
+    height: 19px;
+    background: #fff;
     border-radius: 50%;
-    top: 50%;
-    left: 5px;
-    transform: translateY(-50%);
-    background: var(--sidebar-color);
-    transition: var(--tran-03);
+    transition: transform 0.3s ease;
 }
 
-body.dark .switch::before{
-    left: 24px;
+.toggle-switch input:checked + .slider::before {
+    transform: translateX(25px);
 }
 
+/* Label Styling */
+.dark-mode-label {
+    font-size: 14px;
+    color: #fff;
+    transition: opacity 0.3s ease;
+}
+
+.sidebar.collapsed .dark-mode-label {
+    display: none; /* Hide the label when sidebar is collapsed */
+}
+
+/* Body styles for dark mode */
+body.dark-mode {
+    background: #121212;
+    color: #ffffff;
+}
+
+body.dark-mode .toggle-dark-mode {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.sidebar.collapsed .toggle-dark-mode .slider {
+    background: #666;
+}
+
+body.dark-mode .sidebar.collapsed .toggle-dark-mode .slider {
+    background: #333;
+}
+
+
+/* logo */
 .logo-section{
     width: 100%;
     height: 30vh;
@@ -617,8 +594,6 @@ body.dark .switch::before{
 
 
 
-
-
 /* Login / Daftar */
 
 .container2 {
@@ -640,6 +615,7 @@ body.dark .switch::before{
 }
 
 .form.signup {
+    margin: 50px;
     opacity: 0;
     pointer-events: none;
 }
@@ -653,6 +629,7 @@ body.dark .switch::before{
     opacity: 0;
     pointer-events: none;
 }
+
 
 .head {
     font-size: 28px;
@@ -703,6 +680,7 @@ form {
     cursor: pointer;
     padding: 5px;
 }
+
 .field button{
     color: #fff;
     background-color: #0171d3;
@@ -746,49 +724,59 @@ form {
     color: #8b8b8b;
     padding: 0 15px;
 }
-.media-options a{
+
+.media-options {
     display: flex;
-    align-items: center;
+    gap: 15px; /* Jarak antar tombol */
     justify-content: center;
-}
-a.facebook{
-    color: #fff;
-    background-color: #4267b2;
-}
-a.facebook .facebook-icon{
-    height: 28px;
-    width: 28px;
-    color: #0171d3;
-    font-size: 20px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: #fff;
-}
-.facebook-icon,
-.fa-google{
-    position: absolute;
-    top: 50%;
-    left: 15px;
-    transform: translateY(-50%);
-}
-.fa-google{
-    height: 20px;
-    width: 20px;
-    object-fit: cover;
-}
-a.google{
-    border: 1px solid #CACACA;
-}
-a.google span{
-    font-weight: 500;
-    opacity: 0.6;
-    color: #232836;
+    margin-top: 20px; /* Jarak dari elemen atas */
 }
 
-.media-options span:hover{
-    color: #4A3573;
+.media-options a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 60px; /* Lebar tombol */
+    height: 60px; /* Tinggi tombol */
+    border-radius: 12px; /* Sudut membulat */
+    background-color: #f9f9f9; /* Latar belakang tombol */
+    border: 1px solid #e0e0e0; /* Border tombol */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Efek bayangan */
+    transition: all 0.3s ease; /* Transisi saat hover */
+    text-decoration: none; /* Hilangkan garis bawah */
+}
+
+
+.media-options a i {
+    font-size: 26px; /* Ukuran ikon */
+    color: #6c63ff; /* Warna ikon default */
+}
+
+.media-options a.facebook {
+    background-color: #3b5998; /* Warna latar Facebook */
+    border: none;
+}
+
+.media-options a.facebook i {
+    color: #ffffff; /* Warna ikon Facebook */
+}
+
+.media-options a.google i {
+    color: #6c63ff; /* Warna ikon Google */
+}
+
+.media-options a:hover {
+    transform: scale(1.1); /* Efek zoom saat hover */
+    background-color: #e0e0e0; /* Warna latar saat hover */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Efek bayangan lebih kuat */
+}
+
+.media-options a.facebook:hover {
+    background-color: #334d84; /* Warna hover Facebook */
+}
+
+.media-options a.google:hover {
+    background-color: #f0f0f0; /* Warna hover Google */
 }
 
 body.dark .form {
@@ -853,12 +841,11 @@ body.dark .forms .media-options a:hover {
 
 /* notifikasi */
 .notification-container {
-    width: 100%;
+    margin: auto; /* Pusatkan konten */
     max-width: 600px;
-    margin: 50px auto;
+    padding: 20px;
     background: #fff;
     border-radius: 8px;
-    padding: 20px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
@@ -1029,8 +1016,96 @@ body.dark .forms .media-options a:hover {
     color: #e60023; /* Warna merah jika aktif */
 }
 
-/* Deskripsi */
-#liked-lapangan-container .des {
-    padding: 15px;
-    text-align: left;
+/* calender */
+.calendar-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width: 80%;
+    max-width: 600px;
+    height: 80vh; /* Membuat container cukup tinggi agar kalender terpusat secara vertikal */
+    text-align: center;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    margin: auto; /* Memastikan calendar-container berada di tengah */
+}
+
+.calendar {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    margin-bottom: 30px;
+}
+
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: 0.3s;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+#calendar-days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 10px;
+    margin-top: 10px;
+}
+
+#calendar-days div {
+    padding: 10px;
+    text-align: center;
+    background-color: #f0f0f0;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+#calendar-days .day-header {
+    font-weight: bold;
+    background-color: #ddd;
+}
+
+#current-time {
+    margin-top: 30px;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.video-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Agar video sesuai dengan proporsi layar */
+    z-index: -1; /* Letakkan di belakang konten lainnya */
+}
+
+.contentvid {
+    position: relative;
+    z-index: 1; /* Konten tetap berada di atas video */
+    text-align: center;
+    color: #fff; /* Warna teks putih untuk kontras */
+    margin-top: 20%;
+    font-family: Arial, sans-serif;
 }

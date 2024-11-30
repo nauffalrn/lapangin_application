@@ -6,24 +6,24 @@ import jakarta.persistence.*;
 public abstract class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    protected int userID;
+    private Long id;
 
-    @Column(nullable = false, unique = true)
-    protected String username;
+    @Column(unique = true, nullable = false)
+    private String username;
 
     @Column(nullable = false)
     private String password;
 
-    @Column(nullable = false, unique = true)
-    protected String email;
+    @Column(unique = true)
+    private String email;
 
     // Getter & Setter
-    public int getUserID() {
-        return userID;
+    public Long getId() {
+        return id;
     }
 
-    public void setUserID(int userID) {
-        this.userID = userID;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getUsername() {

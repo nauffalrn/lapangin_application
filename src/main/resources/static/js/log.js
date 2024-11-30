@@ -37,10 +37,12 @@ document.getElementById("login-form").addEventListener("submit", e => {
         return;
     }
 
-    // Periksa apakah data sesuai (contoh, gunakan server atau localStorage)
+    // Periksa apakah data sesuai
     const storedUser = JSON.parse(localStorage.getItem("userData"));
     if (storedUser && storedUser.username === username && storedUser.password === password) {
         alert("Login berhasil!");
+        // Alihkan ke dashboard
+        window.location.href = "dashboard.html"; // Ganti dengan URL dashboard Anda
     } else {
         alert("Akun tidak ditemukan! Silakan daftar terlebih dahulu.");
         // Alihkan ke formulir signup
@@ -56,6 +58,11 @@ document.getElementById("signup-form").addEventListener("submit", e => {
     const phone = e.target.phone.value.trim();
     const password = e.target.password.value;
     const confirmPassword = e.target.confirm_password.value;
+
+    if (!username || !email || !phone || !password || !confirmPassword) {
+        alert("Semua field harus diisi!");
+        return;
+    }
 
     if (password !== confirmPassword) {
         alert("Password dan konfirmasi password tidak cocok!");
@@ -73,9 +80,9 @@ document.getElementById("signup-form").addEventListener("submit", e => {
 
     alert("Registrasi berhasil!");
 
-    // Isi otomatis form login dan alihkan
-    document.getElementById("login-username").value = username;
-    document.getElementById("login-password").value = password;
+    // Reset input formulir signup
+    e.target.reset();
+
 
     // Kembali ke formulir login
     forms.classList.remove("show-signup");

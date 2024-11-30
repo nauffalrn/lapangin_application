@@ -3,17 +3,18 @@ package com.lapangin.web.model;
 import jakarta.persistence.*;
 
 @Entity
+@Table(name = "venue") // Sesuaikan dengan nama tabel di database Anda
 public class Venue {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long id; // ID venue sebagai kunci utama
 
     @Column(nullable = false)
-    private String name;
+    private String name; // Nama venue
 
     @Column(nullable = false)
-    private String city;
+    private String city; // Kota tempat venue berada
 
     @Column(nullable = false)
     private String image; // Nama file gambar
@@ -22,12 +23,12 @@ public class Venue {
     private double price; // Harga per jam
 
     @Column(nullable = false)
-    private double rating;
+    private double rating; // Rating venue
 
     @Column(nullable = false)
-    private int reviews;
+    private int reviews; // Jumlah ulasan
 
-    // Getter dan Setter
+    // Getter dan Setter untuk Id
     public Long getId() {
         return id;
     }
@@ -36,6 +37,7 @@ public class Venue {
         this.id = id;
     }
 
+    // Getter dan Setter untuk Name
     public String getName() {
         return name;
     }
@@ -44,6 +46,7 @@ public class Venue {
         this.name = name;
     }
 
+    // Getter dan Setter untuk City
     public String getCity() {
         return city;
     }
@@ -52,6 +55,7 @@ public class Venue {
         this.city = city;
     }
 
+    // Getter dan Setter untuk Image
     public String getImage() {
         return image;
     }
@@ -60,6 +64,7 @@ public class Venue {
         this.image = image;
     }
 
+    // Getter dan Setter untuk Price
     public double getPrice() {
         return price;
     }
@@ -68,6 +73,7 @@ public class Venue {
         this.price = price;
     }
 
+    // Getter dan Setter untuk Rating
     public double getRating() {
         return rating;
     }
@@ -76,6 +82,7 @@ public class Venue {
         this.rating = rating;
     }
 
+    // Getter dan Setter untuk Reviews
     public int getReviews() {
         return reviews;
     }

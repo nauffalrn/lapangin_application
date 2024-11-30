@@ -18,7 +18,7 @@ public class ReviewService {
     }
 
     public List<Review> getReviewsByLapangan(int lapanganID) {
-        return reviewRepository.findByLapangan_LapanganID(lapanganID);
+        return reviewRepository.findByLapanganId(lapanganID);
     }
 }
 

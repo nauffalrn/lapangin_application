@@ -1,40 +1,47 @@
 package com.lapangin.web.model;
 
 import jakarta.persistence.*;
-import java.util.Date;
+import java.time.LocalDate;
 
 @Entity
+@Table(name = "promo") // Sesuaikan dengan nama tabel di database Anda
 public class Promo {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int promoID;
+    private Long id; // ID promo sebagai kunci utama
 
-    private String namaPromo;
-    private double diskonPersen; // Tetap double jika diskon bisa dalam desimal, misal 12.5%
+    @Column(name = "kode_promo", nullable = false)
+    private String kodePromo; // Kode promo unik
 
-    @Temporal(TemporalType.DATE)
-    private Date tanggalMulai;
+    @Column(name = "diskon_persen", nullable = false)
+    private double diskonPersen; // Persen diskon yang diberikan
 
-    @Temporal(TemporalType.DATE)
-    private Date tanggalSelesai;
+    @Column(name = "tanggal_mulai", nullable = false)
+    private LocalDate tanggalMulai; // Tanggal mulai promo
 
-    // Getter & Setter
-    public int getPromoID() {
-        return promoID;
+    @Column(name = "tanggal_selesai", nullable = false)
+    private LocalDate tanggalSelesai; // Tanggal selesai promo
+
+    // Getter dan Setter untuk Id
+    public Long getId() {
+        return id;
     }
 
-    public void setPromoID(int promoID) {
-        this.promoID = promoID;
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    public String getNamaPromo() {
-        return namaPromo;
+    // Getter dan Setter untuk KodePromo
+    public String getKodePromo() {
+        return kodePromo;
     }
 
-    public void setNamaPromo(String namaPromo) {
-        this.namaPromo = namaPromo;
+    public void setKodePromo(String kodePromo) {
+        this.kodePromo = kodePromo;
     }
 
+    // Getter dan Setter untuk DiskonPersen
     public double getDiskonPersen() {
         return diskonPersen;
     }
@@ -43,19 +50,21 @@ public class Promo {
         this.diskonPersen = diskonPersen;
     }
 
-    public Date getTanggalMulai() {
+    // Getter dan Setter untuk TanggalMulai
+    public LocalDate getTanggalMulai() {
         return tanggalMulai;
     }
 
-    public void setTanggalMulai(Date tanggalMulai) {
+    public void setTanggalMulai(LocalDate tanggalMulai) {
         this.tanggalMulai = tanggalMulai;
     }
 
-    public Date getTanggalSelesai() {
+    // Getter dan Setter untuk TanggalSelesai
+    public LocalDate getTanggalSelesai() {
         return tanggalSelesai;
     }
 
-    public void setTanggalSelesai(Date tanggalSelesai) {
+    public void setTanggalSelesai(LocalDate tanggalSelesai) {
         this.tanggalSelesai = tanggalSelesai;
     }
 }

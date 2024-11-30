@@ -1,91 +1,230 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" th:href="@{/css/style.css?v=1.0}" />
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
-    <title>Dashboard</title>
-</head>
-<body>
-<!-- Sidebar -->
-<nav class="sidebar close">
-    <header>
-        <div class="image-text">
-            <span class="image">
-                <!-- Logo aplikasi -->
-                <img th:src="@{/images/LA.png}" alt="Logo">
-            </span>
-            <div class="text header-text">
-                <span class="name">Lapangin</span>
-                <span class="proffession">Find Field</span>
-            </div>
-        </div>
-        <i class='bx bx-chevron-right toggle'></i>
-    </header>
-    <div class="menu-bar">
-        <ul class="menu-links">
-            <li class="nav-link">
-                <a th:href="@{/dashboard}">
-                    <i class='bx bx-home-alt icon'></i>
-                    <span class="text nav-text">Sewa Lapangan</span>
-                </a>
-            </li>
-            <li class="nav-link">
-                <a th:href="@{/notifikasi_booking}">
-                    <i class='bx bx-bell icon'></i>
-                    <span class="text nav-text">Notifications</span>
-                </a>
-            </li>
-            <li class="nav-link">
-                <a th:href="@{/likes}">
-                    <i class='bx bx-heart icon'></i>
-                    <span class="text nav-text">Likes</span>
-                </a>
-            </li>
-            <li class="nav-link">
-                <a th:href="@{/wallet}">
-                    <i class='bx bx-wallet icon'></i>
-                    <span class="text nav-text">Wallets</span>
-                </a>
-            </li>
-        </ul>
-    </div>
-</nav>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="style.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0" />
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+        <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+        <title>Dashboard Sidebar Menu | Dark-Light </title>
+    </head>
 
-<!-- Section untuk menampilkan daftar lapangan -->
-<section class="section-2">
-    <div id="product1" class="section-p1">
-        <div class="pro-container">
-            <!-- Iterasi daftar lapangan -->
-            <div class="pro" th:each="venue : ${venues}">
-                <div class="image-container">
-                    <!-- Tampilkan gambar lapangan -->
-                    <img th:src="@{'/images/' + ${venue.image}}" th:alt="${venue.name}" alt="Image not found">
-                    <div class="location-overlay">
-                        <span>
-                            <i class="fa-solid fa-location-dot"></i>
-                            <span th:text="${venue.city}">[City]</span>
-                        </span>
+    <body>
+        <aside class="sidebar">
+            <header class="sidebar-header">
+                <a href="#" class="header-logo">
+                    <img src="LA.png" alt="Lapangin">
+                </a>
+                
+                <button class="toggler sidebar-toggler">
+                    <span class="material-symbols-rounded">chevron_left</span>
+                </button>
+            </header>
+
+            <nav class="sidebar-nav">
+                <ul class="nav-list primary-nav">
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <span class="nav-icon material-symbols-rounded">dashboard</span>
+                            <span class="nav-label">Dashboard</span>
+                        </a>
+                        <span class="nav-tooltip">Dashboard</span>
+                    </li>
+                    <li class="nav-item">
+                        <a href="calender.html" class="nav-link">
+                            <span class="nav-icon material-symbols-rounded">today</span>
+                            <span class="nav-label">Calender</span>
+                        </a>
+                        <span class="nav-tooltip">Calender</span>
+                    </li>
+                    <li class="nav-item">
+                        <a href="Notifikasi_booking.html" class="nav-link">
+                            <span class="nav-icon material-symbols-rounded">notifications</span>
+                            <span class="nav-label">Notifications</span>
+                        </a>
+                        <span class="nav-tooltip">Notifications</span>
+                    </li>
+                    <li class="nav-item">
+                        <a href="" class="nav-link">
+                            <span class="nav-icon material-symbols-rounded">history</span>
+                            <span class="nav-label">History</span>
+                        </a>
+                        <span class="nav-tooltip">History</span>
+                    </li>
+                    <li class="nav-item">
+                        <a href="" class="nav-link">
+                            <span class="nav-icon material-symbols-rounded">favorite</span>
+                            <span class="nav-label">Likes</span>
+                        </a>
+                        <span class="nav-tooltip">Likes</span>
+                    </li>
+                    <li class="nav-item">
+                        <a href="wallet.html" class="nav-link">
+                            <span class="nav-icon material-symbols-rounded">wallet</span>
+                            <span class="nav-label">Wallets</span>
+                        </a>
+                        <span class="nav-tooltip">Wallets</span>
+                    </li>
+                    <li class="nav-item">
+                        <a href="" class="nav-link">
+                            <span class="nav-icon material-symbols-rounded">settings</span>
+                            <span class="nav-label">Settings</span>
+                        </a>
+                        <span class="nav-tooltip">Settings</span>
+                    </li>
+                </ul>
+
+                <!--Secondary Bot nav-->
+                <ul class="nav-list secondary-nav">
+                    <li class="nav-item toggle-dark-mode">
+                        <span class="dark-mode-label">Dark Mode</span>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="dark-mode-toggle">
+                            <span class="slider"></span>
+                        </label>
+                    </li>
+                    <li class="nav-item">
+                        <a href="" class="nav-link">
+                            <span class="nav-icon material-symbols-rounded">account_circle</span>
+                            <span class="nav-label">Profile</span>
+                        </a>
+                        <span class="nav-tooltip">Profile</span>
+                    </li>
+                    <li class="nav-item">
+                        <a href="login.html" class="nav-link">
+                            <span class="nav-icon material-symbols-rounded">login</span>
+                            <span class="nav-label">Login</span>
+                        </a>
+                        <span class="nav-tooltip">Login</span>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+        
+        <div class="logo-section">
+            <h2>Our Website</h2>
+            <p>Booking Lapangan Online</p>
+            <button type="button" id="btn-3"><a href="#"></a> Daftar Vanue</button>
+        </div>
+
+
+        <section class="section-2">
+            <div class="filter-container">
+                <div>
+                    <span class="icon">🔍</span>
+                    <input type="text" placeholder="Cari nama venue">
+                </div>
+            
+                <select>
+                    <option selected>Pilih Kota</option>
+                    <option>Dayeuhkolot</option>
+                    <option>Ciganitri</option>
+                    <option>Baleendah</option>
+                    <option>Kota Bandung</option>
+                </select>
+            
+                <select>
+                    <option selected>Pilih Cabang Olahraga</option>
+                    <option>Tenis</option>
+                    <option>Basket</option>
+                    <option>Futsal</option>
+                    <option>Badminton</option>
+                </select>
+            
+                <button class="small-button">⚙</button>
+
+            
+                <button>Cari venue</button>
+            </div>
+
+            
+
+            <div id="product1" class="section-p1">
+                <div class="pro-container">
+
+                    <div class="pro" data-nama="Badminton" data-kota="Dayeuhkolot" data-olahraga="Badminton" >
+                        <a href="GorBadmin.html"></a>
+                        <div class="image-container">
+                            <img src="gor-badminton.jpg" alt="GOR Badminton Telyu">
+                            <div class="location-overlay">
+                                <span><i class="fa-solid fa-location-dot"></i> Dayeuhkolot</span>
+                            </div>
+                        </div>
+                        <div class="des">
+                            <h5>GOR Badminton Telyu</h5>
+                            <p>⭐ 5.0 (21)</p>
+                            <h4>Mulai Rp 50.000/jam</h4>
+                        </div>
+                    </div>
+            
+
+                    <div class="pro" data-nama="Futsal" data-kota="Kota Bandung" data-olahraga="Futsal">
+                        <div class="image-container">
+                            <img src="gor-badminton.webp" alt="GOR Futsal Telyu">
+                            <div class="location-overlay">
+                                <span><i class="fa-solid fa-location-dot"></i> Kota Bandung</span>
+                            </div>
+                        </div>
+
+                        <div class="des">
+                            <h5>GOR Futsal Telyu</h5>
+                            <p>⭐ 5.0 (21)</p>
+                            <h4>Mulai Rp 50.000/jam</h4>
+                        </div>
+                    </div>
+            
+                    <div class="pro" data-nama="Tenis" data-kota="Ciganitri" data-olahraga="Tenis">
+                        <div class="image-container">
+                            <img src="gor-tenis.jpeg" alt="Lapangan Tennis Telyu">
+                            <div class="location-overlay">
+                                <span><i class="fa-solid fa-location-dot"></i> Ciganitri</span>
+                            </div>
+                        </div>
+
+                        <div class="des">
+                            <h5>Lapangan Tennis Telyu</h5>
+                            <p>⭐ 5.0 (21)</p>
+                            <h4>Mulai Rp 50.000/jam</h4>
+                        </div>
+                    </div>
+            
+
+                    <div class="pro" data-nama="Basket" data-kota="Baleendah" data-olahraga="Basket">
+                        <div class="image-container">
+                            <img src="basket.jpeg" alt="Lapangan Basket Telyu">
+                            <div class="location-overlay">
+                                <span><i class="fa-solid fa-location-dot"></i> Baleendah</span>
+                            </div>
+                        </div>
+
+                        <div class="des">
+                            <h5>Lapangan Basket Telyu</h5>
+                            <p>⭐ 5.0 (21)</p>
+                            <h4>Mulai Rp 50.000/jam</h4>
+                        </div>
                     </div>
                 </div>
-                <div class="des">
-                    <h5 th:text="${venue.name}">[Venue Name]</h5>
-                    <p>⭐
-                        <span th:text="${venue.rating}">[Rating]</span>
-                        (<span th:text="${venue.reviews}">[Reviews]</span>)
-                    </p>
-                    <h4 th:text="'Mulai Rp ' + ${venue.price} + '/jam'">[Price]</h4>
-                    <a class="btn btn-primary" th:href="@{'/book/' + ${venue.id}}">Pesan Sekarang</a>
+            </div>
+
+            <div id="modal-filter" class="modal">
+                <div class="modal-content">
+                    <h3>Filter</h3>
+                    <div class="price-filter">
+                        <label for="min-price">Biaya Minimum:</label>
+                        <input type="number" id="min-price" placeholder="Rp.0">
+                    </div>
+                    <div class="price-filter">
+                        <label for="max-price">Biaya Maksimum:</label>
+                        <input type="number" id="max-price" placeholder="Rp.5.000.000+">
+                    </div>
+                    <button id="apply-filter">Terapkan</button>
                 </div>
             </div>
-        </div>
-    </div>
-</section>
-
-<!-- Tambahkan script -->
-<script th:src="@{/js/script.js}"></script>
-</body>
+        </section>
+        <script src="script.js"></script>
+        <script src="search.js"></script>
+        <script src="darkmode.js"></script>
+    </body>
 </html>

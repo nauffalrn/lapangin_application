@@ -1,92 +1,91 @@
 package com.lapangin.web.model;
 
 import jakarta.persistence.*;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "pesanan") // Sesuaikan dengan nama tabel di database Anda
 public class Pesanan {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int pesananID;
+    private Long id; // ID pesanan sebagai kunci utama
 
     @ManyToOne
-    @JoinColumn(name = "lapanganID", nullable = false)
-    private Lapangan lapangan;
+    @JoinColumn(name = "customer_id", referencedColumnName = "id", nullable = false)
+    private Customer customer; // Relasi ke customer
 
     @ManyToOne
-    @JoinColumn(name = "customerID", nullable = false)
-    private Customer customer;
-
-    private Date tanggalPesan;
-    private int jamMulai;
-    private int jamSelesai;
-    private double totalHarga;
+    @JoinColumn(name = "lapangan_id", referencedColumnName = "id", nullable = false)
+    private Lapangan lapangan; // Relasi ke Lapangan
 
     @ManyToOne
-    @JoinColumn(name = "promoID")
-    private Promo promo;
+    @JoinColumn(name = "promo_id", referencedColumnName = "id")
+    private Promo promo; // Relasi ke Promo
 
-    public Lapangan getLapangan() {
-        return lapangan;
+    @Column(name = "booking_date", nullable = false)
+    private LocalDateTime bookingDate; // Tanggal pemesanan
+
+    @Column(name = "jam_mulai", nullable = false)
+    private int jamMulai; // Jam mulai
+
+    @Column(name = "jam_selesai", nullable = false)
+    private int jamSelesai; // Jam selesai
+
+    // Getters dan Setters
+    public Long getId() {
+        return id;
     }
 
-    public int getJamSelesai() {
-        return jamSelesai;
-    }
-
-    public int getJamMulai() {
-        return jamMulai;
-    }
-
-    public Promo getPromo() {
-        return promo;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Customer getCustomer() {
         return customer;
     }
 
-    public Date getTanggalPesan() {
-        return tanggalPesan;
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
     }
 
-    public double getTotalHarga() {
-        return totalHarga;
-    }
-
-    public int getPesananID() {
-        return pesananID;
+    public Lapangan getLapangan() {
+        return lapangan;
     }
 
     public void setLapangan(Lapangan lapangan) {
         this.lapangan = lapangan;
     }
 
-    public void setJamSelesai(int jamSelesai) {
-        this.jamSelesai = jamSelesai;
-    }
-
-    public void setJamMulai(int jamMulai) {
-        this.jamMulai = jamMulai;
+    public Promo getPromo() {
+        return promo;
     }
 
     public void setPromo(Promo promo) {
         this.promo = promo;
     }
 
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
+    public LocalDateTime getBookingDate() {
+        return bookingDate;
     }
 
-    public void setTanggalPesan(Date tanggalPesan) {
-        this.tanggalPesan = tanggalPesan;
+    public void setBookingDate(LocalDateTime bookingDate) {
+        this.bookingDate = bookingDate;
     }
 
-    public void setTotalHarga(double totalHarga) {
-        this.totalHarga = totalHarga;
+    public int getJamMulai() {
+        return jamMulai;
     }
 
-    public void setPesananID(int pesananID) {
-        this.pesananID = pesananID;
+    public void setJamMulai(int jamMulai) {
+        this.jamMulai = jamMulai;
+    }
+
+    public int getJamSelesai() {
+        return jamSelesai;
+    }
+
+    public void setJamSelesai(int jamSelesai) {
+        this.jamSelesai = jamSelesai;
     }
 }

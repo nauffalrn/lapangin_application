@@ -5,7 +5,7 @@ import com.lapangin.web.repository.PromoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -20,7 +20,7 @@ public class PromoService {
      * @param endDate   tanggal akhir (akhir range)
      * @return Daftar promo yang aktif
      */
-    public List<Promo> getActivePromos(Date startDate, Date endDate) {
-        return promoRepository.findByTanggalMulaiBeforeAndTanggalSelesaiAfter(startDate, endDate);
+    public List<Promo> getActivePromos(LocalDate startDate, LocalDate endDate) {
+        return promoRepository.findByTanggalMulaiBetween(startDate, endDate);
     }
 }
