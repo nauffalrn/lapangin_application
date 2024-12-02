@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.lapangin.web.model.Customer;
 import com.lapangin.web.repository.CustomerRepository;
@@ -20,11 +21,15 @@ public class CustomerService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Transactional
     public void register(Customer customer) {
+        logger.debug("Registering customer: {}", customer);
         if (isUsernameTaken(customer.getUsername())) {
+            logger.warn("Username already taken: {}", customer.getUsername());
             throw new IllegalArgumentException("Username already taken");
         }
         customer.setPassword(passwordEncoder.encode(customer.getPassword()));
+        logger.debug("Password encoded for user: {}", customer.getUsername());
         customerRepository.save(customer);
         logger.info("Customer registered successfully: {}", customer.getUsername());
     }

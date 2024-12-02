@@ -8,12 +8,12 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "customer") // Pastikan nama tabel sesuai dengan di database Anda
+@Table(name = "customer")
 public class Customer extends User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id; // ID customer sebagai kunci utama
+    private Long id;
 
     @Column(name = "username", nullable = false, unique = true)
     private String username;
@@ -21,14 +21,10 @@ public class Customer extends User {
     @Column(name = "password", nullable = false)
     private String password;
 
-    @Column(name = "name", nullable = false)
-    private String name; // Nama pelanggan
-
     @Column(name = "phone_number", nullable = false)
-    private String phoneNumber; // Nomor telepon
+    private String phoneNumber;
 
-    @Column(name = "address", nullable = false)
-    private String address; // Alamat pelanggan
+    // Hapus name dan address dari entitas ini
 
     // Getter & Setter
     @Override
@@ -57,27 +53,11 @@ public class Customer extends User {
         this.password = password;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getPhoneNumber() {
         return phoneNumber;
     }
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
     }
 }
