@@ -23,13 +23,11 @@ public class CustomerService {
 
     @Transactional
     public void register(Customer customer) {
-        logger.debug("Registering customer: {}", customer);
+        logger.debug("Registering customer: {}", customer.getUsername());
         if (isUsernameTaken(customer.getUsername())) {
-            logger.warn("Username already taken: {}", customer.getUsername());
             throw new IllegalArgumentException("Username already taken");
         }
         customer.setPassword(passwordEncoder.encode(customer.getPassword()));
-        logger.debug("Password encoded for user: {}", customer.getUsername());
         customerRepository.save(customer);
         logger.info("Customer registered successfully: {}", customer.getUsername());
     }
@@ -40,9 +38,6 @@ public class CustomerService {
 
     public boolean validateCustomer(String username, String password) {
         Customer customer = customerRepository.findByUsername(username);
-        if (customer != null && passwordEncoder.matches(password, customer.getPassword())) {
-            return true;
-        }
-        return false;
+        return customer != null && passwordEncoder.matches(password, customer.getPassword());
     }
 }

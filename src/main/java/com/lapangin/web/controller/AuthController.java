@@ -26,7 +26,7 @@ public class AuthController {
     @PostMapping("/login")
     public String login(@RequestParam String username, @RequestParam String password, RedirectAttributes redirectAttributes) {
         if (customerService.validateCustomer(username, password)) {
-            return "redirect:/home";
+            return "redirect:/dashboard"; // Redirect to /dashboard after successful login
         }
         redirectAttributes.addFlashAttribute("errorMessage", "Invalid username or password");
         return "redirect:/login";
@@ -41,7 +41,7 @@ public class AuthController {
     @PostMapping("/register")
     public String registerCustomer(@ModelAttribute("customer") Customer customer, RedirectAttributes redirectAttributes) {
         try {
-            customerService.register(customer);
+            customerService.register(customer); // Make sure this registers with hashed password
             redirectAttributes.addFlashAttribute("successMessage", "Registration successful");
             return "redirect:/login";
         } catch (IllegalArgumentException e) {

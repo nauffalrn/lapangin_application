@@ -24,7 +24,8 @@ public class Customer extends User {
     @Column(name = "phone_number", nullable = false)
     private String phoneNumber;
 
-    // Hapus name dan address dari entitas ini
+    @Column(name = "email", nullable = false, unique = true)
+    private String email;
 
     // Getter & Setter
     @Override
@@ -59,5 +60,13 @@ public class Customer extends User {
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }
