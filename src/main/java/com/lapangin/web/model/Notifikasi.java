@@ -9,7 +9,7 @@ public class Notifikasi {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int notifikasiID; // ID notifikasi sebagai kunci utama
+    private int notifikasi_id; // ID notifikasi sebagai kunci utama
 
     @OneToOne
     @JoinColumn(name = "pesananID", nullable = false)
@@ -29,11 +29,11 @@ public class Notifikasi {
     // Getter dan Setter
 
     public int getNotifikasiID() {
-        return notifikasiID;
+        return notifikasi_id;
     }
 
     public void setNotifikasiID(int notifikasiID) {
-        this.notifikasiID = notifikasiID;
+        this.notifikasi_id = notifikasiID;
     }
 
     public Pesanan getPesanan() {

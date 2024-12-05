@@ -37,17 +37,10 @@ document.getElementById("login-form").addEventListener("submit", e => {
         return;
     }
 
-    // Periksa apakah data sesuai
-    const storedUser = JSON.parse(localStorage.getItem("userData"));
-    if (storedUser && storedUser.username === username && storedUser.password === password) {
-        alert("Login berhasil!");
-        // Alihkan ke dashboard
-        window.location.href = "dashboard.html"; // Ganti dengan URL dashboard Anda
-    } else {
-        alert("Akun tidak ditemukan! Silakan daftar terlebih dahulu.");
-        // Alihkan ke formulir signup
-        forms.classList.add("show-signup");
-    }
+    // Logika validasi tanpa menyentuh localStorage
+    // Kirim ke server side untuk validasi melalui form post jika diperlukan
+    alert("Form login akan dikirim ke server untuk validasi");
+    e.target.submit(); // Mengirim formulir login untuk diproses oleh server
 });
 
 // Validasi signup
@@ -55,7 +48,7 @@ document.getElementById("signup-form").addEventListener("submit", e => {
     e.preventDefault();
     const username = e.target.username.value.trim();
     const email = e.target.email.value.trim();
-    const phone = e.target.phone.value.trim();
+    const phone = e.target.phoneNumber.value.trim();
     const password = e.target.password.value;
     const confirmPassword = e.target.confirm_password.value;
 
@@ -69,21 +62,7 @@ document.getElementById("signup-form").addEventListener("submit", e => {
         return;
     }
 
-    // Simpan data ke localStorage (atau kirim ke server)
-    const userData = {
-        username,
-        email,
-        phone,
-        password,
-    };
-    localStorage.setItem("userData", JSON.stringify(userData));
-
-    alert("Registrasi berhasil!");
-
-    // Reset input formulir signup
-    e.target.reset();
-
-
-    // Kembali ke formulir login
-    forms.classList.remove("show-signup");
+    // Mengirim form signup langsung ke server
+    alert("Form signup akan dikirim ke server untuk registrasi");
+    e.target.submit(); // Mengirim formulir signup untuk diproses oleh server
 });

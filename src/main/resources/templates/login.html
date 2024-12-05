@@ -17,7 +17,7 @@
           href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
           rel="stylesheet"
   />
-  <title>Dashboard Sidebar Menu | Dark-Light</title>
+  <title>Lapangin</title>
 </head>
 
 <body>
@@ -113,15 +113,19 @@
 
 <section class="home">
   <section class="container2 forms">
-    <!-- Login Form -->
     <div class="form login" id="login-form">
       <div class="form-content">
         <h1 class="head">Login</h1>
-        <form method="post">
+
+        <!-- Tampilkan pesan error jika ada -->
+        <div th:if="${errorMessage}" th:text="${errorMessage}" class="error-message"></div>
+
+        <form method="post" th:action="@{/login}" th:object="${customer}">
+          <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
           <div class="field input-field">
             <input
                     type="text"
-                    id="login-username"
+                    th:field="*{username}"
                     placeholder="Username"
                     class="input"
                     required
@@ -130,7 +134,7 @@
           <div class="field input-field">
             <input
                     type="password"
-                    id="login-password"
+                    th:field="*{password}"
                     placeholder="Password"
                     class="password"
                     required
@@ -145,9 +149,9 @@
           </div>
         </form>
         <div class="form-link">
-              <span class="Account">Don't have an account?
-                <a href="#" class="link signup-link">Signup</a>
-              </span>
+            <span class="Account">Don't have an account?
+              <a th:href="@{/register}" class="link signup-link">Signup</a>
+            </span>
         </div>
       </div>
       <div class="line"></div>
@@ -160,82 +164,9 @@
             <i class="bx bxl-google"></i>
           </div>
         </a>
-      </div>
-    </div>
-
-    <!-- Signup Form -->
-    <div class="form signup" id="signup-form">
-      <div class="form-content">
-        <h1 class="head">Signup</h1>
-        <form method="post" action="/register">
-          <div class="field input-field">
-            <input
-                    type="text"
-                    name="username"
-                    placeholder="Username"
-                    class="input"
-                    required
-            />
-          </div>
-          <div class="field input-field">
-            <input
-                    type="email"
-                    name="email"
-                    placeholder="Email"
-                    class="input"
-                    required
-            />
-          </div>
-          <div class="field input-field">
-            <input
-                    type="text"
-                    name="phone"
-                    placeholder="Phone Number"
-                    class="input"
-                    required
-            />
-          </div>
-          <div class="field input-field">
-            <input
-                    type="password"
-                    name="password"
-                    placeholder="Create password"
-                    class="password"
-                    required
-            />
-          </div>
-          <div class="field input-field">
-            <input
-                    type="password"
-                    name="confirm_password"
-                    placeholder="Confirm password"
-                    class="password"
-                    required
-            />
-            <i class="bx bx-hide eye-icon"></i>
-          </div>
-          <div class="field button-field">
-            <button type="submit">Signup</button>
-          </div>
-        </form>
-        <div class="form-link">
-              <span>Already have an account?
-                <a href="#" class="link login-link">Login</a>
-              </span>
+        </div>
         </div>
       </div>
-      <div class="line"></div>
-      <div class="media-options">
-        <a href="#" class="field facebook">
-          <i class="bx bxl-facebook-circle"></i>
-        </a>
-        <a href="#" class="field google">
-          <div class="google-icon">
-            <i class="bx bxl-google"></i>
-          </div>
-        </a>
-      </div>
-    </div>
   </section>
 </section>
 
@@ -243,5 +174,15 @@
 <script th:src="@{/js/script.js}"></script>
 <script th:src="@{/js/darkmode.js}"></script>
 <script th:src="@{/js/log.js}"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', (event) => {
+    const flashMessages = ${errorMessage != null ? '\''+errorMessage+'\'' : 'null'};
+    if (flashMessages === "Akun tidak ditemukan. Silakan signup terlebih dahulu.") {
+      document.getElementById('account-not-found-error').style.display = 'block';
+    } else if (flashMessages === "Username atau password tidak valid.") {
+      document.getElementById('invalid-credentials-error').style.display = 'block';
+    }
+  });
+</script>
 </body>
 </html>

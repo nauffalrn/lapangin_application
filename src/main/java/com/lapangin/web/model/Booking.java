@@ -14,16 +14,16 @@ public class Booking {
     @Column(nullable = false)
     private String username;
 
-    @Column(nullable = false)
+    @Column(name = "venue_id", nullable = false)
     private Long venueId;
 
-    @Column(nullable = false)
+    @Column(name = "booking_date", nullable = false)
     private LocalDateTime bookingDate;
 
     @Column(nullable = false)
     private int duration; // Dalam jam
 
-    @Column(nullable = false)
+    @Column(name = "total_price", nullable = false)
     private double totalPrice;
 
     // Getter dan Setter

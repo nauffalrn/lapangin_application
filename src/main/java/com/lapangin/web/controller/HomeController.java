@@ -12,6 +12,8 @@ public class HomeController {
     // Rename the mapping for the main page to match the physical HTML page
     @GetMapping("/dashboard")
     public String showHomePage(Model model) {
+        String greeting = "Welcome to the Dashboard!";
+        model.addAttribute("greeting", greeting);
         return "dashboard"; // Render dashboard.html
     }
 

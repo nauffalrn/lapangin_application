@@ -3,41 +3,54 @@ package com.lapangin.web.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import com.lapangin.web.model.Customer;
 import com.lapangin.web.repository.CustomerRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Service
 public class CustomerService {
 
     private static final Logger logger = LoggerFactory.getLogger(CustomerService.class);
 
-    @Autowired
-    private CustomerRepository customerRepository;
+    private final CustomerRepository customerRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    private PasswordEncoder passwordEncoder;
+    public CustomerService(CustomerRepository customerRepository, PasswordEncoder passwordEncoder) {
+        this.customerRepository = customerRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     @Transactional
     public void register(Customer customer) {
         logger.debug("Registering customer: {}", customer.getUsername());
-        if (isUsernameTaken(customer.getUsername())) {
+
+        String username = customer.getUsername();
+        if (findByUsername(username) != null) {
+            logger.warn("Username '{}' already taken", customer.getUsername());
             throw new IllegalArgumentException("Username already taken");
         }
+
         customer.setPassword(passwordEncoder.encode(customer.getPassword()));
         customerRepository.save(customer);
         logger.info("Customer registered successfully: {}", customer.getUsername());
     }
 
-    public boolean isUsernameTaken(String username) {
-        return customerRepository.findByUsername(username) != null;
+    public Customer findByUsername(String username) {
+        return customerRepository.findByUsername(username);
     }
 
-    public boolean validateCustomer(String username, String password) {
-        Customer customer = customerRepository.findByUsername(username);
-        return customer != null && passwordEncoder.matches(password, customer.getPassword());
+    public boolean validatePassword(Customer customer, String password) {
+        if (customer == null) {
+            logger.warn("Customer object is null");
+            return false;
+        }
+        boolean isPasswordValid = passwordEncoder.matches(password, customer.getPassword());
+        if (!isPasswordValid) {
+            logger.warn("Invalid password for username '{}'", customer.getUsername());
+        }
+        return isPasswordValid;
     }
 }

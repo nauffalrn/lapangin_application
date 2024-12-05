@@ -2,7 +2,8 @@ package com.lapangin.web.model;
 
 import jakarta.persistence.*;
 
-@MappedSuperclass
+@Entity
+@Inheritance(strategy = InheritanceType.JOINED) // Pilih strategi sesuai kebutuhan anda: JOINED, SINGLE_TABLE, atau TABLE_PER_CLASS
 public abstract class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

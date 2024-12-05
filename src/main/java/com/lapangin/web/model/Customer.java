@@ -6,6 +6,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 
 @Entity
 @Table(name = "customer")
@@ -20,6 +21,9 @@ public class Customer extends User {
 
     @Column(name = "password", nullable = false)
     private String password;
+
+    @Transient
+    private String confirmPassword;
 
     @Column(name = "phone_number", nullable = false)
     private String phoneNumber;
@@ -68,5 +72,13 @@ public class Customer extends User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getConfirmPassword() {
+        return confirmPassword;
+    }
+
+    public void setConfirmPassword(String confirmPassword) {
+        this.confirmPassword = confirmPassword;
     }
 }
