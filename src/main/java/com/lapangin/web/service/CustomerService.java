@@ -8,6 +8,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.lapangin.web.model.Customer;
 import com.lapangin.web.repository.CustomerRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class CustomerService {
@@ -29,8 +31,8 @@ public class CustomerService {
 
         String username = customer.getUsername();
         if (findByUsername(username) != null) {
-            logger.warn("Username '{}' already taken", customer.getUsername());
-            throw new IllegalArgumentException("Username already taken");
+            logger.warn("Username '{}' already taken", username);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username already taken"); // Menggunakan ResponseStatusException
         }
 
         customer.setPassword(passwordEncoder.encode(customer.getPassword()));
@@ -47,6 +49,7 @@ public class CustomerService {
             logger.warn("Customer object is null");
             return false;
         }
+
         boolean isPasswordValid = passwordEncoder.matches(password, customer.getPassword());
         if (!isPasswordValid) {
             logger.warn("Invalid password for username '{}'", customer.getUsername());

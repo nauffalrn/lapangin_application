@@ -1,68 +1,68 @@
-const forms = document.querySelector(".forms");
+// Tampilkan/Matiin password
 const pwShowHide = document.querySelectorAll(".eye-icon");
-const links = document.querySelectorAll(".link");
-
-// Tampilkan/matikan password
 pwShowHide.forEach(eyeIcon => {
     eyeIcon.addEventListener("click", () => {
-        const pwFields = eyeIcon.closest(".field").querySelectorAll(".password");
-        pwFields.forEach(password => {
-            if (password.type === "password") {
-                password.type = "text";
-                eyeIcon.classList.replace("bx-hide", "bx-show");
-            } else {
-                password.type = "password";
-                eyeIcon.classList.replace("bx-show", "bx-hide");
-            }
-        });
-    });
-});
-
-// Navigasi antara login dan signup
-links.forEach(link => {
-    link.addEventListener("click", e => {
-        e.preventDefault();
-        forms.classList.toggle("show-signup");
+        const pwField = eyeIcon.previousElementSibling; // Ambil input password
+        if (pwField.type === "password") {
+            pwField.type = "text";  // Menampilkan password
+            eyeIcon.classList.replace("bx-hide", "bx-show");  // Ganti ikon ke 'show'
+        } else {
+            pwField.type = "password";  // Menyembunyikan password
+            eyeIcon.classList.replace("bx-show", "bx-hide");  // Ganti ikon ke 'hide'
+        }
     });
 });
 
 // Validasi login
 document.getElementById("login-form").addEventListener("submit", e => {
-    e.preventDefault();
+    e.preventDefault(); // Mencegah form dikirim langsung
     const username = document.getElementById("login-username").value.trim();
     const password = document.getElementById("login-password").value.trim();
 
+    // Cek apakah username dan password kosong
     if (!username || !password) {
         alert("Username dan password harus diisi!");
         return;
     }
 
-    // Logika validasi tanpa menyentuh localStorage
-    // Kirim ke server side untuk validasi melalui form post jika diperlukan
-    alert("Form login akan dikirim ke server untuk validasi");
     e.target.submit(); // Mengirim formulir login untuk diproses oleh server
 });
 
 // Validasi signup
 document.getElementById("signup-form").addEventListener("submit", e => {
-    e.preventDefault();
+    e.preventDefault(); // Mencegah form dikirim langsung
     const username = e.target.username.value.trim();
     const email = e.target.email.value.trim();
     const phone = e.target.phoneNumber.value.trim();
     const password = e.target.password.value;
     const confirmPassword = e.target.confirm_password.value;
 
+    // Cek apakah semua field diisi
     if (!username || !email || !phone || !password || !confirmPassword) {
         alert("Semua field harus diisi!");
         return;
     }
 
+    // Validasi format email menggunakan regex
+    const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+    if (!emailPattern.test(email)) {
+        alert("Email tidak valid!");
+        return;
+    }
+
+    // Validasi format nomor telepon menggunakan regex (bisa disesuaikan dengan kebutuhan)
+    const phonePattern = /^[0-9]{10,15}$/;
+    if (!phonePattern.test(phone)) {
+        alert("Nomor telepon tidak valid!");
+        return;
+    }
+
+    // Validasi kecocokan password dan konfirmasi password
     if (password !== confirmPassword) {
         alert("Password dan konfirmasi password tidak cocok!");
         return;
     }
 
-    // Mengirim form signup langsung ke server
-    alert("Form signup akan dikirim ke server untuk registrasi");
+    // Mengirim form signup setelah validasi
     e.target.submit(); // Mengirim formulir signup untuk diproses oleh server
 });

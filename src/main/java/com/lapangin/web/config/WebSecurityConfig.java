@@ -14,10 +14,10 @@ import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 public class WebSecurityConfig {
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, CustomAuthenticationFailureHandler failureHandler) throws Exception {
         http
-                .csrf(csrf -> csrf // Menggunakan lambda untuk konfigurasi CSRF
-                        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()) // Aktifkan CSRF
+                .csrf(csrf -> csrf
+                        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                 )
                 .authorizeHttpRequests(authz -> authz
                         .requestMatchers("/", "/css/**", "/js/**", "/images/**", "/login", "/register").permitAll()
@@ -26,11 +26,13 @@ public class WebSecurityConfig {
                 )
                 .formLogin(form -> form
                         .loginPage("/login") // Halaman login
-                        .defaultSuccessUrl("/dashboard", true) // Redirect ke dashboard jika login berhasil
-                        .failureUrl("/login?error=true") // Redirect ke halaman login dengan error flag jika login gagal
+                        .failureHandler((request, response, exception) -> {
+                            request.setAttribute("errorMessage", "Invalid username or password");
+                            request.getRequestDispatcher("/login").forward(request, response);
+                        })
+                        .defaultSuccessUrl("/dashboard", true)
                         .permitAll()
                 )
-
                 .logout(logout -> logout
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("/")

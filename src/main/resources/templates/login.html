@@ -17,7 +17,7 @@
           href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
           rel="stylesheet"
   />
-  <title>Lapangin</title>
+  <title>Lapangin - Login</title>
 </head>
 
 <body>
@@ -26,7 +26,6 @@
     <a href="#" class="header-logo">
       <img th:src="@{/images/LA.png}" alt="Lapangin" />
     </a>
-
     <button class="toggler sidebar-toggler">
       <span class="material-symbols-rounded">chevron_left</span>
     </button>
@@ -44,9 +43,9 @@
       <li class="nav-item">
         <a href="#" class="nav-link">
           <span class="nav-icon material-symbols-rounded">today</span>
-          <span class="nav-label">Calender</span>
+          <span class="nav-label">Calendar</span>
         </a>
-        <span class="nav-tooltip">Calender</span>
+        <span class="nav-tooltip">Calendar</span>
       </li>
       <li class="nav-item">
         <a href="#" class="nav-link">
@@ -94,14 +93,14 @@
         </label>
       </li>
       <li class="nav-item">
-        <a href="#" class="nav-link">
+        <a th:href="@{/profile}" class="nav-link">
           <span class="nav-icon material-symbols-rounded">account_circle</span>
           <span class="nav-label">Profile</span>
         </a>
         <span class="nav-tooltip">Profile</span>
       </li>
       <li class="nav-item">
-        <a href="#" class="nav-link">
+        <a th:href="@{/logout}" class="nav-link">
           <span class="nav-icon material-symbols-rounded">logout</span>
           <span class="nav-label">Logout</span>
         </a>
@@ -113,17 +112,15 @@
 
 <section class="home">
   <section class="container2 forms">
-    <div class="form login" id="login-form">
+    <div class="form login" id="login-container">
       <div class="form-content">
         <h1 class="head">Login</h1>
-
-        <!-- Tampilkan pesan error jika ada -->
-        <div th:if="${errorMessage}" th:text="${errorMessage}" class="error-message"></div>
-
-        <form method="post" th:action="@{/login}" th:object="${customer}">
+        <!-- Login form -->
+        <form id="login-form" method="post" th:action="@{/login}" th:object="${customer}">
           <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
           <div class="field input-field">
             <input
+                    id="login-username"
                     type="text"
                     th:field="*{username}"
                     placeholder="Username"
@@ -133,6 +130,7 @@
           </div>
           <div class="field input-field">
             <input
+                    id="login-password"
                     type="password"
                     th:field="*{password}"
                     placeholder="Password"
@@ -141,6 +139,16 @@
             />
             <i class="bx bx-hide eye-icon"></i>
           </div>
+
+          <!-- Error message section -->
+          <div th:if="${errorMessage}" class="error-message">
+            <p th:text="${errorMessage}"></p>
+          </div>
+          <div>
+            Debug: <span th:text="${errorMessage}">Tidak ada pesan error yang diterima</span>
+          </div>
+
+
           <div class="form-link">
             <a href="#" class="forgot-pass">Forgot password?</a>
           </div>
@@ -148,13 +156,18 @@
             <button type="submit">Login</button>
           </div>
         </form>
+
+        <!-- Signup redirect -->
         <div class="form-link">
             <span class="Account">Don't have an account?
               <a th:href="@{/register}" class="link signup-link">Signup</a>
             </span>
         </div>
       </div>
+
       <div class="line"></div>
+
+      <!-- Social media options -->
       <div class="media-options">
         <a href="#" class="field facebook">
           <i class="bx bxl-facebook-circle"></i>
@@ -164,9 +177,8 @@
             <i class="bx bxl-google"></i>
           </div>
         </a>
-        </div>
-        </div>
       </div>
+    </div>
   </section>
 </section>
 
@@ -174,15 +186,5 @@
 <script th:src="@{/js/script.js}"></script>
 <script th:src="@{/js/darkmode.js}"></script>
 <script th:src="@{/js/log.js}"></script>
-<script>
-  document.addEventListener('DOMContentLoaded', (event) => {
-    const flashMessages = ${errorMessage != null ? '\''+errorMessage+'\'' : 'null'};
-    if (flashMessages === "Akun tidak ditemukan. Silakan signup terlebih dahulu.") {
-      document.getElementById('account-not-found-error').style.display = 'block';
-    } else if (flashMessages === "Username atau password tidak valid.") {
-      document.getElementById('invalid-credentials-error').style.display = 'block';
-    }
-  });
-</script>
 </body>
 </html>

@@ -41,10 +41,9 @@ public class RegisterController {
         try {
             // Simpan data customer jika validasi berhasil
             customerService.register(customer);
-            redirectAttributes.addFlashAttribute("successMessage", "Registration successful.");
             return "redirect:/login";
         } catch (IllegalArgumentException e) {
-            // Tangkap error jika terjadi kesalahan pada service
+            // Tangkap error jika terjadi kesalahan pada service (misalnya username sudah ada)
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
             return "redirect:/register";
         }

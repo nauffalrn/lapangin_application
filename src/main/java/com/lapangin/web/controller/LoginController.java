@@ -16,15 +16,10 @@ public class LoginController {
     @Autowired
     private CustomerService customerService;
 
-    // Menyediakan objek Customer secara global untuk form
-    @ModelAttribute("customer")
-    public Customer customer() {
-        return new Customer();
-    }
-
     // Menampilkan halaman login
     @GetMapping("/login")
-    public String showLoginForm() {
+    public String showLoginForm(Model model) {
+        model.addAttribute("customer", new Customer()); // Objek Customer untuk form
         return "login"; // Mengarahkan ke template login.html
     }
 
@@ -34,21 +29,19 @@ public class LoginController {
         String username = customer.getUsername();
         String password = customer.getPassword();
 
+        // Validasi login
         Customer existingCustomer = customerService.findByUsername(username);
-
         if (existingCustomer == null) {
-            // Akun tidak ditemukan
-            redirectAttributes.addFlashAttribute("errorMessage", "Akun tidak ditemukan. Silakan signup terlebih dahulu.");
-            return "redirect:/login";
+            redirectAttributes.addFlashAttribute("errorMessage", "Akun tidak ditemukan, silakan Signup terlebih dahulu");
+            return "login"; // Redirect jika akun tidak ditemukan
         }
 
         if (!customerService.validatePassword(existingCustomer, password)) {
-            // Password salah
-            redirectAttributes.addFlashAttribute("errorMessage", "Username atau password tidak valid.");
-            return "redirect:/login";
+            redirectAttributes.addFlashAttribute("errorMessage", "Password salah, silakan coba lagi");
+            return "login"; // Redirect jika password salah
         }
 
-        // Login berhasil
+        // Jika login berhasil, arahkan ke dashboard
         return "redirect:/dashboard";
     }
 }
