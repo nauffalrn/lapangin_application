@@ -3,13 +3,15 @@ package com.lapangin.web.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
+
 import com.lapangin.web.model.Customer;
 import com.lapangin.web.repository.CustomerRepository;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.server.ResponseStatusException;
+
+import jakarta.transaction.Transactional;
 
 @Service
 public class CustomerService {
@@ -32,12 +34,19 @@ public class CustomerService {
         String username = customer.getUsername();
         if (findByUsername(username) != null) {
             logger.warn("Username '{}' already taken", username);
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username already taken"); // Menggunakan ResponseStatusException
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username already taken");
+        }
+
+        // Validasi kecocokan password dan confirmPassword
+        if (!customer.getPassword().equals(customer.getConfirmPassword())) {
+            logger.warn("Password dan konfirmasi password tidak cocok untuk username '{}'", username);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Password dan konfirmasi password tidak cocok");
         }
 
         customer.setPassword(passwordEncoder.encode(customer.getPassword()));
+        logger.debug("Saving customer to repository");
         customerRepository.save(customer);
-        logger.info("Customer registered successfully: {}", customer.getUsername());
+        logger.info("Customer saved to database: {}", customer.getUsername());
     }
 
     public Customer findByUsername(String username) {

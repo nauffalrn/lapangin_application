@@ -103,29 +103,45 @@
 
 <section class="home">
     <section class="container2 forms">
-        <div class="form registration" id="registration-form">
+        <div class="form registration">
             <div class="form-content">
                 <h1 class="head">Signup</h1>
-                <form method="post" th:action="@{/register}" th:object="${customer}">
+                <!-- Revisi ID di sini -->
+                <form method="post" th:action="@{/register}" th:object="${customer}" id="registration-form">
                     <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
+                    
                     <div class="field input-field">
                         <input type="text" th:field="*{username}" placeholder="Username" class="input" required />
+                        <div th:if="${#fields.hasErrors('username')}" th:errors="*{username}" class="error"></div>
                     </div>
+                    
                     <div class="field input-field">
                         <input type="email" th:field="*{email}" placeholder="Email" class="input" required />
+                        <div th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="error"></div>
                     </div>
+                    
                     <div class="field input-field">
                         <input type="text" th:field="*{phoneNumber}" placeholder="Phone Number" class="input" required />
+                        <div th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{phoneNumber}" class="error"></div>
                     </div>
+                    
                     <div class="field input-field">
                         <input type="password" th:field="*{password}" placeholder="Create password" class="password" required />
+                        <div th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="error"></div>
                     </div>
+                    
                     <div class="field input-field">
                         <input type="password" th:field="*{confirmPassword}" placeholder="Confirm password" class="password" required />
+                        <div th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}" class="error"></div>
                         <i class="bx bx-hide eye-icon"></i>
                     </div>
+                    
                     <div class="field button-field">
                         <button type="submit">Signup</button>
+                    </div>
+
+                    <div th:if="${registrationError}" class="error-message">
+                        <p th:text="${registrationError}"></p>
                     </div>
 
                     <div th:if="${errorMessage}" class="error-message">

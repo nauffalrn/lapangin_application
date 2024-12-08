@@ -4,30 +4,32 @@ import jakarta.persistence.*;
 import java.util.Date;
 
 @Entity
-@Table(name = "review") // Sesuaikan dengan nama tabel di database Anda
+@Table(name = "review")
 public class Review {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int reviewID; // ID review sebagai kunci utama
+    @Column(name = "review_id") // Sesuaikan dengan nama kolom di database
+    private int reviewID;
 
     @ManyToOne
-    @JoinColumn(name = "lapangan_id", nullable = false)
-    private Lapangan lapangan; // Relasi ke Lapangan
+    @JoinColumn(name = "lapangan_id", nullable = false) // Sesuaikan dengan nama kolom di database
+    private Lapangan lapangan;
 
     @ManyToOne
-    @JoinColumn(name = "pesananID", nullable = false)
-    private Pesanan pesanan; // Relasi ke Pesanan
+    @JoinColumn(name = "pesanan_id", nullable = false) // Perbaiki nama kolom
+    private Pesanan pesanan;
 
     @Column(nullable = false)
-    private int rating; // Nilai rating
+    private int rating;
 
     @Column
-    private String komentar; // Komentar dari pengguna
+    private String komentar;
 
     @Temporal(TemporalType.DATE)
-    @Column(name = "tanggal_review", nullable = false)
-    private Date tanggalReview; // Tanggal review
+    @Column(name = "tanggal_review", nullable = false) // Sesuaikan dengan nama kolom di database
+    private Date tanggalReview;
+
 
     // Getter dan Setter untuk ReviewID
     public int getReviewID() {

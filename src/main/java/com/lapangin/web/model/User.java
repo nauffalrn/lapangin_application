@@ -1,10 +1,19 @@
 package com.lapangin.web.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotEmpty;
 
 @Entity
-@Inheritance(strategy = InheritanceType.JOINED) // Pilih strategi sesuai kebutuhan anda: JOINED, SINGLE_TABLE, atau TABLE_PER_CLASS
+@Inheritance(strategy = InheritanceType.JOINED)
 public abstract class User {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -15,10 +24,12 @@ public abstract class User {
     @Column(nullable = false)
     private String password;
 
-    @Column(unique = true)
+    @NotEmpty(message = "Email is required")
+    @Email(message = "Invalid email format")
+    @Column(nullable = false, unique = true)
     private String email;
 
-    // Getter & Setter
+    // Getter & Setter untuk id
     public Long getId() {
         return id;
     }
@@ -27,6 +38,7 @@ public abstract class User {
         this.id = id;
     }
 
+    // Getter & Setter untuk username
     public String getUsername() {
         return username;
     }
@@ -35,6 +47,7 @@ public abstract class User {
         this.username = username;
     }
 
+    // Getter & Setter untuk password
     public String getPassword() {
         return password;
     }
@@ -43,6 +56,7 @@ public abstract class User {
         this.password = password;
     }
 
+    // Getter & Setter untuk email
     public String getEmail() {
         return email;
     }
