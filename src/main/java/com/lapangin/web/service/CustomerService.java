@@ -2,7 +2,6 @@ package com.lapangin.web.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -17,11 +16,9 @@ import jakarta.transaction.Transactional;
 public class CustomerService {
 
     private static final Logger logger = LoggerFactory.getLogger(CustomerService.class);
-
     private final CustomerRepository customerRepository;
     private final PasswordEncoder passwordEncoder;
 
-    @Autowired
     public CustomerService(CustomerRepository customerRepository, PasswordEncoder passwordEncoder) {
         this.customerRepository = customerRepository;
         this.passwordEncoder = passwordEncoder;
@@ -50,19 +47,7 @@ public class CustomerService {
     }
 
     public Customer findByUsername(String username) {
-        return customerRepository.findByUsername(username);
-    }
-
-    public boolean validatePassword(Customer customer, String password) {
-        if (customer == null) {
-            logger.warn("Customer object is null");
-            return false;
-        }
-
-        boolean isPasswordValid = passwordEncoder.matches(password, customer.getPassword());
-        if (!isPasswordValid) {
-            logger.warn("Invalid password for username '{}'", customer.getUsername());
-        }
-        return isPasswordValid;
+        Customer customer = customerRepository.findByUsername(username);
+        return customer != null ? customer : null;
     }
 }

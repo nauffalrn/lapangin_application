@@ -15,17 +15,17 @@ pwShowHide.forEach((eyeIcon) => {
 
 // Validasi login
 document.getElementById("login-form").addEventListener("submit", (e) => {
-  e.preventDefault(); // Mencegah form dikirim langsung
-  const username = document.getElementById("login-username").value.trim();
-  const password = document.getElementById("login-password").value.trim();
+  const username = e.target.username.value.trim();
+  const password = e.target.password.value.trim();
 
   // Cek apakah username dan password kosong
   if (!username || !password) {
     alert("Username dan password harus diisi!");
+    e.preventDefault(); // Mencegah pengiriman formulir
     return;
   }
 
-  e.target.submit(); // Mengirim formulir login untuk diproses oleh server
+  // Jika validasi lulus, biarkan formulir dikirim
 });
 
 // Validasi signup
@@ -63,6 +63,6 @@ document.getElementById("registration-form").addEventListener("submit", (e) => {
     return;
   }
 
-  // Mengirim form signup setelah validasi
-  e.target.submit(); // Mengirim formulir signup untuk diproses oleh server
+  // Jika semua validasi lulus, kirim formulir
+  e.target.submit();
 });

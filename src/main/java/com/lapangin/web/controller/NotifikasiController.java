@@ -1,18 +1,25 @@
 package com.lapangin.web.controller;
 
+import java.util.List;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.lapangin.web.model.Notifikasi;
 import com.lapangin.web.service.NotifikasiService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/notifikasi")
 public class NotifikasiController {
 
-    @Autowired
-    private NotifikasiService notifikasiService;
+    private final NotifikasiService notifikasiService;
+
+    public NotifikasiController(NotifikasiService notifikasiService) {
+        this.notifikasiService = notifikasiService;
+    }
 
     @PostMapping("/send")
     public Notifikasi sendNotification(@RequestBody Notifikasi notifikasi) {

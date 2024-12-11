@@ -1,7 +1,15 @@
 package com.lapangin.web.model;
 
-import jakarta.persistence.*;
 import java.time.LocalDateTime;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "booking")
@@ -14,8 +22,9 @@ public class Booking {
     @Column(nullable = false)
     private String username;
 
-    @Column(name = "venue_id", nullable = false)
-    private Long venueId;
+    @ManyToOne
+    @JoinColumn(name = "lapangan_id", nullable = false)
+    private Lapangan lapangan;
 
     @Column(name = "booking_date", nullable = false)
     private LocalDateTime bookingDate;
@@ -43,12 +52,12 @@ public class Booking {
         this.username = username;
     }
 
-    public Long getVenueId() {
-        return venueId;
+    public Lapangan getLapangan() {
+        return lapangan;
     }
 
-    public void setVenueId(Long venueId) {
-        this.venueId = venueId;
+    public void setLapangan(Lapangan lapangan) {
+        this.lapangan = lapangan;
     }
 
     public LocalDateTime getBookingDate() {

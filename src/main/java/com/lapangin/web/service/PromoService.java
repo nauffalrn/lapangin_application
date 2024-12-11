@@ -1,18 +1,21 @@
 package com.lapangin.web.service;
 
-import com.lapangin.web.model.Promo;
-import com.lapangin.web.repository.PromoRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import java.time.LocalDate;
 import java.util.List;
+
+import org.springframework.stereotype.Service;
+
+import com.lapangin.web.model.Promo;
+import com.lapangin.web.repository.PromoRepository;
 
 @Service
 public class PromoService {
 
-    @Autowired
-    private PromoRepository promoRepository;
+    private final PromoRepository promoRepository;
+
+    public PromoService(PromoRepository promoRepository) {
+        this.promoRepository = promoRepository;
+    }
 
     /**
      * Mengambil semua promo yang aktif di antara tanggal tertentu.

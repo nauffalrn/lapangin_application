@@ -1,44 +1,104 @@
 package com.lapangin.web.model;
-
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "lapangan") // Sesuaikan dengan nama tabel di database Anda
+@Table(name = "lapangan")
 public class Lapangan {
 
     @Id
-    private Long ID; // ID lapangan sebagai kunci utama
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    @Column(name = "name", nullable = false)
-    private String name; // Nama lapangan
+    @Column(name = "nama_lapangan", nullable = false)
+    private String namaLapangan;
 
-    @Column(name = "harga_per_jam", nullable = false)
-    private double hargaPerJam; // Harga sewa per jam
+    @Column(name = "city", nullable = false)
+    private String city;
 
-    // Getter dan Setter untuk ID
+    @Column(name = "image")
+    private String image;
+
+    @Column(name = "price", nullable = false)
+    private double price;
+
+    @Column(name = "rating")
+    private double rating = 0.0;
+
+    @Column(name = "reviews")
+    private int reviews = 0;
+
+    @Column(name = "cabang_olahraga", nullable = false)
+    private String cabangOlahraga;
+
+
+    // Getters and Setters
+
     public Long getId() {
-        return ID;
+        return id;
     }
 
-    public void setId(Long ID) {
-        this.ID = ID;
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    // Getter dan Setter untuk name
-    public String getName() {
-        return name;
+    public String getNamaLapangan() {
+        return namaLapangan;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setNamaLapangan(String namaLapangan) {
+        this.namaLapangan = namaLapangan;
     }
 
-    // Getter dan Setter untuk hargaPerJam
-    public double getHargaPerJam() {
-        return hargaPerJam;
+    public String getCity() {
+        return city;
     }
 
-    public void setHargaPerJam(double hargaPerJam) {
-        this.hargaPerJam = hargaPerJam;
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
+    public double getRating() {
+        return rating;
+    }
+
+    public void setRating(double rating) {
+        this.rating = rating;
+    }
+
+    public int getReviews() {
+        return reviews;
+    }
+
+    public void setReviews(int reviews) {
+        this.reviews = reviews;
+    }
+
+    public String getCabangOlahraga() {
+        return cabangOlahraga;
+    }
+
+    public void setCabangOlahraga(String cabangOlahraga) {
+        this.cabangOlahraga = cabangOlahraga;
     }
 }

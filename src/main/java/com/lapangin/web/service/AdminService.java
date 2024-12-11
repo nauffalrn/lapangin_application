@@ -1,20 +1,21 @@
 package com.lapangin.web.service;
 
-import com.lapangin.web.model.Admin;
-import com.lapangin.web.repository.AdminRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import com.lapangin.web.model.Admin;
+import com.lapangin.web.repository.AdminRepository;
 
 @Service
 public class AdminService {
 
-    @Autowired
-    private AdminRepository adminRepository;
+    private final AdminRepository adminRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    public AdminService(AdminRepository adminRepository, PasswordEncoder passwordEncoder) {
+        this.adminRepository = adminRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     // Menyimpan data admin baru dengan validasi username
     public Admin register(Admin admin) {

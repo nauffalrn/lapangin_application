@@ -4,11 +4,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const olahragaSelect = document.querySelector('select:nth-of-type(2)');
     const cariButton = document.querySelector('.filter-container button:last-of-type'); // Tombol "Cari venue"
     const venues = document.querySelectorAll('.pro');
+    const noResults = document.getElementById("no-results");
 
     function filterVenues() {
         const searchText = searchInput.value.toLowerCase();
         const selectedKota = kotaSelect.value.toLowerCase();
         const selectedOlahraga = olahragaSelect.value.toLowerCase();
+        let hasVisible = false;
 
         venues.forEach(venue => {
             const nama = venue.dataset.nama.toLowerCase();
@@ -17,14 +19,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if (
                 (nama.includes(searchText) || searchText === "") &&
-                (kota === selectedKota || selectedKota === "pilih kota") &&
+                (kota === selectedKota || selectedKota === "pilih daerah") &&
                 (olahraga === selectedOlahraga || selectedOlahraga === "pilih cabang olahraga")
             ) {
                 venue.style.display = "block"; // Tampilkan elemen
+                hasVisible = true;
             } else {
                 venue.style.display = "none"; // Sembunyikan elemen
             }
         });
+
+        if (hasVisible) {
+            noResults.style.display = "none";
+        } else {
+            noResults.style.display = "block";
+        }
     }
 
     // Event listener hanya untuk tombol "Cari venue"

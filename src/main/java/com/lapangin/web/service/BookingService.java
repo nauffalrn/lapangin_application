@@ -1,17 +1,20 @@
 package com.lapangin.web.service;
 
-import com.lapangin.web.model.Booking;
-import com.lapangin.web.repository.BookingRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.Optional;
+
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
+import com.lapangin.web.model.Booking;
+import com.lapangin.web.repository.BookingRepository;
 
 @Service
 public class BookingService {
 
-    @Autowired
-    private BookingRepository bookingRepository;
+    private final BookingRepository bookingRepository;
+
+    public BookingService(BookingRepository bookingRepository) {
+        this.bookingRepository = bookingRepository;
+    }
 
     public Booking getBookingById(Long id) {
         Optional<Booking> booking = bookingRepository.findById(id);

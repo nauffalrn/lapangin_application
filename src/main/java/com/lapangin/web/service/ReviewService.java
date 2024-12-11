@@ -1,17 +1,20 @@
 package com.lapangin.web.service;
 
-import com.lapangin.web.model.Review;
-import com.lapangin.web.repository.ReviewRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import com.lapangin.web.model.Review;
+import com.lapangin.web.repository.ReviewRepository;
 
 @Service
 public class ReviewService {
 
-    @Autowired
-    private ReviewRepository reviewRepository;
+    private final ReviewRepository reviewRepository;
+
+    public ReviewService(ReviewRepository reviewRepository) {
+        this.reviewRepository = reviewRepository;
+    }
 
     public Review addReview(Review review) {
         return reviewRepository.save(review);
@@ -21,4 +24,3 @@ public class ReviewService {
         return reviewRepository.findByLapanganId(lapanganID);
     }
 }
-

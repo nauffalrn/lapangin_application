@@ -2,7 +2,6 @@ package com.lapangin.web.controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -21,9 +20,11 @@ import jakarta.validation.Valid;
 public class RegisterController {
 
     private static final Logger logger = LoggerFactory.getLogger(RegisterController.class);
+    private final CustomerService customerService;
 
-    @Autowired
-    private CustomerService customerService;
+    public RegisterController(CustomerService customerService) {
+        this.customerService = customerService;
+    }
 
     @GetMapping("/register")
     public String showCustomerRegistrationForm(Model model) {

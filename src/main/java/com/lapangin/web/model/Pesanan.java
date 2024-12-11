@@ -1,7 +1,15 @@
 package com.lapangin.web.model;
 
-import jakarta.persistence.*;
 import java.time.LocalDateTime;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "pesanan") // Sesuaikan dengan nama tabel di database Anda
@@ -87,5 +95,25 @@ public class Pesanan {
 
     public void setJamSelesai(int jamSelesai) {
         this.jamSelesai = jamSelesai;
+    }
+
+    /**
+     * Mengembalikan waktu mulai sebagai LocalDateTime.
+     */
+    public LocalDateTime getWaktuMulai() {
+        if (bookingDate == null) {
+            return null;
+        }
+        return bookingDate.withHour(jamMulai).withMinute(0).withSecond(0).withNano(0);
+    }
+
+    /**
+     * Mengembalikan waktu selesai sebagai LocalDateTime.
+     */
+    public LocalDateTime getWaktuSelesai() {
+        if (bookingDate == null) {
+            return null;
+        }
+        return bookingDate.withHour(jamSelesai).withMinute(0).withSecond(0).withNano(0);
     }
 }

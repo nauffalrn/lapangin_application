@@ -1,17 +1,20 @@
 package com.lapangin.web.service;
 
-import com.lapangin.web.model.Notifikasi;
-import com.lapangin.web.repository.NotifikasiRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import com.lapangin.web.model.Notifikasi;
+import com.lapangin.web.repository.NotifikasiRepository;
 
 @Service
 public class NotifikasiService {
 
-    @Autowired
-    private NotifikasiRepository notifikasiRepository;
+    private final NotifikasiRepository notifikasiRepository;
+
+    public NotifikasiService(NotifikasiRepository notifikasiRepository) {
+        this.notifikasiRepository = notifikasiRepository;
+    }
 
     public Notifikasi sendNotification(Notifikasi notifikasi) {
         notifikasi.setStatusTerkirim(true);

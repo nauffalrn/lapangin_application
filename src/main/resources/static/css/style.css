@@ -1,1119 +1,1251 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap");
 
-*{
-    font-family: 'Poppins', sans-serif;
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+* {
+  font-family: "Poppins", sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-body{
-    min-height: 100vh;
-    background: linear-gradient(#F1FAFF, #CBE4FF);
+body {
+  min-height: 100vh;
+  background: linear-gradient(#f1faff, #cbe4ff);
 }
 
 .sidebar {
-    width: 270px; 
-    position: fixed; 
-    top: 0; 
-    left: 0; 
-    height: 100vh; 
-    background: #151A2D;
-    z-index: 1000; 
-    transition: 0.4s ease; 
+  width: 270px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  background: #151a2d;
+  z-index: 1000;
+  transition: 0.4s ease;
 }
 
 .sidebar.collapsed {
-    width: 85px;
+  width: 85px;
 }
 
-.sidebar-header{
-    position: relative;
-    display: flex;
-    padding: 25px 20;
-    margin-bottom: 35px;
-    align-items: center;
-    justify-content: space-between;
+.sidebar-header {
+  position: relative;
+  display: flex;
+  padding: 25px 20;
+  margin-bottom: 35px;
+  align-items: center;
+  justify-content: space-between;
 }
 
-.sidebar-header .header-logo img{
-    margin-left: 20px;
-    margin-top: 20px;
-    width: 46px;
-    height: 46px;
-    display: flex;
-    align-items: center;
-    justify-content:center ;
-    border-radius: 50%;
+.sidebar-header .header-logo img {
+  margin-left: 20px;
+  margin-top: 20px;
+  width: 46px;
+  height: 46px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
 }
 
-
-
-.sidebar-header .toggler{
-    position: absolute;
-    right: 20px;
-    height: 35px;
-    width: 35px;
-    border: none;
-    color: #151A2D;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    border-radius: 8px;
-    background: #fff;
-    transition: 0.4s ease;
+.sidebar-header .toggler {
+  position: absolute;
+  right: 20px;
+  height: 35px;
+  width: 35px;
+  border: none;
+  color: #151a2d;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-radius: 8px;
+  background: #fff;
+  transition: 0.4s ease;
 }
 
-.sidebar.collapsed .sidebar-header .toggler{
-    transform: translate(-4px, 65px);
+.sidebar.collapsed .sidebar-header .toggler {
+  transform: translate(-4px, 65px);
 }
 
-.sidebar-header .toggler:hover{
-    background: #dde4fb;
+.sidebar-header .toggler:hover {
+  background: #dde4fb;
 }
 
-.sidebar-header .toggler span{
-    font-size: 1.75rem;
+.sidebar-header .toggler span {
+  font-size: 1.75rem;
 }
 
 .sidebar.collapsed .sidebar-header .toggler span {
-    transform: rotate(180deg);
+  transform: rotate(180deg);
 }
 
-.sidebar-nav .nav-list{
-    list-style: none;
-    display: flex;
-    gap: 4px;
-    padding: 0 15px;
-    flex-direction: column;
-    transform: translateY(15px);
-    transition: 0.4s ease;
+.sidebar-nav .nav-list {
+  list-style: none;
+  display: flex;
+  gap: 4px;
+  padding: 0 15px;
+  flex-direction: column;
+  transform: translateY(15px);
+  transition: 0.4s ease;
 }
 
-.sidebar.collapsed .sidebar-nav .primary-nav{
-    transform: translateY(65px);
+.sidebar.collapsed .sidebar-nav .primary-nav {
+  transform: translateY(65px);
 }
 
-.sidebar-nav .nav-link{
-    color: #fff;
-    display: flex;
-    gap: 12px;
-    white-space: nowrap;
-    border-radius: 8px;
-    align-items: center;
-    padding: 12px 15px;
-    text-decoration: none;
-    transition: 0.4s ease;
+.sidebar-nav .nav-link {
+  color: #fff;
+  display: flex;
+  gap: 12px;
+  white-space: nowrap;
+  border-radius: 8px;
+  align-items: center;
+  padding: 12px 15px;
+  text-decoration: none;
+  transition: 0.4s ease;
 }
 
 .sidebar-nav .nav-link:hover {
-    color: #151A2D;
-    background: #fff;
+  color: #151a2d;
+  background: #fff;
 }
 
-.sidebar-nav .nav-link .nav-label{
-    transition: opacity 0.4s ease;
+.sidebar-nav .nav-link .nav-label {
+  transition: opacity 0.4s ease;
 }
 
-
-.sidebar.collapsed .sidebar-nav .nav-link .nav-label{
-    opacity: 0;
-    pointer-events: none;
+.sidebar.collapsed .sidebar-nav .nav-link .nav-label {
+  opacity: 0;
+  pointer-events: none;
 }
 
-.sidebar-nav .nav-item{
-    position: relative;
+.sidebar-nav .nav-item {
+  position: relative;
 }
 
-.sidebar-nav .nav-tooltip{
-    position: absolute;
-    top: -10px;
-    opacity: 0;
-    display: none;
-    pointer-events: none;
-    left: calc(100% + 25px);
-    color: #151A2D;
-    padding: 6px 12px;
-    border-radius: 8px;
-    background: #fff;
-    white-space: nowrap;
-    box-shadow: 0 5px 10px rgba(0, 0, 0, 1);
-    transition: 0s;
+.sidebar-nav .nav-tooltip {
+  position: absolute;
+  top: -10px;
+  opacity: 0;
+  display: none;
+  pointer-events: none;
+  left: calc(100% + 25px);
+  color: #151a2d;
+  padding: 6px 12px;
+  border-radius: 8px;
+  background: #fff;
+  white-space: nowrap;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 1);
+  transition: 0s;
 }
 
 .sidebar.collapsed .sidebar-nav .nav-tooltip {
-    display: block;
+  display: block;
 }
 
-.sidebar-nav .nav-item:hover .nav-tooltip{
-    opacity: 1;
-    pointer-events: auto;
-    transform: translateY(50%);
-    transition: 0.4s ease;
+.sidebar-nav .nav-item:hover .nav-tooltip {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(50%);
+  transition: 0.4s ease;
 }
 
-.sidebar-nav .secondary-nav{
-    position: absolute;
-    bottom: 30px;
-    width: 100%;
+.sidebar-nav .secondary-nav {
+  position: absolute;
+  bottom: 30px;
+  width: 100%;
 }
 
 /* darkmode */
 .toggle-dark-mode {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 10px;
-    border-radius: 8px;
-    transition: background 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+  border-radius: 8px;
+  transition: background 0.3s ease;
 }
 
 .sidebar.collapsed .toggle-dark-mode {
-    flex-direction: column; /* Stack the label and switch vertically */
-    gap: 10px;
-    padding: 8px;
-    justify-content: center;
+  flex-direction: column; /* Stack the label and switch vertically */
+  gap: 10px;
+  padding: 8px;
+  justify-content: center;
 }
 
 .toggle-dark-mode:hover {
-    background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.2);
 }
 
 /* Toggle Switch Styling */
 .toggle-switch {
-    position: relative;
-    width: 50px;
-    height: 25px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  position: relative;
+  width: 50px;
+  height: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .toggle-switch input {
-    display: none;
+  display: none;
 }
 
 .toggle-switch .slider {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    background: #ccc;
-    border-radius: 25px;
-    transition: background 0.3s ease;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: #ccc;
+  border-radius: 25px;
+  transition: background 0.3s ease;
 }
 
 .toggle-switch input:checked + .slider {
-    background: #4CAF50;
+  background: #4caf50;
 }
 
 .toggle-switch .slider::before {
-    content: "";
-    position: absolute;
-    top: 3px;
-    left: 3px;
-    width: 19px;
-    height: 19px;
-    background: #fff;
-    border-radius: 50%;
-    transition: transform 0.3s ease;
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 19px;
+  height: 19px;
+  background: #fff;
+  border-radius: 50%;
+  transition: transform 0.3s ease;
 }
 
 .toggle-switch input:checked + .slider::before {
-    transform: translateX(25px);
+  transform: translateX(25px);
 }
 
 /* Label Styling */
 .dark-mode-label {
-    font-size: 14px;
-    color: #fff;
-    transition: opacity 0.3s ease;
+  font-size: 14px;
+  color: #fff;
+  transition: opacity 0.3s ease;
 }
 
 .sidebar.collapsed .dark-mode-label {
-    display: none; /* Hide the label when sidebar is collapsed */
+  display: none; /* Hide the label when sidebar is collapsed */
 }
 
 /* Body styles for dark mode */
 body.dark-mode {
-    background: #121212;
-    color: #ffffff;
+  background: #121212;
+  color: #ffffff;
 }
 
 body.dark-mode .toggle-dark-mode {
-    background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.1);
 }
 
 .sidebar.collapsed .toggle-dark-mode .slider {
-    background: #666;
+  background: #666;
 }
 
 body.dark-mode .sidebar.collapsed .toggle-dark-mode .slider {
-    background: #333;
+  background: #333;
 }
-
 
 /* logo */
-.logo-section{
-    width: 100%;
-    height: 30vh;
-    background-color: #707070;
-    flex-direction: column; 
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
+.logo-section {
+  width: 100%;
+  height: 30vh;
+  background-color: #228b22;
+  flex-direction: column;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.logo-section h2{
-    font-size: 2.5rem;
-    color: #FFFFFF; 
-    margin-bottom: 10px; 
+.logo-section h2 {
+  font-size: 2.5rem;
+  color: #ffffff;
+  margin-bottom: 10px;
 }
 
 .logo-section p {
-    font-size: 1.2rem;
-    color: #FFFFFF;
-    margin-bottom: 20px;
+  font-size: 1.2rem;
+  color: #ffffff;
+  margin-bottom: 20px;
 }
 
-.logo-section .fa-solid{
-    font-size: 6rem;
-    color: #2CF3DB;
+.logo-section .fa-solid {
+  font-size: 6rem;
+  color: #2cf3db;
 }
 
-#btn-3{
-    width: 200px;
-    height: 50px;
-    outline: none;
-    border: none;
-    background: #2CF3DB;
-    font-size: 15px;
-    font-weight: bold;
-    border-radius: 20px;
-    text-align: center;
+#btn-3 {
+  width: 200px;
+  height: 50px;
+  outline: none;
+  border: none;
+  background: #2cf3db;
+  font-size: 15px;
+  font-weight: bold;
+  border-radius: 20px;
+  text-align: center;
 }
 
-#btn-3:hover{
-    background:rgba(118, 32, 32, 0.06);
+#btn-3:hover {
+  background: rgba(118, 32, 32, 0.06);
 }
 
 .filter-container {
-    display: flex;
-    gap: 15px; 
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-    background-color: #f5f7fb; 
-    border-radius: 10px;
-    width: fit-content; 
-    margin: 25px auto; 
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background-color: #f5f7fb;
+  border-radius: 10px;
+  width: fit-content;
+  margin: 25px auto;
 }
 
-.filter-container div, 
-.filter-container select, 
+.filter-container div,
+.filter-container select,
 .filter-container button {
-    display: flex;
-    align-items: center;
-    background-color: #ffffff; 
-    border: 1px solid #ddd; 
-    border-radius: 10px;
-    padding: 10px 15px;
-    font-size: 1rem;
-    color: #666666;
-    cursor: pointer;
+  display: flex;
+  align-items: center;
+  background-color: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 10px 15px;
+  font-size: 1rem;
+  color: #666666;
+  cursor: pointer;
 }
 
 .filter-container div input {
-    border: none;
-    outline: none;
-    background: none;
-    width: 150px; 
-    font-size: 0.95rem;
-    color: #666666;
+  border: none;
+  outline: none;
+  background: none;
+  width: 150px;
+  font-size: 0.95rem;
+  color: #666666;
 }
 
 .filter-container div input::placeholder {
-    color: #999999; 
+  color: #999999;
 }
 
 .filter-container div .icon {
-    margin-right: 10px; 
-    font-size: 1.2rem;
-    color: #007bff; 
+  margin-right: 10px;
+  font-size: 1.2rem;
+  color: #007bff;
 }
 
 .filter-container button {
-    background-color: #a2001a; 
-    color: #ffffff; 
-    font-weight: bold;
-    border: none;
-    padding: 10px 20px;
-    transition: background-color 0.3s;
+  background-color: #a2001a;
+  color: #ffffff;
+  font-weight: bold;
+  border: none;
+  padding: 10px 20px;
+  transition: background-color 0.3s;
 }
 
 .filter-container button:hover {
-    background-color: #870017; 
+  background-color: #870017;
 }
 
 .filter-container .small-button {
-    background-color: #fcecec; 
-    border: none;
-    color: #a2001a;
-    font-weight: bold;
-    width: 40px; 
-    height: 40px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: 50%;
+  background-color: #fcecec;
+  border: none;
+  color: #a2001a;
+  font-weight: bold;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
 }
 
-.section-2{
-    width: 100%;
-    height: 100vh;
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
+.section-2 {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
 }
 
 .modal {
-    display: none; /* Defaultnya disembunyikan */
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    justify-content: center;
-    align-items: center;
+  display: none; /* Defaultnya disembunyikan */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  justify-content: center;
+  align-items: center;
 }
 
 .modal-content {
-    background: #fff;
-    padding: 20px;
-    border-radius: 10px;
-    width: 300px;
-    text-align: center;
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  width: 300px;
+  text-align: center;
 }
 
 .price-filter {
-    margin-bottom: 15px;
-    text-align: left;
+  margin-bottom: 15px;
+  text-align: left;
 }
 
 .price-filter label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: bold;
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
 }
 
 .price-filter input {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    font-size: 1rem;
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 1rem;
 }
 
 #apply-filter {
-    background-color: #a2001a;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    padding: 10px 20px;
-    font-size: 1rem;
-    cursor: pointer;
+  background-color: #a2001a;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  font-size: 1rem;
+  cursor: pointer;
 }
 
 #apply-filter:hover {
-    background-color: #870017;
+  background-color: #870017;
 }
 
 #product1 {
-    text-align: center;
-    margin: 20px auto;
+  text-align: center;
+  margin: 20px auto;
 }
 
 #product1 .pro-container {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap; 
-    gap: 20px; 
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 20px;
 }
 
-
 #product1 .pro {
-    width: 250px; 
-    border: 1px solid #e5e5e5;
-    border-radius: 12px;
-    overflow: hidden;
-    background: #fff;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    transition: 0.3s;
+  width: 250px;
+  border: 1px solid #e5e5e5;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: 0.3s;
 }
 
 #product1 .pro:hover {
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-    transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  transform: translateY(-5px);
 }
 
-
 .image-container {
-    position: relative;
-    width: 100%;
-    height: 150px;
-    overflow: hidden;
-    border-bottom: 1px solid #e5e5e5;
+  position: relative;
+  width: 100%;
+  height: 150px;
+  overflow: hidden;
+  border-bottom: 1px solid #e5e5e5;
 }
 
 .image-container img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover; 
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .location-overlay {
-    position: absolute;
-    bottom: 10px;
-    left: 10px;
-    background: rgba(0, 0, 0, 0.7); 
-    color: #fff;
-    padding: 5px 10px;
-    border-radius: 12px;
-    font-size: 12px;
-    display: flex;
-    align-items: center;
-    gap: 5px; 
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  background: rgba(0, 0, 0, 0.7);
+  color: #fff;
+  padding: 5px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
 }
 
-
-#product1 .pro .des {
-    padding: 15px;
-    text-align: left;
+.pro .des {
+  padding: 15px;
+  text-align: left;
 }
 
-#product1 .pro .des h5 {
-    font-size: 16px;
-    font-weight: bold;
-    color: #333;
-    margin-bottom: 5px;
+.pro .des h5 {
+  font-size: 16px;
+  font-weight: bold;
+  color: #333; /* Warna hitam tua */
+  margin-bottom: 5px;
 }
 
-#product1 .pro .des p {
-    font-size: 14px;
-    color: #999;
-    margin-bottom: 10px;
+.pro .des p {
+  font-size: 14px;
+  color: #000; /* Warna hitam */
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
 }
 
-#product1 .pro .des h4 {
-    font-size: 16px;
-    color: #15A927;
-    font-weight: bold;
+.pro .des h4 {
+  font-size: 16px;
+  color: #15a927; /* Warna hijau */
+  font-weight: bold;
 }
 
+/* Menghapus underline dan mewarisi warna dari parent pada link */
+.pro a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* Atur warna teks h5 dan p menjadi hitam tanpa underline */
+.pro a .des h5,
+.pro a .des p {
+  color: #000; /* Warna hitam */
+  text-decoration: none;
+}
+
+/* Atur warna harga menjadi hijau tanpa underline */
+.pro a .des h4 {
+  color: #15a927; /* Warna hijau */
+  text-decoration: none;
+}
+
+/* Pastikan bintang berada di sebelah kiri */
+.pro a .des p {
+  display: flex;
+  align-items: center;
+}
+
+.pro a .des .star {
+  margin-right: 5px; /* Jarak antara bintang dan teks */
+  color: #ffd700; /* Warna bintang kuning */
+}
 
 .image-container {
-    position: relative;
-    width: 100%;
-    height: 200px; 
-    overflow: hidden; 
-    border-radius: 10px;
+  position: relative;
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
+  border-radius: 10px;
 }
 
 .image-container img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover; 
-    border-radius: 10px;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 10px;
 }
 
-
 .location-overlay {
-    position: absolute;
-    bottom: 10px;
-    left: 10px;
-    background: rgba(0, 0, 0, 0.6); 
-    color: #fff;
-    font-size: 12px;
-    padding: 5px 10px;
-    border-radius: 15px;
-    display: flex;
-    align-items: center;
-    gap: 5px; 
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  font-size: 12px;
+  padding: 5px 10px;
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
 }
 
 .location-overlay i {
-    font-size: 12px;
-    color: #ff9800; 
+  font-size: 12px;
+  color: #ff9800;
 }
 
 .pro .like-btn {
-    position: absolute; /* Pastikan posisi absolut */
-    top: 15px; /* Jarak dari atas */
-    right: 15px; /* Jarak dari kanan */
-    font-size: 24px; /* Ukuran ikon */
-    color: #ff4d4d; /* Warna default */
-    cursor: pointer;
-    transition: transform 0.3s, color 0.3s; /* Efek transisi */
+  position: absolute; /* Pastikan posisi absolut */
+  top: 15px; /* Jarak dari atas */
+  right: 15px; /* Jarak dari kanan */
+  font-size: 24px; /* Ukuran ikon */
+  color: #ff4d4d; /* Warna default */
+  cursor: pointer;
+  transition: transform 0.3s, color 0.3s; /* Efek transisi */
 }
 
 .pro .like-btn:hover {
-    transform: scale(1.2); /* Membesar saat hover */
-    color: #ff0000; /* Warna berubah saat hover */
+  transform: scale(1.2); /* Membesar saat hover */
+  color: #ff0000; /* Warna berubah saat hover */
 }
 
 .pro .like-btn.active {
-    color: #e60023; /* Warna merah saat disukai */
+  color: #e60023; /* Warna merah saat disukai */
 }
 
 /* Jangan ubah struktur .location-overlay */
 .location-overlay {
-    position: absolute;
-    bottom: 10px;
-    left: 10px;
-    background: rgba(0, 0, 0, 0.6); 
-    color: #fff;
-    font-size: 12px;
-    padding: 5px 10px;
-    border-radius: 15px;
-    display: flex;
-    align-items: center;
-    gap: 5px;
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  font-size: 12px;
+  padding: 5px 10px;
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
 }
 
 .image-container {
-    position: relative;
-    width: 100%;
-    height: 200px; /* Ukuran gambar */
-    overflow: hidden;
+  position: relative;
+  width: 100%;
+  height: 200px; /* Ukuran gambar */
+  overflow: hidden;
 }
-
-
 
 /* Login / Daftar */
 
 .container2 {
-    height: 100vh;
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    column-gap: 30px;
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  column-gap: 30px;
 }
 
 .form {
-    position: absolute;
-    max-width: 430px;
-    width: 100%;
-    padding: 30px;
-    border-radius: 6px;
-    background: #FFF;
+  position: absolute;
+  max-width: 430px;
+  width: 100%;
+  padding: 30px;
+  border-radius: 6px;
+  background: #fff;
 }
 
 .form.signup {
-    margin: 50px;
-    opacity: 0;
-    pointer-events: none;
+  margin: 50px;
+  opacity: 0;
+  pointer-events: none;
 }
 
 .forms.show-signup .form.signup {
-    opacity: 1;
-    pointer-events: auto;
+  opacity: 1;
+  pointer-events: auto;
 }
 
 .forms.show-signup .form.login {
-    opacity: 0;
-    pointer-events: none;
+  opacity: 0;
+  pointer-events: none;
 }
 
-
 .head {
-    font-size: 28px;
-    font-weight: 600;
-    color: #232836;
-    text-align: center;
+  font-size: 28px;
+  font-weight: 600;
+  color: #232836;
+  text-align: center;
 }
 
 form {
-    margin-top: 30px;
+  margin-top: 30px;
 }
 
 .field {
-    position: relative;
-    height: 50px;
-    width: 100%;
-    margin-top: 20px;
-    border-radius: 6px;
+  position: relative;
+  height: 50px;
+  width: 100%;
+  margin-top: 20px;
+  border-radius: 6px;
 }
 
 .field input,
 .field button {
-    height: 100%;
-    width: 100%;
-    border: none;
-    font-size: 16px;
-    font-weight: 400;
-    border-radius: 6px;
+  height: 100%;
+  width: 100%;
+  border: none;
+  font-size: 16px;
+  font-weight: 400;
+  border-radius: 6px;
 }
 
 .field input {
-    outline: none;
-    padding: 0 15px;
-    border: 1px solid #CACACA;
+  outline: none;
+  padding: 0 15px;
+  border: 1px solid #cacaca;
 }
 
 .field input:focus {
-    border-bottom-width: 2px;
+  border-bottom-width: 2px;
 }
 
 .eye-icon {
-    position: absolute;
-    top: 50%;
-    right: 10px;
-    transform: translateY(-50%);
-    font-size: 18px;
-    color: #8b8b8b;
-    cursor: pointer;
-    padding: 5px;
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  font-size: 18px;
+  color: #8b8b8b;
+  cursor: pointer;
+  padding: 5px;
 }
 
-.field button{
-    color: #fff;
-    background-color: #0171d3;
-    transition: all 0.3s ease;
-    cursor: pointer;
+.field button {
+  color: #fff;
+  background-color: #0171d3;
+  transition: all 0.3s ease;
+  cursor: pointer;
 }
-.field button:hover{
-    background-color: #016dcb;
+.field button:hover {
+  background-color: #016dcb;
 }
-.form-link{
-    text-align: center;
-    margin-top: 10px;
+.form-link {
+  text-align: center;
+  margin-top: 10px;
 }
 .form-link span,
-.form-link a{
-    font-size: 14px;
-    font-weight: 400;
-    color: #232836;
+.form-link a {
+  font-size: 14px;
+  font-weight: 400;
+  color: #232836;
 }
-.form a{
-    color: #0171d3;
-    text-decoration: none;
+.form a {
+  color: #0171d3;
+  text-decoration: none;
 }
-.form-content a:hover{
-    text-decoration: underline;
+.form-content a:hover {
+  text-decoration: underline;
 }
-.line{
-    position: relative;
-    height: 1px;
-    width: 100%;
-    margin: 36px 0;
-    background-color: #d4d4d4;
+.line {
+  position: relative;
+  height: 1px;
+  width: 100%;
+  margin: 36px 0;
+  background-color: #d4d4d4;
 }
-.line::before{
-    content: 'Or';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: #FFF;
-    color: #8b8b8b;
-    padding: 0 15px;
+.line::before {
+  content: "Or";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #fff;
+  color: #8b8b8b;
+  padding: 0 15px;
 }
 
 .media-options {
-    display: flex;
-    gap: 15px; /* Jarak antar tombol */
-    justify-content: center;
-    margin-top: 20px; /* Jarak dari elemen atas */
+  display: flex;
+  gap: 15px; /* Jarak antar tombol */
+  justify-content: center;
+  margin-top: 20px; /* Jarak dari elemen atas */
 }
 
 .media-options a {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 60px; /* Lebar tombol */
-    height: 60px; /* Tinggi tombol */
-    border-radius: 12px; /* Sudut membulat */
-    background-color: #f9f9f9; /* Latar belakang tombol */
-    border: 1px solid #e0e0e0; /* Border tombol */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Efek bayangan */
-    transition: all 0.3s ease; /* Transisi saat hover */
-    text-decoration: none; /* Hilangkan garis bawah */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px; /* Lebar tombol */
+  height: 60px; /* Tinggi tombol */
+  border-radius: 12px; /* Sudut membulat */
+  background-color: #f9f9f9; /* Latar belakang tombol */
+  border: 1px solid #e0e0e0; /* Border tombol */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Efek bayangan */
+  transition: all 0.3s ease; /* Transisi saat hover */
+  text-decoration: none; /* Hilangkan garis bawah */
 }
 
-
 .media-options a i {
-    font-size: 26px; /* Ukuran ikon */
-    color: #6c63ff; /* Warna ikon default */
+  font-size: 26px; /* Ukuran ikon */
+  color: #6c63ff; /* Warna ikon default */
 }
 
 .media-options a.facebook {
-    background-color: #3b5998; /* Warna latar Facebook */
-    border: none;
+  background-color: #3b5998; /* Warna latar Facebook */
+  border: none;
 }
 
 .media-options a.facebook i {
-    color: #ffffff; /* Warna ikon Facebook */
+  color: #ffffff; /* Warna ikon Facebook */
 }
 
 .media-options a.google i {
-    color: #6c63ff; /* Warna ikon Google */
+  color: #6c63ff; /* Warna ikon Google */
 }
 
 .media-options a:hover {
-    transform: scale(1.1); /* Efek zoom saat hover */
-    background-color: #e0e0e0; /* Warna latar saat hover */
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Efek bayangan lebih kuat */
+  transform: scale(1.1); /* Efek zoom saat hover */
+  background-color: #e0e0e0; /* Warna latar saat hover */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Efek bayangan lebih kuat */
 }
 
 .media-options a.facebook:hover {
-    background-color: #334d84; /* Warna hover Facebook */
+  background-color: #334d84; /* Warna hover Facebook */
 }
 
 .media-options a.google:hover {
-    background-color: #f0f0f0; /* Warna hover Google */
+  background-color: #f0f0f0; /* Warna hover Google */
 }
 
 body.dark .form {
-    background-color: #242526; /* Warna latar belakang form */
-    color: #E4E6EB; /* Warna teks */
-    border-radius: 8px;
+  background-color: #242526; /* Warna latar belakang form */
+  color: #e4e6eb; /* Warna teks */
+  border-radius: 8px;
 }
 
 body.dark .head {
-    color: #FFF;
+  color: #fff;
 }
 
 body.dark .Account {
-    color: #FFF;
+  color: #fff;
 }
 
-body.dark .line{
-    background-color: #fff; /* Warna latar belakang form */
+body.dark .line {
+  background-color: #fff; /* Warna latar belakang form */
 }
 
 /* Input Field */
 body.dark .forms .field.input-field input {
-    background-color: #3A3B3C; /* Warna latar belakang input */
-    color: #E4E6EB; /* Warna teks input */
-    border: 1px solid #555; /* Warna border */
+  background-color: #3a3b3c; /* Warna latar belakang input */
+  color: #e4e6eb; /* Warna teks input */
+  border: 1px solid #555; /* Warna border */
 }
 
 /* Placeholder Input */
 body.dark .forms .field.input-field input::placeholder {
-    color: #8A8A8A; /* Warna placeholder */
+  color: #8a8a8a; /* Warna placeholder */
 }
 
 /* Button */
 body.dark .forms .field.button-field button {
-    background-color: #4CAF50; /* Warna tombol */
-    color: #FFF; /* Warna teks tombol */
+  background-color: #4caf50; /* Warna tombol */
+  color: #fff; /* Warna teks tombol */
 }
 
 /* Hover Button */
 body.dark .forms .field.button-field button:hover {
-    background-color: #45A049; /* Warna tombol saat hover */
+  background-color: #45a049; /* Warna tombol saat hover */
 }
 
 /* Link */
 body.dark .forms a {
-    color: #1DA1F2; /* Warna link */
+  color: #1da1f2; /* Warna link */
 }
 
 body.dark .forms a:hover {
-    color: #50B7F5; /* Warna link saat hover */
+  color: #50b7f5; /* Warna link saat hover */
 }
 
 /* Media Options */
 body.dark .forms .media-options a {
-    background-color: #3A3B3C; /* Warna tombol media */
-    color: #E4E6EB; /* Warna teks tombol media */
+  background-color: #3a3b3c; /* Warna tombol media */
+  color: #e4e6eb; /* Warna teks tombol media */
 }
 
 body.dark .forms .media-options a:hover {
-    background-color: #4A4B4C; /* Warna tombol media saat hover */
+  background-color: #4a4b4c; /* Warna tombol media saat hover */
 }
 
 /* notifikasi */
 .notification-container {
-    margin: auto; /* Pusatkan konten */
-    max-width: 600px;
-    padding: 20px;
-    background: #fff;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin: auto; /* Pusatkan konten */
+  max-width: 600px;
+  padding: 20px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .notification-container h1 {
-    text-align: center;
-    margin-bottom: 20px;
+  text-align: center;
+  margin-bottom: 20px;
 }
 .notification-item {
-    display: flex;
-    align-items: center;
-    background: #f9f9f9;
-    margin-bottom: 10px;
-    padding: 10px;
-    border-radius: 6px;
+  display: flex;
+  align-items: center;
+  background: #f9f9f9;
+  margin-bottom: 10px;
+  padding: 10px;
+  border-radius: 6px;
 }
 
 .notification-item .icon {
-    font-size: 24px;
-    margin-right: 15px;
+  font-size: 24px;
+  margin-right: 15px;
 }
 
 .notification-content h4 {
-    margin: 0;
-    font-size: 16px;
+  margin: 0;
+  font-size: 16px;
 }
 
 .notification-content p {
-    margin: 5px 0 0;
-    color: #555;
+  margin: 5px 0 0;
+  color: #555;
 }
 
 /* wallet */
 .wallet-container {
-    width: 100%;
-    max-width: 500px;
-    margin: 100px;
-    padding: 20px;
-    background-color: #ffffff;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 500px;
+  margin: 100px;
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 /* Header */
 .wallet-header {
-    font-size: 24px;
-    font-weight: bold;
-    color: #232836;
-    text-align: center;
-    margin-bottom: 20px;
+  font-size: 24px;
+  font-weight: bold;
+  color: #232836;
+  text-align: center;
+  margin-bottom: 20px;
 }
 
 /* Wallet Options */
 .wallet-options {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
 }
 
 /* Wallet Card */
 .wallet-card {
-    display: flex;
-    align-items: center;
-    padding: 15px;
-    border-radius: 8px;
-    background-color: #f1f3f5;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    transition: background-color 0.3s ease, transform 0.2s;
-    cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding: 15px;
+  border-radius: 8px;
+  background-color: #f1f3f5;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease, transform 0.2s;
+  cursor: pointer;
 }
 
 .wallet-card:hover {
-    background-color: #e8eef7;
-    transform: scale(1.02);
+  background-color: #e8eef7;
+  transform: scale(1.02);
 }
 
 /* Wallet Icon */
 .wallet-icon {
-    font-size: 40px;
-    color: #0171d3;
-    margin-right: 15px;
+  font-size: 40px;
+  color: #0171d3;
+  margin-right: 15px;
 }
 
 /* Wallet Info */
 .wallet-info h2 {
-    margin: 0;
-    font-size: 18px;
-    color: #232836;
+  margin: 0;
+  font-size: 18px;
+  color: #232836;
 }
 
 .wallet-info p {
-    margin: 5px 0 0 0;
-    font-size: 14px;
-    color: #555;
+  margin: 5px 0 0 0;
+  font-size: 14px;
+  color: #555;
 }
 
 /* Like */
 #liked-lapangan-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    justify-content: center;
-    margin-top: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  margin-top: 20px;
 }
 
-#liked-lapangan-container h1{
-    position: absolute;
-    bottom: 10px;
-    left: 10px;
-    background: rgba(0, 0, 0, 0.6); 
-    color: #fff;
-    font-size: 12px;
-    padding: 5px 10px;
-    border-radius: 15px;
-    display: flex;
-    align-items: center;
-    gap: 5px; 
+#liked-lapangan-container h1 {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  font-size: 12px;
+  padding: 5px 10px;
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
 }
 
 #liked-lapangan-container .pro {
-    width: 250px;
-    border: 1px solid #e5e5e5;
-    border-radius: 12px;
-    overflow: hidden;
-    background: #fff;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    transition: 0.3s;
+  width: 250px;
+  border: 1px solid #e5e5e5;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: 0.3s;
 }
 
 #liked-lapangan-container .pro:hover {
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-    transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  transform: translateY(-5px);
 }
 
 /* Kontainer gambar */
 #liked-lapangan-container .image-container {
-    position: relative;
-    width: 100%;
-    height: 150px;
-    overflow: hidden;
+  position: relative;
+  width: 100%;
+  height: 150px;
+  overflow: hidden;
 }
 
 #liked-lapangan-container .image-container img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 /* Tombol like */
 #liked-lapangan-container .like-btn {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    font-size: 24px;
-    color: #ff4d4d;
-    background-color: rgba(255, 255, 255, 0.8);
-    border-radius: 50%;
-    padding: 5px;
-    cursor: pointer;
-    transition: transform 0.3s, color 0.3s;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 24px;
+  color: #ff4d4d;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 50%;
+  padding: 5px;
+  cursor: pointer;
+  transition: transform 0.3s, color 0.3s;
 }
 
 #liked-lapangan-container .like-btn:hover {
-    transform: scale(1.2);
-    color: #e60023;
+  transform: scale(1.2);
+  color: #e60023;
 }
 
 #liked-lapangan-container .like-btn.active {
-    color: #e60023; /* Warna merah jika aktif */
+  color: #e60023; /* Warna merah jika aktif */
 }
 
 /* calender */
 .calendar-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    width: 80%;
-    max-width: 600px;
-    height: 80vh; /* Membuat container cukup tinggi agar kalender terpusat secara vertikal */
-    text-align: center;
-    padding: 20px;
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    margin: auto; /* Memastikan calendar-container berada di tengah */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 80%;
+  max-width: 600px;
+  height: 80vh; /* Membuat container cukup tinggi agar kalender terpusat secara vertikal */
+  text-align: center;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  margin: auto; /* Memastikan calendar-container berada di tengah */
 }
 
 .calendar {
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 h1 {
-    margin-bottom: 30px;
+  margin-bottom: 30px;
 }
 
 .calendar-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
 }
 
 button {
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    padding: 10px;
-    cursor: pointer;
-    border-radius: 4px;
-    transition: 0.3s;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: 0.3s;
 }
 
 button:hover {
-    background-color: #45a049;
+  background-color: #45a049;
 }
 
 #calendar-days {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 10px;
-    margin-top: 10px;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 10px;
+  margin-top: 10px;
 }
 
 #calendar-days div {
-    padding: 10px;
-    text-align: center;
-    background-color: #f0f0f0;
-    border-radius: 8px;
-    cursor: pointer;
+  padding: 10px;
+  text-align: center;
+  background-color: #f0f0f0;
+  border-radius: 8px;
+  cursor: pointer;
 }
 
 #calendar-days .day-header {
-    font-weight: bold;
-    background-color: #ddd;
+  font-weight: bold;
+  background-color: #ddd;
 }
 
 #current-time {
-    margin-top: 30px;
-    font-size: 16px;
-    font-weight: 600;
+  margin-top: 30px;
+  font-size: 16px;
+  font-weight: 600;
 }
 
 .video-background {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover; /* Agar video sesuai dengan proporsi layar */
-    z-index: -1; /* Letakkan di belakang konten lainnya */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Agar video sesuai dengan proporsi layar */
+  z-index: -1; /* Letakkan di belakang konten lainnya */
 }
 
 .contentvid {
-    position: relative;
-    z-index: 1; /* Konten tetap berada di atas video */
-    text-align: center;
-    color: #fff; /* Warna teks putih untuk kontras */
-    margin-top: 20%;
-    font-family: Arial, sans-serif;
+  position: relative;
+  z-index: 1; /* Konten tetap berada di atas video */
+  text-align: center;
+  color: #fff; /* Warna teks putih untuk kontras */
+  margin-top: 20%;
+  font-family: Arial, sans-serif;
 }
 
 .error-message {
-    color: red;
-    font-size: 14px;
-    font-weight: bold;
-    margin-top: 5px;
-    margin-bottom: 10px;
+  color: red;
+  font-size: 14px;
+  font-weight: bold;
+  margin-top: 5px;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.error {
+  color: red;
+}
+
+/* Dashboard Styles */
+
+.home {
+  padding: 20px;
+  background-color: #f9f9f9;
+}
+
+.home h1 {
+  text-align: center;
+  margin-bottom: 30px;
+  font-size: 32px;
+  color: #333;
+}
+
+.pro-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+}
+
+.pro {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 250px;
+  border: 1px solid #e5e5e5;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: 0.3s;
+}
+
+.pro:hover {
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  transform: translateY(-5px);
+}
+
+.image-container {
+  position: relative;
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
+  border-radius: 10px;
+}
+
+.image-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.location-overlay {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  font-size: 12px;
+  padding: 5px 10px;
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.location-overlay i {
+  font-size: 12px;
+  color: #ff9800;
+}
+
+/* Responsivitas */
+@media (max-width: 768px) {
+  .pro-container {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .pro {
+    width: 80%;
+  }
+}
+
+.pro .des {
+  padding: 15px;
+  text-align: left;
+}
+
+.pro .des h5 {
+  font-size: 16px;
+  font-weight: bold;
+  color: #333; /* Warna hitam tua */
+  margin-bottom: 5px;
+}
+
+.pro .des p {
+  font-size: 14px;
+  color: #000; /* Warna hitam */
+  margin-bottom: 10px;
+}
+
+.pro .des h4 {
+  font-size: 16px;
+  color: #15a927; /* Warna hijau */
+  font-weight: bold;
 }

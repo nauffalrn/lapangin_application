@@ -1,7 +1,17 @@
 package com.lapangin.web.model;
 
-import jakarta.persistence.*;
 import java.util.Date;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 
 @Entity
 @Table(name = "review")
@@ -9,15 +19,15 @@ public class Review {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "review_id") // Sesuaikan dengan nama kolom di database
+    @Column(name = "review_id")
     private int reviewID;
 
     @ManyToOne
-    @JoinColumn(name = "lapangan_id", nullable = false) // Sesuaikan dengan nama kolom di database
+    @JoinColumn(name = "lapangan_id", nullable = false)
     private Lapangan lapangan;
 
     @ManyToOne
-    @JoinColumn(name = "pesanan_id", nullable = false) // Perbaiki nama kolom
+    @JoinColumn(name = "pesanan_id", nullable = false)
     private Pesanan pesanan;
 
     @Column(nullable = false)
@@ -27,7 +37,7 @@ public class Review {
     private String komentar;
 
     @Temporal(TemporalType.DATE)
-    @Column(name = "tanggal_review", nullable = false) // Sesuaikan dengan nama kolom di database
+    @Column(name = "tanggal_review", nullable = false)
     private Date tanggalReview;
 
 
