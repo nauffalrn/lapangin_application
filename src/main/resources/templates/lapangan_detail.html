@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <title th:text="${lapangan.namaLapangan}">Detail Lapangan</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      integrity="sha512-p8RE1E7DAaLcvF6fWB3XFNq3nJ+rP/CYblxXmEr1Juh+ezf3E3+eFZwOPxprVxkK+8bte+ZeqlrG+NDgtOygCg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+  </head>
+  <body>
+    <header>
+      <div class="back-header">
+        <a th:href="@{/dashboard}" class="back-dashboard"> &larr; </a>
+        <span class="lapangan-title" th:text="${lapangan.namaLapangan}"
+          >Nama Lapangan</span
+        >
+      </div>
+    </header>
+
+    <div class="detail-container">
+      <div class="image-section">
+        <img
+          class="field-image"
+          th:src="@{/images/{lapangan.image}(lapangan.image=${lapangan.image})}"
+          th:alt="${lapangan.namaLapangan}"
+        />
+      </div>
+      <div class="info-section">
+        <p>
+          <span th:text="${lapangan.city}">Kota</span>
+        </p>
+        <p>
+          <span>Harga:</span>
+          <span th:text="'Rp ' + ${lapangan.price} + ' / jam'">Harga</span>
+        </p>
+        <p>
+          <span class="star">⭐</span>
+          <span th:text="${lapangan.rating}">Rating</span> (<span
+            th:text="${lapangan.reviews}"
+            >Reviews</span
+          >)
+        </p>
+        <a th:href="@{/booking/{id}(id=${lapangan.id})}" class="book-button"
+          >Booking</a
+        >
+      </div>
+    </div>
+
+    <!-- Scripts -->
+    <script th:src="@{/js/script.js}"></script>
+  </body>
+</html>

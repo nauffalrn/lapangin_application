@@ -33,8 +33,8 @@ public class WebSecurityConfig {
                 .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
             )
             .authorizeHttpRequests(authz -> authz
-                .requestMatchers("/", "/css/**", "/js/**", "/images/**", "/login", "/register").permitAll()
-                .requestMatchers("/dashboard").authenticated()
+                .requestMatchers("/", "/css/**", "/js/**", "/images/**", "/login", "/register", "/error").permitAll()
+                .requestMatchers("/dashboard", "/calendar", "/notifications", "/history", "/likes", "/wallet", "/settings").authenticated()
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form
@@ -45,7 +45,7 @@ public class WebSecurityConfig {
             )
             .logout(logout -> logout
                 .logoutUrl("/logout")
-                .logoutSuccessUrl("/")
+                .logoutSuccessUrl("/login")
                 .permitAll()
             )
             .userDetailsService(userService);
