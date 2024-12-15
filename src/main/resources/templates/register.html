@@ -38,6 +38,21 @@
               <div class="field input-field">
                 <input
                   type="text"
+                  th:field="*{name}"
+                  placeholder="name"
+                  class="input"
+                  required
+                />
+                <div
+                  th:if="${#fields.hasErrors('name')}"
+                  th:errors="*{name}"
+                  class="error"
+                ></div>
+              </div>
+
+              <div class="field input-field">
+                <input
+                  type="text"
                   th:field="*{username}"
                   placeholder="Username"
                   class="input"
@@ -129,13 +144,6 @@
                 <a th:href="@{/login}" class="link login-link">Login</a></span
               >
             </div>
-          </div>
-          <div class="line"></div>
-          <div class="media-options">
-            <a href="#" class="field facebook"
-              ><i class="bx bxl-facebook-circle"></i
-            ></a>
-            <a href="#" class="field google"><i class="bx bxl-google"></i></a>
           </div>
         </div>
       </section>

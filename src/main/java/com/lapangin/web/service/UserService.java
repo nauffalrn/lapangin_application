@@ -30,4 +30,10 @@ public class UserService implements UserDetailsService {
     public boolean isUsernameTaken(String username) {
         return userRepository.findByUsername(username).isPresent();
     }
+
+    // Tambahkan metode findByUsername
+    public User findByUsername(String username) {
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User tidak ditemukan: " + username));
+    }
 }

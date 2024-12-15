@@ -253,7 +253,7 @@ body.dark-mode .sidebar.collapsed .toggle-dark-mode .slider {
 .logo-section {
   width: 100%;
   height: 30vh;
-  background-color: #228b22;
+  background-color: #202626;
   flex-direction: column;
   display: flex;
   align-items: center;
@@ -960,7 +960,9 @@ body.dark .forms .media-options a:hover {
   color: #555;
 }
 
-/* calender */
+/* Gaya Kalender */
+
+/* Kontainer Kalender */
 .calendar-container {
   display: flex;
   justify-content: center;
@@ -968,26 +970,16 @@ body.dark .forms .media-options a:hover {
   flex-direction: column;
   width: 80%;
   max-width: 600px;
-  height: 80vh; /* Membuat container cukup tinggi agar kalender terpusat secara vertikal */
-  text-align: center;
+  height: auto; /* Disesuaikan untuk tinggi dinamis */
+  text-align: left; /* Rata kiri teks */
   padding: 20px;
   background-color: #fff;
   border-radius: 8px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  margin: auto; /* Memastikan calendar-container berada di tengah */
+  margin: 40px auto; /* Pusatkan kontainer dengan margin */
 }
 
-.calendar {
-  background-color: #fff;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-}
-
-h1 {
-  margin-bottom: 30px;
-}
-
+/* Header Kalender */
 .calendar-header {
   display: flex;
   justify-content: space-between;
@@ -995,8 +987,71 @@ h1 {
   margin-bottom: 20px;
 }
 
+.calendar-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  color: #000000; /* Warna teks hitam */
+}
+
+/* Spasi untuk Tombol */
+.calendar-header button {
+  margin: 0 20px; /* Tambahkan jarak kiri dan kanan */
+}
+
+/* Nama Hari */
+.calendar-weekdays {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.calendar-weekdays div {
+  flex: 1;
+  text-align: center;
+  font-weight: bold;
+  padding: 10px 0;
+  background-color: #ddd;
+  border-radius: 4px;
+}
+
+/* Hari-hari Kalender */
+.calendar-days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 10px;
+  width: 100%;
+}
+
+.calendar-days div {
+  padding: 10px;
+  text-align: center;
+  background-color: #f0f0f0;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+/* Hari Header */
+.calendar-days .day-header {
+  font-weight: bold;
+  background-color: #ddd;
+}
+
+/* Hari Ini */
+.calendar-days .today {
+  border: 2px solid #000000; /* Border hitam */
+  border-radius: 8px;
+}
+
+/* Hari Dipilih */
+.calendar-days .selected {
+  border: 2px solid #0000ff; /* Border biru */
+  border-radius: 8px;
+}
+
+/* Tombol */
 button {
-  background-color: #4caf50;
+  background-color: #000000; /* Warna tombol hitam */
   color: white;
   border: none;
   padding: 10px;
@@ -1006,52 +1061,24 @@ button {
 }
 
 button:hover {
-  background-color: #45a049;
+  background-color: #000000; /* Tetap hitam saat hover */
 }
 
-#calendar-days {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 10px;
-  margin-top: 10px;
-}
+/* Penyesuaian Responsif */
+@media (max-width: 768px) {
+  .calendar-container {
+    width: 95%;
+    padding: 15px;
+  }
 
-#calendar-days div {
-  padding: 10px;
-  text-align: center;
-  background-color: #f0f0f0;
-  border-radius: 8px;
-  cursor: pointer;
-}
+  .calendar-weekdays div {
+    padding: 8px 0;
+    font-size: 0.9rem;
+  }
 
-#calendar-days .day-header {
-  font-weight: bold;
-  background-color: #ddd;
-}
-
-#current-time {
-  margin-top: 30px;
-  font-size: 16px;
-  font-weight: 600;
-}
-
-.video-background {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover; /* Agar video sesuai dengan proporsi layar */
-  z-index: -1; /* Letakkan di belakang konten lainnya */
-}
-
-.contentvid {
-  position: relative;
-  z-index: 1; /* Konten tetap berada di atas video */
-  text-align: center;
-  color: #fff; /* Warna teks putih untuk kontras */
-  margin-top: 20%;
-  font-family: Arial, sans-serif;
+  button {
+    padding: 8px;
+  }
 }
 
 .error-message {
@@ -1337,6 +1364,7 @@ html:not(.dark-style) .account-settings-links .list-group-item.active {
   border-color: rgba(24, 28, 33, 0.03) !important;
 }
 
+/* promo popup */
 .popup-container {
   display: none; /* Default: tidak terlihat */
   position: fixed;
@@ -1395,5 +1423,74 @@ html:not(.dark-style) .account-settings-links .list-group-item.active {
   to {
     opacity: 1;
     transform: scale(1);
+  }
+}
+
+/* Updated Styles for History Section */
+.history-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 90%;
+  max-width: 1200px;
+  margin: 40px auto;
+  padding: 30px;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.history-container h1 {
+  margin-bottom: 25px;
+  font-size: 2.5rem;
+  color: #2f4f7f;
+}
+
+.table-responsive {
+  width: 100%;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table thead {
+  background-color: #2f4f7f;
+  color: #ffffff;
+}
+
+.table th,
+.table td {
+  padding: 15px;
+  text-align: center;
+  border: 1px solid #ddd;
+}
+
+.table tbody tr:hover {
+  background-color: #f9f9f9;
+}
+
+.rounded-start {
+  border-top-left-radius: 10px;
+}
+
+.rounded-end {
+  border-top-right-radius: 10px;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .history-container {
+    padding: 20px;
+  }
+
+  .history-container h1 {
+    font-size: 2rem;
+  }
+
+  .table th,
+  .table td {
+    padding: 10px;
   }
 }

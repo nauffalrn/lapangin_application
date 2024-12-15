@@ -10,7 +10,7 @@ import com.lapangin.web.model.User;
 
 public class UserPrincipal implements UserDetails {
 
-    private final User user;
+    private User user;
 
     public UserPrincipal(User user) {
         this.user = user;
@@ -22,7 +22,7 @@ public class UserPrincipal implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.emptyList(); // Tambahkan otoritas jika diperlukan
+        return Collections.emptyList();
     }
 
     @Override
@@ -55,5 +55,8 @@ public class UserPrincipal implements UserDetails {
         return true;
     }
 
-    // Tambahkan metode tambahan jika diperlukan
+    // Getter untuk objek User jika diperlukan
+    public User getUser() {
+        return user;
+    }
 }

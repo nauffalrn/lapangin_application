@@ -18,6 +18,7 @@ document.addEventListener("DOMContentLoaded", function () {
       month: "long",
     })} ${year}`;
 
+    // Menambahkan sel kosong sebelum hari pertama
     for (let i = 0; i < firstDay; i++) {
       const emptyCell = document.createElement("div");
       calendarDays.appendChild(emptyCell);

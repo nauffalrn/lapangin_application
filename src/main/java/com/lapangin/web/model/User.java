@@ -18,6 +18,9 @@ public abstract class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
+    private String name;
+
     @Column(unique = true, nullable = false)
     private String username;
 
@@ -29,6 +32,9 @@ public abstract class User {
     @Column(nullable = false, unique = true)
     private String email;
 
+    @Column(name = "profile_image")
+    private String profileImage;
+
     // Getter & Setter untuk id
     public Long getId() {
         return id;
@@ -36,6 +42,15 @@ public abstract class User {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    // Getter & Setter untuk name
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     // Getter & Setter untuk username
@@ -63,5 +78,13 @@ public abstract class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getProfileImage() {
+        return profileImage;
+    }
+
+    public void setProfileImage(String profileImage) {
+        this.profileImage = profileImage;
     }
 }

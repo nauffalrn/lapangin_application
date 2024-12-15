@@ -1,5 +1,6 @@
 package com.lapangin.web.controller;
 
+import java.security.Principal;
 import java.util.List;
 
 import org.springframework.stereotype.Controller;
@@ -8,16 +9,20 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import com.lapangin.web.model.Lapangan;
+import com.lapangin.web.model.User;
 import com.lapangin.web.service.LapanganService;
+import com.lapangin.web.service.UserService;
 
 @Controller
 public class HomeController {
 
     private final LapanganService lapanganService;
+    private final UserService userService;
 
     // Constructor Injection
-    public HomeController(LapanganService lapanganService) {
+    public HomeController(LapanganService lapanganService, UserService userService) {
         this.lapanganService = lapanganService;
+        this.userService = userService;
     }
 
     // Mapping untuk Dashboard
@@ -64,12 +69,19 @@ public class HomeController {
     @GetMapping("/wallet")
     public String showWallet(Model model) {
         // Tambahkan logika jika diperlukan
-        return "wallet"; // Pastikan ada wallet.html di templates
+        return "wallet"; 
     }
 
     // Mapping untuk Profile
     @GetMapping("/profile")
-    public String showProfile(Model model) {
+    public String showProfile(Model model, Principal principal) {
+        if (principal == null) {
+            return "redirect:/login"; // Redirect jika pengguna belum login
+        }
+
+        User user = userService.findByUsername(principal.getName());
+        model.addAttribute("pageTitle", "Profil Pengguna");
+        model.addAttribute("user", user);
         return "profile";
     }   
 

@@ -27,7 +27,7 @@
     <!-- Sidebar -->
     <aside class="sidebar">
       <header class="sidebar-header">
-        <a th:href="@{/}" class="header-logo">
+        <a class="header-logo">
           <img th:src="@{/images/LA.png}" alt="Lapangin" />
         </a>
         <button class="toggler sidebar-toggler">
@@ -175,22 +175,23 @@
         <p>Tidak ada venue yang ditemukan sesuai dengan pencarian Anda.</p>
       </div>
 
-      <div id="popup-discount" class="popup-container">
-        <div class="popup-content">
-          <h2>🎉 Promo Spesial! 🎉</h2>
-          <p>
-            Gunakan kode voucher <strong>Lapangin2024</strong> untuk mendapatkan
-            diskon 6%!
-          </p>
-          <button id="close-popup">Tutup</button>
-        </div>
-      </div>
-
       <!-- Include JavaScript Files -->
       <script th:src="@{/js/darkmode.js}"></script>
       <script th:src="@{/js/script.js}"></script>
       <script th:src="@{/js/search.js}"></script>
       <script th:src="@{/js/promo.js}"></script>
     </section>
+
+    <!-- Popup Discount -->
+    <div id="popup-discount" class="popup-container">
+      <div class="popup-content">
+        <h2>🎉 Promo Spesial! 🎉</h2>
+        <p>
+          Gunakan kode voucher <strong>Lapangin2024</strong> untuk mendapatkan
+          diskon 6%!
+        </p>
+        <button id="close-popup">Tutup</button>
+      </div>
+    </div>
   </body>
 </html>
