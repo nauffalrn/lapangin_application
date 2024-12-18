@@ -5,12 +5,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.lapangin.web.model.Customer;
+import com.lapangin.web.model.Promo;
 import com.lapangin.web.repository.CustomerRepository;
-
-import jakarta.transaction.Transactional;
 
 @Service
 public class CustomerService {
@@ -26,28 +26,34 @@ public class CustomerService {
 
     @Transactional
     public void register(Customer customer) {
-        logger.debug("Registering customer: {}", customer.getUsername());
-
-        String username = customer.getUsername();
-        if (findByUsername(username) != null) {
-            logger.warn("Username '{}' already taken", username);
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username already taken");
-        }
-
-        // Validasi kecocokan password dan confirmPassword
-        if (!customer.getPassword().equals(customer.getConfirmPassword())) {
-            logger.warn("Password dan konfirmasi password tidak cocok untuk username '{}'", username);
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Password dan konfirmasi password tidak cocok");
-        }
-
-        customer.setPassword(passwordEncoder.encode(customer.getPassword()));
-        logger.debug("Saving customer to repository");
-        customerRepository.save(customer);
-        logger.info("Customer saved to database: {}", customer.getUsername());
+        // Implementasi registrasi
     }
 
+    @Transactional(readOnly = true)
     public Customer findByUsername(String username) {
-        Customer customer = customerRepository.findByUsername(username);
-        return customer != null ? customer : null;
+        return customerRepository.findByUsername(username).orElse(null);
+    }
+
+    @Transactional
+    public void claimPromo(Customer customer, Promo promo) {
+        if (promo != null) {
+            logger.info("Customer '{}' mengklaim promo '{}'", customer.getUsername(), promo.getKodePromo());
+            customer.getClaimedPromos().add(promo);
+            customerRepository.save(customer);
+            logger.info("Promo '{}' berhasil diklaim oleh customer '{}'", promo.getKodePromo(), customer.getUsername());
+        } else {
+            logger.error("Promo tidak boleh null saat mengklaim promo.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Promo tidak boleh null");
+        }
+    }
+
+    @Transactional(readOnly = true)
+    public boolean isPromoClaimedByCustomer(Customer customer, Promo promo) {
+        return customerRepository.hasClaimedPromo(customer.getId(), promo.getId());
+    }
+
+    @Transactional
+    public void save(Customer customer) {
+        customerRepository.save(customer);
     }
 }

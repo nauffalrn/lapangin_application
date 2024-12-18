@@ -27,10 +27,15 @@ public class HomeController {
 
     // Mapping untuk Dashboard
     @GetMapping("/dashboard")
-    public String showDashboard(Model model) {
+    public String showDashboard(Model model, Principal principal) {
+        // Ambil daftar lapangan dari service
         List<Lapangan> listLapangan = lapanganService.getAllLapangan();
         model.addAttribute("listLapangan", listLapangan);
-        return "dashboard";
+
+        // Tambahkan atribut lainnya jika diperlukan
+        model.addAttribute("username", principal.getName());
+
+        return "dashboard"; // Mengarahkan ke dashboard.html di templates
     }
 
     // Mapping untuk Detail Lapangan

@@ -367,7 +367,7 @@ body.dark-mode .sidebar.collapsed .toggle-dark-mode .slider {
 
 .section-2 {
   width: 100%;
-  height: 100vh;
+  height: auto;
   display: flex;
   align-items: center;
   flex-direction: column;
@@ -1112,6 +1112,7 @@ button:hover {
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
+  height: 100%;
   justify-content: center;
 }
 

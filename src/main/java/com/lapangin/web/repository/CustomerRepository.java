@@ -1,10 +1,17 @@
 package com.lapangin.web.repository;
 
-import com.lapangin.web.model.Customer;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
+import java.util.Optional;
 
-@Repository
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
+import com.lapangin.web.model.Customer;
+
 public interface CustomerRepository extends JpaRepository<Customer, Long> {
-    Customer findByUsername(String username);
+
+    Optional<Customer> findByUsername(String username);
+
+    @Query("SELECT COUNT(p) > 0 FROM Customer c JOIN c.claimedPromos p WHERE c.id = :customerId AND p.id = :promoId")
+    boolean hasClaimedPromo(@Param("customerId") Long customerId, @Param("promoId") Long promoId);
 }

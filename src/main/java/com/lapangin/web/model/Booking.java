@@ -19,12 +19,17 @@ public class Booking {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private String username;
+    @ManyToOne
+    @JoinColumn(name = "customer_id", nullable = false)
+    private Customer customer;
 
     @ManyToOne
     @JoinColumn(name = "lapangan_id", nullable = false)
     private Lapangan lapangan;
+
+    @ManyToOne
+    @JoinColumn(name = "promo_id", referencedColumnName = "id")
+    private Promo promo;
 
     @Column(name = "booking_date", nullable = false)
     private LocalDateTime bookingDate;
@@ -35,7 +40,7 @@ public class Booking {
     @Column(name = "total_price", nullable = false)
     private double totalPrice;
 
-    // Getter dan Setter
+    // Getters dan Setters
     public Long getId() {
         return id;
     }
@@ -44,12 +49,12 @@ public class Booking {
         this.id = id;
     }
 
-    public String getUsername() {
-        return username;
+    public Customer getCustomer() {
+        return customer;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
     }
 
     public Lapangan getLapangan() {
@@ -58,6 +63,14 @@ public class Booking {
 
     public void setLapangan(Lapangan lapangan) {
         this.lapangan = lapangan;
+    }
+
+    public Promo getPromo() {
+        return promo;
+    }
+
+    public void setPromo(Promo promo) {
+        this.promo = promo;
     }
 
     public LocalDateTime getBookingDate() {

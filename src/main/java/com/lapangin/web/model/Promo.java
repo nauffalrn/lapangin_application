@@ -1,35 +1,42 @@
 package com.lapangin.web.model;
 
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "promo") // Sesuaikan dengan nama tabel di database Anda
+@Table(name = "promo")
 public class Promo {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id; // ID promo sebagai kunci utama
+    private Long id;
 
-    @Column(name = "kode_promo", nullable = false)
-    private String kodePromo; // Kode promo unik
+    @Column(name = "kode_promo", nullable = false, unique = true)
+    private String kodePromo;
 
     @Column(name = "diskon_persen", nullable = false)
-    private double diskonPersen; // Persen diskon yang diberikan
+    private double diskonPersen;
 
     @Column(name = "tanggal_mulai", nullable = false)
-    private LocalDate tanggalMulai; // Tanggal mulai promo
+    private LocalDate tanggalMulai;
 
     @Column(name = "tanggal_selesai", nullable = false)
-    private LocalDate tanggalSelesai; // Tanggal selesai promo
+    private LocalDate tanggalSelesai;
 
-    // Getter dan Setter untuk Id
+    @ManyToMany(mappedBy = "claimedPromos")
+    private Set<Customer> customersClaimed = new HashSet<>();
+
+    // Getters dan Setters
     public Long getId() {
         return id;
     }
@@ -38,7 +45,6 @@ public class Promo {
         this.id = id;
     }
 
-    // Getter dan Setter untuk KodePromo
     public String getKodePromo() {
         return kodePromo;
     }
@@ -47,7 +53,6 @@ public class Promo {
         this.kodePromo = kodePromo;
     }
 
-    // Getter dan Setter untuk DiskonPersen
     public double getDiskonPersen() {
         return diskonPersen;
     }
@@ -56,7 +61,6 @@ public class Promo {
         this.diskonPersen = diskonPersen;
     }
 
-    // Getter dan Setter untuk TanggalMulai
     public LocalDate getTanggalMulai() {
         return tanggalMulai;
     }
@@ -65,7 +69,6 @@ public class Promo {
         this.tanggalMulai = tanggalMulai;
     }
 
-    // Getter dan Setter untuk TanggalSelesai
     public LocalDate getTanggalSelesai() {
         return tanggalSelesai;
     }
@@ -73,4 +76,27 @@ public class Promo {
     public void setTanggalSelesai(LocalDate tanggalSelesai) {
         this.tanggalSelesai = tanggalSelesai;
     }
+
+    public Set<Customer> getCustomersClaimed() {
+        return customersClaimed;
+    }
+
+    public void setCustomersClaimed(Set<Customer> customersClaimed) {
+        this.customersClaimed = customersClaimed;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Promo)) return false;
+        Promo promo = (Promo) o;
+        return Objects.equals(getId(), promo.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId());
+    }
+
+    // Getters dan Setters lainnya...
 }

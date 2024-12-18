@@ -5,6 +5,9 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+    <meta name="_csrf" th:content="${_csrf.token}" />
+    <meta name="_csrf_header" th:content="${_csrf.headerName}" />
+
     <link rel="stylesheet" th:href="@{/css/style.css}" />
 
     <link
@@ -174,12 +177,6 @@
       <div id="no-results" style="display: none">
         <p>Tidak ada venue yang ditemukan sesuai dengan pencarian Anda.</p>
       </div>
-
-      <!-- Include JavaScript Files -->
-      <script th:src="@{/js/darkmode.js}"></script>
-      <script th:src="@{/js/script.js}"></script>
-      <script th:src="@{/js/search.js}"></script>
-      <script th:src="@{/js/promo.js}"></script>
     </section>
 
     <!-- Popup Discount -->
@@ -188,10 +185,17 @@
         <h2>🎉 Promo Spesial! 🎉</h2>
         <p>
           Gunakan kode voucher <strong>Lapangin2024</strong> untuk mendapatkan
-          diskon 6%!
+          diskon 10%!
         </p>
+        <button id="claim-promo">Klaim Promo</button>
         <button id="close-popup">Tutup</button>
       </div>
     </div>
+
+    <!-- Include JavaScript Files -->
+    <script th:src="@{/js/darkmode.js}"></script>
+    <script th:src="@{/js/script.js}"></script>
+    <script th:src="@{/js/search.js}"></script>
+    <script th:src="@{/js/promo.js}"></script>
   </body>
 </html>
