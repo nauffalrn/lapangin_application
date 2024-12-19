@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.lapangin.web.model.Lapangan;
 import com.lapangin.web.repository.LapanganRepository;
@@ -39,5 +40,10 @@ public class LapanganService {
 
     public void deleteLapanganById(Long id) {
         lapanganRepository.deleteById(id);
+    }
+
+    @Transactional(readOnly = true)
+    public long countLapangan() {
+        return lapanganRepository.count();
     }
 }

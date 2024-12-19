@@ -20,7 +20,7 @@ public class AdminService {
     // Menyimpan data admin baru dengan validasi username
     public Admin register(Admin admin) {
         if (isUsernameTaken(admin.getUsername())) {
-            throw new IllegalArgumentException("Username already taken");
+            throw new IllegalArgumentException("Username sudah digunakan");
         }
 
         // Hash password sebelum disimpan

@@ -1,5 +1,8 @@
 package com.lapangin.web.service;
 
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -14,24 +17,24 @@ public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
 
-    // Constructor Injection
+    @Autowired
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User tidak ditemukan: " + username));
-
-        return UserPrincipal.create(user);
+        Optional<User> userOpt = userRepository.findByUsername(username);
+        if (!userOpt.isPresent()) {
+            throw new UsernameNotFoundException("User tidak ditemukan: " + username);
+        }
+        return UserPrincipal.create(userOpt.get());
     }
 
     public boolean isUsernameTaken(String username) {
         return userRepository.findByUsername(username).isPresent();
     }
 
-    // Tambahkan metode findByUsername
     public User findByUsername(String username) {
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User tidak ditemukan: " + username));

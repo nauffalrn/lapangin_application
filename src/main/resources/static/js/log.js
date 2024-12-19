@@ -31,17 +31,12 @@ document.getElementById("login-form").addEventListener("submit", (e) => {
 // Validasi signup
 document.getElementById("registration-form").addEventListener("submit", (e) => {
   e.preventDefault(); // Mencegah form dikirim langsung
+  const name = e.target.name.value.trim();
   const username = e.target.username.value.trim();
   const email = e.target.email.value.trim();
   const phone = e.target.phoneNumber.value.trim();
   const password = e.target.password.value;
   const confirmPassword = e.target.confirmPassword.value; // Sesuaikan nama field
-
-  // Cek apakah semua field diisi
-  if (!username || !email || !phone || !password || !confirmPassword) {
-    alert("Semua field harus diisi!");
-    return;
-  }
 
   // Validasi format email menggunakan regex
   const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;

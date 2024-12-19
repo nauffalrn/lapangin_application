@@ -7,23 +7,28 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
+@Table(name = "user")
 public abstract class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotEmpty(message = "Name is required")
     @Column(nullable = false)
     private String name;
 
+    @NotEmpty(message = "Username is required")
     @Column(unique = true, nullable = false)
     private String username;
 
+    @NotEmpty(message = "Password is required")
     @Column(nullable = false)
     private String password;
 
@@ -35,7 +40,10 @@ public abstract class User {
     @Column(name = "profile_image")
     private String profileImage;
 
-    // Getter & Setter untuk id
+    private String role;
+
+    // Getters & Setters
+
     public Long getId() {
         return id;
     }
@@ -44,7 +52,6 @@ public abstract class User {
         this.id = id;
     }
 
-    // Getter & Setter untuk name
     public String getName() {
         return name;
     }
@@ -53,7 +60,6 @@ public abstract class User {
         this.name = name;
     }
 
-    // Getter & Setter untuk username
     public String getUsername() {
         return username;
     }
@@ -62,7 +68,6 @@ public abstract class User {
         this.username = username;
     }
 
-    // Getter & Setter untuk password
     public String getPassword() {
         return password;
     }
@@ -71,7 +76,6 @@ public abstract class User {
         this.password = password;
     }
 
-    // Getter & Setter untuk email
     public String getEmail() {
         return email;
     }
@@ -86,5 +90,13 @@ public abstract class User {
 
     public void setProfileImage(String profileImage) {
         this.profileImage = profileImage;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 }

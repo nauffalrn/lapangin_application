@@ -18,7 +18,7 @@ import com.lapangin.web.service.CustomerService;
 import com.lapangin.web.service.PromoService;
 
 @RestController
-@RequestMapping("/api/bookings")
+@RequestMapping("/booking")
 public class BookingController {
 
     private static final Logger logger = LoggerFactory.getLogger(BookingController.class);

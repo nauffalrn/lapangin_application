@@ -26,7 +26,17 @@ public class CustomerService {
 
     @Transactional
     public void register(Customer customer) {
-        // Implementasi registrasi
+        // Encode password
+        String encodedPassword = passwordEncoder.encode(customer.getPassword());
+        customer.setPassword(encodedPassword);
+
+        // Optional: Log proses registrasi
+        logger.info("Mendaftarkan customer dengan username: {}", customer.getUsername());
+
+        // Simpan customer ke database
+        customerRepository.save(customer);
+
+        logger.info("Customer '{}' berhasil disimpan ke database.", customer.getUsername());
     }
 
     @Transactional(readOnly = true)
@@ -55,5 +65,10 @@ public class CustomerService {
     @Transactional
     public void save(Customer customer) {
         customerRepository.save(customer);
+    }
+
+    @Transactional(readOnly = true)
+    public long countCustomers() {
+        return customerRepository.count();
     }
 }

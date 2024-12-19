@@ -59,7 +59,7 @@ document.addEventListener("DOMContentLoaded", () => {
         "Mengirim permintaan klaim promo dengan kodePromo:", kodePromo
       );
 
-      fetch("/api/bookings/claim", {
+      fetch("/booking/claim", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

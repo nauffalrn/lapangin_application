@@ -36,12 +36,13 @@ public class WebSecurityConfig {
         http
             .csrf(csrf -> csrf
                 .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                .ignoringRequestMatchers("/api/bookings/claim") // Tambahkan ini untuk debugging
+                .ignoringRequestMatchers("/booking/claim") // Disable CSRF untuk endpoint ini
             )
             .authorizeHttpRequests(authz -> authz
                 .requestMatchers("/", "/css/**", "/js/**", "/images/**", "/login", "/register", "/error").permitAll()
-                .requestMatchers("/dashboard", "/calendar", "/notifications", "/history", "/likes", "/wallet", "/settings").authenticated()
-                .requestMatchers("/api/bookings/**").authenticated()
+                .requestMatchers("/admin/**", "/dashboardAdmin").hasRole("ADMIN") // Tambahkan "/admin/**"
+                .requestMatchers("/dashboard").hasAnyRole("ADMIN", "CUSTOMER")
+                .requestMatchers("/calendar", "/notifications", "/history", "/wallet", "/booking/**").authenticated()
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form

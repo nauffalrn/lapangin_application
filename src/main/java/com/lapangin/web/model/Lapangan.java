@@ -1,4 +1,7 @@
 package com.lapangin.web.model;
+import java.util.Arrays;
+import java.util.List;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -35,6 +38,11 @@ public class Lapangan {
     @Column(name = "cabang_olahraga", nullable = false)
     private String cabangOlahraga;
 
+    @Column(name = "deskripsi_lapangan")
+    private String deskripsiLapangan;
+
+    @Column(name = "facilities")
+    private String facilities;
 
     // Getters and Setters
 
@@ -100,5 +108,29 @@ public class Lapangan {
 
     public void setCabangOlahraga(String cabangOlahraga) {
         this.cabangOlahraga = cabangOlahraga;
+    }
+
+    public String getDeskripsiLapangan() {
+        return deskripsiLapangan;
+    }
+
+    public void setDeskripsiLapangan(String deskripsiLapangan) {
+        this.deskripsiLapangan = deskripsiLapangan;
+    }
+
+    public String getFacilities() {
+        return facilities;
+    }
+
+    public void setFacilities(String facilities) {
+        this.facilities = facilities;
+    }
+
+    // Metode untuk mengubah string fasilitas menjadi list
+    public List<String> getFieldFacilitiesAsList() {
+        if (this.facilities != null && !this.facilities.isEmpty()) {
+            return Arrays.asList(this.facilities.split(",\\s*"));
+        }
+        return null;
     }
 }

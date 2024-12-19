@@ -1,7 +1,6 @@
 package com.lapangin.web.model;
 
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 
 import jakarta.persistence.Column;
@@ -12,6 +11,7 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
+import jakarta.validation.constraints.NotEmpty;
 
 @Entity
 @Table(name = "customer")
@@ -20,6 +20,7 @@ public class Customer extends User {
     @Transient
     private String confirmPassword;
 
+    @NotEmpty(message = "Phone number is required")
     @Column(name = "phone_number", nullable = false)
     private String phoneNumber;
 
@@ -31,7 +32,12 @@ public class Customer extends User {
     )
     private Set<Promo> claimedPromos = new HashSet<>();
 
+    public Customer() {
+        this.setRole("CUSTOMER");
+    }
+
     // Getters dan Setters
+
     public Set<Promo> getClaimedPromos() {
         return claimedPromos;
     }
@@ -61,11 +67,11 @@ public class Customer extends User {
         if (this == o) return true;
         if (!(o instanceof Customer)) return false;
         Customer customer = (Customer) o;
-        return Objects.equals(getId(), customer.getId());
+        return getId().equals(customer.getId());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId());
+        return getId().hashCode();
     }
 }
