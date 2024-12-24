@@ -22,15 +22,18 @@
       rel="stylesheet"
       th:href="@{'https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css'}"
     />
-
-    <title>Lapangin - Dashboard</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <title>Dashboard Admin</title>
   </head>
 
   <body>
     <!-- Sidebar -->
     <aside class="sidebar">
       <header class="sidebar-header">
-        <a th:href="@{/admin}" class="header-logo">
+        <a class="header-logo">
           <img th:src="@{/images/LA.png}" alt="Lapangin" />
         </a>
 
@@ -51,10 +54,12 @@
 
           <li class="nav-item">
             <a th:href="@{/admin}" class="nav-link">
-              <span class="nav-icon material-symbols-rounded">A</span>
-              <span class="nav-label">Admin Settings</span>
+              <span class="nav-icon material-symbols-rounded"
+                >admin_panel_settings</span
+              >
+              <span class="nav-label">Admin Management</span>
             </a>
-            <span class="nav-tooltip">Admin Settings</span>
+            <span class="nav-tooltip">Admin Management</span>
           </li>
         </ul>
 
@@ -77,7 +82,7 @@
             <span class="nav-tooltip">Profile</span>
           </li>
           <li class="nav-item">
-            <a th:href="@{/logout}" class="nav-link">
+            <a th:href="@{/login}" class="nav-link">
               <span class="nav-icon material-symbols-rounded">logout</span>
               <span class="nav-label">Logout</span>
             </a>

@@ -3,26 +3,34 @@ package com.lapangin.web.controller;
 import java.security.Principal;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import com.lapangin.web.model.Customer;
 import com.lapangin.web.model.Lapangan;
 import com.lapangin.web.model.User;
+import com.lapangin.web.service.CustomerService;
 import com.lapangin.web.service.LapanganService;
 import com.lapangin.web.service.UserService;
 
 @Controller
 public class HomeController {
 
+    private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
+
     private final LapanganService lapanganService;
     private final UserService userService;
+    private final CustomerService customerService;
 
     // Constructor Injection
-    public HomeController(LapanganService lapanganService, UserService userService) {
+    public HomeController(LapanganService lapanganService, UserService userService, CustomerService customerService) {
         this.lapanganService = lapanganService;
         this.userService = userService;
+        this.customerService = customerService;
     }
 
     // Mapping untuk Dashboard
@@ -43,8 +51,10 @@ public class HomeController {
     public String showLapanganDetail(@PathVariable("id") Long id, Model model) {
         Lapangan lapangan = lapanganService.getLapanganById(id);
         if (lapangan == null) {
+            logger.warn("Lapangan dengan ID {} tidak ditemukan.", id);
             return "redirect:/error"; // Redirect ke halaman error jika tidak ditemukan
         }
+        logger.info("Menampilkan detail Lapangan: {}", lapangan.getNamaLapangan());
         model.addAttribute("lapangan", lapangan);
         return "lapangan_detail";
     }
@@ -85,10 +95,20 @@ public class HomeController {
         }
 
         User user = userService.findByUsername(principal.getName());
+        if (user == null) {
+            return "redirect:/error"; // Redirect jika user tidak ditemukan
+        }
+
         model.addAttribute("pageTitle", "Profil Pengguna");
         model.addAttribute("user", user);
+
+        if ("CUSTOMER".equals(user.getRole())) {
+            Customer customer = customerService.findByUser(user);
+            model.addAttribute("phoneNumber", (customer != null) ? customer.getPhoneNumber() : "");
+        }
+
         return "profile";
-    }   
+    }
 
     // Mapping untuk Error
     @GetMapping("/error")

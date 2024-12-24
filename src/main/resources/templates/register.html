@@ -26,7 +26,6 @@
         <div class="form registration">
           <div class="form-content">
             <h1 class="head">Signup</h1>
-            <!-- Revisi ID di sini -->
             <form
               method="post"
               th:action="@{/register}"
@@ -35,21 +34,24 @@
             >
               <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
 
+              <!-- Nama Field -->
               <div class="field input-field">
                 <input
                   type="text"
                   th:field="*{name}"
-                  placeholder="name"
+                  placeholder="Name"
                   class="input"
                   required
                 />
                 <div
+                  id="register-name-error"
                   th:if="${#fields.hasErrors('name')}"
                   th:errors="*{name}"
                   class="error"
                 ></div>
               </div>
 
+              <!-- Username Field -->
               <div class="field input-field">
                 <input
                   type="text"
@@ -59,12 +61,14 @@
                   required
                 />
                 <div
+                  id="register-username-error"
                   th:if="${#fields.hasErrors('username')}"
                   th:errors="*{username}"
                   class="error"
                 ></div>
               </div>
 
+              <!-- Email Field -->
               <div class="field input-field">
                 <input
                   type="email"
@@ -74,12 +78,14 @@
                   required
                 />
                 <div
+                  id="register-email-error"
                   th:if="${#fields.hasErrors('email')}"
                   th:errors="*{email}"
                   class="error"
                 ></div>
               </div>
 
+              <!-- Phone Number Field -->
               <div class="field input-field">
                 <input
                   type="text"
@@ -89,68 +95,85 @@
                   required
                 />
                 <div
+                  id="register-phone-error"
                   th:if="${#fields.hasErrors('phoneNumber')}"
                   th:errors="*{phoneNumber}"
                   class="error"
                 ></div>
               </div>
 
+              <!-- Password Field -->
               <div class="field input-field">
                 <input
                   type="password"
                   th:field="*{password}"
                   placeholder="Create password"
                   class="password"
+                  id="field-password"
                   required
                 />
                 <div
-                  th:if="${#fields.hasErrors('password')}"
-                  th:errors="*{password}"
+                  id="register-password-error"
                   class="error"
+                  style="display: none; color: red"
                 ></div>
               </div>
 
+              <!-- Confirm Password Field -->
               <div class="field input-field">
                 <input
                   type="password"
                   th:field="*{confirmPassword}"
                   placeholder="Confirm password"
                   class="password"
+                  id="field-confirmPassword"
                   required
                 />
-                <div
-                  th:if="${#fields.hasErrors('confirmPassword')}"
-                  th:errors="*{confirmPassword}"
-                  class="error"
-                ></div>
                 <i class="bx bx-hide eye-icon"></i>
+                <div
+                  id="register-confirm-password-error"
+                  class="error"
+                  style="display: none; color: red"
+                ></div>
               </div>
 
+              <!-- Register Button -->
               <div class="field button-field">
                 <button type="submit">Signup</button>
               </div>
 
-              <div th:if="${registrationError}" class="error-message">
+              <!-- General Error Messages -->
+              <div
+                id="register-general-error"
+                th:if="${registrationError}"
+                class="error-message"
+              >
                 <p th:text="${registrationError}"></p>
               </div>
 
-              <div th:if="${errorMessage}" class="error-message">
+              <div
+                id="register-general-error-2"
+                th:if="${errorMessage}"
+                class="error-message"
+              >
                 <p th:text="${errorMessage}"></p>
               </div>
             </form>
+
+            <!-- Login Redirect -->
             <div class="form-link">
-              <span
-                >Already have an account?
-                <a th:href="@{/login}" class="link login-link">Login</a></span
-              >
+              <span>
+                Already have an account?
+                <a th:href="@{/login}" class="link login-link">Login</a>
+              </span>
             </div>
           </div>
         </div>
       </section>
     </section>
 
+    <!-- Scripts -->
     <script th:src="@{/js/script.js}"></script>
-    <script th:src="@{/js/darkmode.js}"></script>
     <script th:src="@{/js/log.js}"></script>
   </body>
 </html>

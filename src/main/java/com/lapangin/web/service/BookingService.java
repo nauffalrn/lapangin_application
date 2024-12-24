@@ -7,9 +7,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.lapangin.web.model.Booking;
-import com.lapangin.web.model.Promo;
 import com.lapangin.web.model.Customer;
 import com.lapangin.web.model.Lapangan;
+import com.lapangin.web.model.Promo;
 import com.lapangin.web.repository.BookingRepository;
 
 @Service
@@ -58,5 +58,15 @@ public class BookingService {
             return basePrice - (basePrice * promo.getDiskonPersen() / 100);
         }
         return basePrice;
+    }
+
+    @Transactional
+    public void updatePaymentStatus(Long bookingId, String fileName) {
+        Booking booking = getBookingById(bookingId);
+        if (booking != null) {
+            booking.setPaymentProof(fileName);
+            booking.setStatus("PAID");
+            bookingRepository.save(booking);
+        }
     }
 }

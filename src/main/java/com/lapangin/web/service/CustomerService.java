@@ -10,6 +10,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.lapangin.web.model.Customer;
 import com.lapangin.web.model.Promo;
+import com.lapangin.web.model.User;
 import com.lapangin.web.repository.CustomerRepository;
 
 @Service
@@ -70,5 +71,12 @@ public class CustomerService {
     @Transactional(readOnly = true)
     public long countCustomers() {
         return customerRepository.count();
+    }
+
+    public Customer findByUser(User user) {
+        if (user == null || user.getId() == null) {
+            return null;
+        }
+        return customerRepository.findById(user.getId()).orElse(null);
     }
 }

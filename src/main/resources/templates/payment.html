@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <title>Pembayaran - Lapangin</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+  </head>
+  <body>
+    <div class="payment-container">
+      <h2>Detail Pembayaran</h2>
+
+      <div class="booking-details">
+        <p>
+          Lapangan: <span th:text="${booking.lapangan.namaLapangan}"></span>
+        </p>
+        <p>
+          Tanggal Main:
+          <span
+            th:text="${#temporals.format(booking.bookingDate, 'dd MMM yyyy')}"
+          ></span>
+        </p>
+        <p>Jam Main: <span th:text="${booking.jamMulai + ':00'}"></span></p>
+        <p>Total: <span th:text="${booking.totalPrice}"></span></p>
+      </div>
+
+      <div class="payment-info">
+        <h3>Transfer ke:</h3>
+        <p th:text="${noRek}" class="bank-account"></p>
+      </div>
+
+      <div class="upload-section">
+        <h3>Upload Bukti Transfer</h3>
+        <form id="paymentForm">
+          <input type="file" name="paymentProof" accept="image/*" required />
+          <button type="submit" class="upload-btn">
+            Konfirmasi Pembayaran
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <script th:inline="javascript">
+      const bookingId = null;
+
+      document.getElementById('paymentForm').addEventListener('submit', async (e) => {
+          e.preventDefault();
+
+          const formData = new FormData();
+          const fileInput = document.querySelector('input[type="file"]');
+
+          formData.append('file', fileInput.files[0]);
+          formData.append('bookingId', bookingId);
+
+          try {
+              const response = await fetch('/booking/payment/upload', {
+                  method: 'POST',
+                  body: formData
+              });
+
+              const result = await response.json();
+
+              if (result.success) {
+                  alert('Pembayaran berhasil dikonfirmasi!');
+                  window.location.href = '/dashboard';
+              } else {
+                  alert(result.message || 'Gagal mengupload bukti pembayaran');
+              }
+          } catch (error) {
+              console.error('Error:', error);
+              alert('Terjadi kesalahan sistem');
+          }
+      });
+    </script>
+  </body>
+</html>

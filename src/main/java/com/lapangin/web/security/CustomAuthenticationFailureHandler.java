@@ -19,7 +19,6 @@ public class CustomAuthenticationFailureHandler implements AuthenticationFailure
             HttpServletResponse response,
             AuthenticationException exception
     ) throws IOException, ServletException {
-        request.setAttribute("errorMessage", "Invalid username or password."); // Pesan error
-        request.getRequestDispatcher("/login").forward(request, response); // Tetap di halaman login
+        response.sendRedirect("/login?error=true");
     }
 }

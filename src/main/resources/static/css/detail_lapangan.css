@@ -1,0 +1,565 @@
+/* detail_lapangan.css */
+
+/* Import Font */
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap");
+
+:root {
+  --bg-primary: #f5f5f5;
+  --bg-secondary: #fff;
+  --text-primary: #333;
+  --text-secondary: #666;
+  --border-color: rgba(0, 0, 0, 0.1);
+  --facility-bg: #f8f8f8;
+  --modal-overlay: rgba(0, 0, 0, 0.5);
+}
+
+[data-theme="dark"] {
+  --bg-primary: #1a1a1a;
+  --bg-secondary: #2d2d2d;
+  --text-primary: #ffffff;
+  --text-secondary: #cccccc;
+  --border-color: rgba(255, 255, 255, 0.1);
+  --facility-bg: #3d3d3d;
+  --modal-overlay: rgba(0, 0, 0, 0.7);
+}
+
+/* Container layout */
+.detail-page-wrapper {
+  padding-left: 200px; /* Sesuaikan dengan lebar sidebar */
+  min-height: 100vh;
+  background: var(--bg-secondary);
+  transition: background-color 0.3s ease;
+}
+
+.detail-page-wrapper .detail-main-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+/* Venue header section */
+.detail-venue-title {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.detail-page-wrapper .detail-venue-title h1 {
+  font-size: 2.5rem;
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+  transition: color 0.3s ease;
+}
+
+.detail-venue-info {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+  margin-bottom: 2rem;
+}
+
+.detail-venue-location,
+.detail-venue-status,
+.detail-venue-rating {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-secondary);
+  transition: color 0.3s ease;
+}
+
+/* Image gallery */
+.detail-page-wrapper .detail-gallery {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.detail-main-img,
+.detail-side-imgs,
+.detail-bottom-imgs {
+  position: relative;
+  width: 100%;
+  height: 300px; /* Atur tinggi konsisten */
+  overflow: hidden;
+  border-radius: 12px;
+  background-color: var(--facility-bg);
+}
+
+.detail-main-img img,
+.detail-side-imgs img,
+.detail-bottom-imgs img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Memastikan gambar mengisi area tanpa distorsi */
+  transition: transform 0.3s ease;
+}
+
+.detail-main-img img:hover,
+.detail-side-imgs img:hover,
+.detail-bottom-imgs img:hover {
+  transform: scale(1.05); /* Efek zoom saat hover */
+}
+
+/* Content sections */
+.detail-section {
+  background: var(--bg-secondary);
+  border-radius: 12px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 2px 4px var(--border-color);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Facilities grid */
+.detail-facilities {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.detail-facility-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  background: var(--facility-bg);
+  border-radius: 8px;
+  color: var(--text-secondary);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Schedule section */
+.detail-schedule {
+  margin-top: 2rem;
+}
+
+.detail-calendar-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin: 1rem 0;
+}
+
+.detail-date-scroll {
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto;
+  padding: 1rem;
+  -webkit-overflow-scrolling: touch;
+}
+
+.detail-date-item {
+  min-width: 100px;
+  padding: 1rem;
+  text-align: center;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.detail-date-item.active {
+  background: #007bff;
+  color: #fff;
+}
+
+/* Modal styles */
+.detail-modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  justify-content: center;
+  align-items: center;
+  backdrop-filter: blur(5px);
+}
+
+.detail-modal-content {
+  background: var(--bg-secondary);
+  width: 90%;
+  max-width: 600px;
+  margin: 20px;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  animation: modalSlideIn 0.3s ease-out;
+  overflow: hidden; /* Ensure content doesn't overflow */
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.modal-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  color: var(--text-primary);
+}
+
+.detail-close-modal {
+  font-size: 24px;
+  cursor: pointer;
+  color: var(--text-secondary);
+  transition: color 0.3s;
+}
+
+.detail-close-modal:hover {
+  color: #ff4444;
+}
+
+.modal-date-display {
+  padding: 16px 24px;
+  background: var(--facility-bg);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+}
+
+.detail-schedule-grid {
+  padding: 20px 24px;
+  max-height: 60vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.schedule-slot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  background: var(--facility-bg);
+  border-radius: 12px;
+  transition: all 0.3s;
+}
+
+.schedule-slot:hover {
+  background: var(--bg-primary);
+}
+
+.time-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-primary);
+}
+
+.book-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 8px;
+  background: #4caf50;
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.book-btn:hover {
+  background: #45a049;
+  transform: translateY(-1px);
+}
+
+.book-btn.booked {
+  background: #ff4444;
+  cursor: not-allowed;
+}
+
+@keyframes modalSlideIn {
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Dark mode support */
+[data-theme="dark"] .detail-modal-content {
+  background: var(--bg-secondary);
+}
+
+[data-theme="dark"] .modal-header {
+  border-bottom-color: var(--border-color);
+}
+
+[data-theme="dark"] .schedule-slot {
+  background: var(--facility-bg);
+}
+
+[data-theme="dark"] .schedule-slot:hover {
+  background: var(--bg-primary);
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+  .detail-page-wrapper {
+    padding-left: 0;
+  }
+
+  .detail-main-container {
+    padding: 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .detail-page-wrapper .detail-gallery {
+    grid-template-columns: 1fr;
+  }
+
+  .detail-main-img,
+  .detail-side-imgs,
+  .detail-bottom-imgs {
+    height: 200px; /* Menyesuaikan tinggi pada layar kecil */
+  }
+
+  .detail-venue-info {
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .detail-main-img,
+  .detail-side-imgs,
+  .detail-bottom-imgs {
+    height: 150px; /* Menyesuaikan tinggi pada layar sangat kecil */
+  }
+
+  .detail-bottom-imgs {
+    grid-template-columns: 1fr;
+  }
+
+  .detail-section {
+    padding: 1rem;
+  }
+
+  .detail-venue-title h1 {
+    font-size: 1.8rem;
+  }
+}
+
+[data-theme="dark"] .detail-main-img img,
+[data-theme="dark"] .detail-side-imgs img,
+[data-theme="dark"] .detail-bottom-imgs img {
+  filter: brightness(0.8);
+  transition: filter 0.3s ease;
+}
+
+[data-theme="dark"] .detail-facility-item:hover {
+  background: #4d4d4d;
+}
+
+[data-theme="dark"] .detail-date-item:hover:not(.active) {
+  background: #3d3d3d;
+}
+
+.theme-toggle {
+  padding: 8px 16px;
+  border-radius: 4px;
+  border: 1px solid var(--border-color);
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.theme-toggle:hover {
+  background: var(--facility-bg);
+}
+
+.date-scroll {
+  display: flex;
+  overflow-x: auto;
+  padding: 10px;
+  gap: 10px;
+}
+
+.date-item {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  cursor: pointer;
+  text-align: center;
+}
+
+.date-item.active {
+  background-color: #007bff;
+  color: white;
+}
+
+.detail-schedule-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 10px;
+  padding: 10px;
+}
+
+.time-slot {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.time-slot.available {
+  background-color: #d4edda;
+}
+
+.time-slot.booked {
+  background-color: #f8d7da;
+}
+
+.time-slot-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.time-slot-content .time {
+  font-size: 14px;
+}
+
+.time-slot-content .status {
+  font-size: 12px;
+  color: #6c757d;
+}
+
+.date-scroll {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding: 10px 0;
+}
+
+.date-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.date-item:hover {
+  background-color: #f5f5f5;
+}
+
+.date-item.active {
+  background-color: #007bff;
+  color: white;
+  border-color: #007bff;
+}
+
+.date-item .day {
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+
+.date-item .date {
+  font-size: 0.9em;
+}
+
+/* Tambahkan atau update styles berikut */
+.ticket-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.ticket-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background: var(--bg-secondary);
+  border-radius: 12px;
+  box-shadow: 0 2px 4px var(--border-color);
+}
+
+.ticket-info {
+  flex: 1;
+  min-width: 0; /* Penting untuk mencegah overflow */
+}
+
+.ticket-info h3 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.1rem;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.court-type {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+.ticket-action {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.5rem;
+  min-width: fit-content; /* Mencegah wrapping pada tombol dan harga */
+  margin-left: 1rem;
+}
+
+.price {
+  font-weight: bold;
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+
+.select-ticket {
+  padding: 0.5rem 1rem;
+  background: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 0.3s;
+}
+
+.select-ticket:hover {
+  background: #45a049;
+}
+
+/* Container Utama */
+.container {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* Konten Utama */
+.main-content {
+  margin-left: 250px;
+  padding: 1rem;
+  flex: 1;
+  overflow: hidden;
+}

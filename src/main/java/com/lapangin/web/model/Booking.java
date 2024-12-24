@@ -40,6 +40,12 @@ public class Booking {
     @Column(name = "total_price", nullable = false)
     private double totalPrice;
 
+    @Column(name = "payment_status")
+    private String status = "PENDING";
+
+    @Column(name = "payment_proof")
+    private String paymentProof;
+
     // Getters dan Setters
     public Long getId() {
         return id;
@@ -95,5 +101,21 @@ public class Booking {
 
     public void setTotalPrice(double totalPrice) {
         this.totalPrice = totalPrice;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getPaymentProof() {
+        return paymentProof;
+    }
+
+    public void setPaymentProof(String paymentProof) {
+        this.paymentProof = paymentProof;
     }
 }

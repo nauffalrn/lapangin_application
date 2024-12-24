@@ -1,6 +1,12 @@
 package com.lapangin.web.model;
+
+import java.text.NumberFormat;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -38,11 +44,17 @@ public class Lapangan {
     @Column(name = "cabang_olahraga", nullable = false)
     private String cabangOlahraga;
 
-    @Column(name = "deskripsi_lapangan")
-    private String deskripsiLapangan;
+    @Column(name = "alamat_lapangan")
+    private String alamatLapangan;
 
     @Column(name = "facilities")
     private String facilities;
+
+    @Column(name = "jam_buka", nullable = false)
+    private LocalTime jamBuka;
+
+    @Column(name = "jam_tutup", nullable = false)
+    private LocalTime jamTutup;
 
     // Getters and Setters
 
@@ -110,12 +122,12 @@ public class Lapangan {
         this.cabangOlahraga = cabangOlahraga;
     }
 
-    public String getDeskripsiLapangan() {
-        return deskripsiLapangan;
+    public String getAlamatLapangan() {
+        return alamatLapangan;
     }
 
-    public void setDeskripsiLapangan(String deskripsiLapangan) {
-        this.deskripsiLapangan = deskripsiLapangan;
+    public void setAlamatLapangan(String alamatLapangan) {
+        this.alamatLapangan = alamatLapangan;
     }
 
     public String getFacilities() {
@@ -131,6 +143,56 @@ public class Lapangan {
         if (this.facilities != null && !this.facilities.isEmpty()) {
             return Arrays.asList(this.facilities.split(",\\s*"));
         }
-        return null;
+        return Collections.emptyList(); // Mengembalikan daftar kosong alih-alih null
+    }
+
+    public String getFieldFacilitiesAsString() {
+        return String.join(", ", getFieldFacilitiesAsList());
+    }
+
+    public LocalTime getJamBuka() {
+        return jamBuka;
+    }
+
+    public void setJamBuka(LocalTime jamBuka) {
+        this.jamBuka = jamBuka;
+    }
+
+    public LocalTime getJamTutup() {
+        return jamTutup;
+    }
+
+    public void setJamTutup(LocalTime jamTutup) {
+        this.jamTutup = jamTutup;
+    }
+
+    public String getFormattedPrice() {
+        NumberFormat formatter = NumberFormat.getInstance(new Locale("id", "ID"));
+        return "Rp. " + formatter.format(this.price);
+    }
+
+    public String getFormattedJamBuka() {
+    if (this.jamBuka != null) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+        return this.jamBuka.format(formatter);
+    }
+    return "-";
+    }
+
+    public String getFormattedJamTutup() {
+        if (this.jamTutup != null) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+            return this.jamTutup.format(formatter);
+        }
+        return "-";
+    }
+
+    public String getFormattedJamOperasional() {
+        String buka = getFormattedJamBuka();
+        String tutup = getFormattedJamTutup();
+        if (!buka.equals("-") && !tutup.equals("-")) {
+            return buka + " - " + tutup;
+        }
+        return "-";
     }
 }

@@ -3,17 +3,22 @@ const sidebarToggler = document.querySelector(".sidebar-toggler");
 
 // Cek status sidebar dari localStorage saat halaman dimuat
 document.addEventListener("DOMContentLoaded", () => {
-    const isCollapsed = localStorage.getItem("sidebar-collapsed") === "true";
-    if (isCollapsed) {
-        sidebar.classList.add("collapsed");
-    } else {
-        sidebar.classList.remove("collapsed");
-    }
+  const isCollapsed = localStorage.getItem("sidebar-collapsed") === "true";
+  if (isCollapsed) {
+    sidebar.classList.add("collapsed");
+  } else {
+    sidebar.classList.remove("collapsed");
+  }
+
+  const someElement = document.getElementById("some-element-id");
+  if (someElement) {
+    someElement.classList.add("active");
+  }
 });
 
 // Toggle sidebar dan simpan status ke localStorage
 sidebarToggler.addEventListener("click", () => {
-    sidebar.classList.toggle("collapsed");
-    const isCollapsed = sidebar.classList.contains("collapsed");
-    localStorage.setItem("sidebar-collapsed", isCollapsed);
+  sidebar.classList.toggle("collapsed");
+  const isCollapsed = sidebar.classList.contains("collapsed");
+  localStorage.setItem("sidebar-collapsed", isCollapsed);
 });

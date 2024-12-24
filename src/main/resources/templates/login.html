@@ -43,7 +43,9 @@
                   class="input"
                   required
                 />
+                <!-- Error message untuk username -->
                 <div
+                  id="login-username-error"
                   th:if="${#fields.hasErrors('username')}"
                   th:errors="*{username}"
                   class="error"
@@ -58,31 +60,34 @@
                   class="password"
                   required
                 />
+                <i class="bx bx-hide eye-icon"></i>
+                <!-- Error message untuk password -->
                 <div
+                  id="login-password-error"
                   th:if="${#fields.hasErrors('password')}"
                   th:errors="*{password}"
                   class="error"
                 ></div>
-                <i class="bx bx-hide eye-icon"></i>
               </div>
 
-              <!-- Error message section -->
-              <div th:if="${errorMessage}" class="error-message">
+              <!-- Pesan error umum dari server -->
+              <div
+                id="login-general-error"
+                th:if="${errorMessage}"
+                class="error-message"
+              >
                 <p th:text="${errorMessage}"></p>
               </div>
 
-              <div class="form-link">
-                <a href="#" class="forgot-pass">Forgot password?</a>
-              </div>
               <div class="field button-field">
                 <button type="submit">Login</button>
               </div>
             </form>
 
-            <!-- Signup redirect -->
+            <!-- Redirect ke Signup -->
             <div class="form-link">
-              <span
-                >Don't have an account?
+              <span>
+                Don't have an account?
                 <a th:href="@{/register}" class="link signup-link">Signup</a>
               </span>
             </div>
@@ -93,7 +98,6 @@
 
     <!-- Scripts -->
     <script th:src="@{/js/script.js}"></script>
-    <script th:src="@{/js/darkmode.js}"></script>
     <script th:src="@{/js/log.js}"></script>
   </body>
 </html>

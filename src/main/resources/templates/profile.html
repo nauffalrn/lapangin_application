@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
     <link rel="stylesheet" href="/css/style.css" th:href="@{/css/style.css}" />
     <link
       rel="stylesheet"
@@ -37,22 +38,42 @@
       </header>
 
       <nav class="sidebar-nav">
+        <!-- Primary Navigation -->
         <ul class="nav-list primary-nav">
-          <li class="nav-item">
-            <a href="@{/dashboard}" class="nav-link">
+          <!-- Menu untuk Admin -->
+          <li class="nav-item" th:if="${user.role == 'ADMIN'}">
+            <a th:href="@{/dashboardAdmin}" class="nav-link">
+              <span class="nav-icon material-symbols-rounded">dashboard</span>
+              <span class="nav-label">Dashboard Admin</span>
+            </a>
+            <span class="nav-tooltip">Dashboard Admin</span>
+          </li>
+          <li class="nav-item" th:if="${user.role == 'ADMIN'}">
+            <a th:href="@{/admin}" class="nav-link">
+              <span class="nav-icon material-symbols-rounded"
+                >admin_panel_settings</span
+              >
+              <span class="nav-label">Admin Management</span>
+            </a>
+            <span class="nav-tooltip">Admin Management</span>
+          </li>
+
+          <!-- Menu untuk Customer -->
+          <li class="nav-item" th:if="${user.role == 'CUSTOMER'}">
+            <a th:href="@{/dashboard}" class="nav-link">
               <span class="nav-icon material-symbols-rounded">dashboard</span>
               <span class="nav-label">Dashboard</span>
             </a>
             <span class="nav-tooltip">Dashboard</span>
           </li>
-          <li class="nav-item">
-            <a th:href="@{/calender}" class="nav-link">
+          <li class="nav-item" th:if="${user.role == 'CUSTOMER'}">
+            <a th:href="@{/calendar}" class="nav-link">
               <span class="nav-icon material-symbols-rounded">today</span>
               <span class="nav-label">Calendar</span>
             </a>
             <span class="nav-tooltip">Calendar</span>
           </li>
-          <li class="nav-item">
+          <li class="nav-item" th:if="${user.role == 'CUSTOMER'}">
             <a th:href="@{/notifications}" class="nav-link">
               <span class="nav-icon material-symbols-rounded"
                 >notifications</span
@@ -61,14 +82,14 @@
             </a>
             <span class="nav-tooltip">Notifications</span>
           </li>
-          <li class="nav-item">
-            <a href="@{/history}" class="nav-link">
+          <li class="nav-item" th:if="${user.role == 'CUSTOMER'}">
+            <a th:href="@{/history}" class="nav-link">
               <span class="nav-icon material-symbols-rounded">history</span>
               <span class="nav-label">History</span>
             </a>
             <span class="nav-tooltip">History</span>
           </li>
-          <li class="nav-item">
+          <li class="nav-item" th:if="${user.role == 'CUSTOMER'}">
             <a th:href="@{/wallet}" class="nav-link">
               <span class="nav-icon material-symbols-rounded">wallet</span>
               <span class="nav-label">Wallets</span>
@@ -77,7 +98,7 @@
           </li>
         </ul>
 
-        <!--Secondary Bot nav-->
+        <!-- Secondary Bot Nav -->
         <ul class="nav-list secondary-nav">
           <li class="nav-item toggle-dark-mode">
             <span class="dark-mode-label">Dark Mode</span>
@@ -86,8 +107,8 @@
               <span class="slider"></span>
             </label>
           </li>
-          <li class="nav-item">
-            <a href="#" class="nav-link">
+          <li class="nav-item" th:if="${user != null}">
+            <a th:href="@{/profile}" class="nav-link">
               <span class="nav-icon material-symbols-rounded"
                 >account_circle</span
               >
@@ -95,154 +116,183 @@
             </a>
             <span class="nav-tooltip">Profile</span>
           </li>
-          <li class="nav-item">
+          <li class="nav-item" th:if="${user == null}">
             <a th:href="@{/login}" class="nav-link">
               <span class="nav-icon material-symbols-rounded">login</span>
               <span class="nav-label">Login</span>
             </a>
             <span class="nav-tooltip">Login</span>
           </li>
+          <li class="nav-item" th:if="${user != null}">
+            <a th:href="@{/login}" class="nav-link">
+              <span class="nav-icon material-symbols-rounded">logout</span>
+              <span class="nav-label">Logout</span>
+            </a>
+            <span class="nav-tooltip">Logout</span>
+          </li>
         </ul>
       </nav>
     </aside>
 
     <div class="container light-style flex-grow-1 container-p-y">
-      <h4 class="font-weight-bold py-3 mb-4">Account Settings</h4>
+      <h2 class="profile-settings-title">Profile Settings</h2>
       <div class="card overflow-hidden">
         <div class="row no-gutters row-bordered row-border-light">
-          <div class="col-md-3 pt-0">
-            <div class="list-group list-group-flush account-settings-links">
-              <a
-                class="list-group-item list-group-item-action active"
-                data-toggle="list"
-                href="#account-general"
-                >General</a
-              >
-              <a
-                class="list-group-item list-group-item-action"
-                data-toggle="list"
-                href="#account-change-password"
-                >Change Password</a
-              >
-            </div>
-          </div>
-          <div class="col-md-9">
+          <div class="col-md-6">
             <div class="tab-content">
               <!-- General tab -->
               <div class="tab-pane fade active show" id="account-general">
-                <div class="card-body media align-items-center">
-                  <img
-                    th:src="${user.profileImage != null} ? @{${user.profileImage}} : @{/images/default avatar.jpg}"
-                    alt="Profile Image"
-                    class="d-block ui-w-80"
+                <form
+                  id="profileForm"
+                  th:action="@{/profile/update}"
+                  method="post"
+                  enctype="multipart/form-data"
+                >
+                  <!-- CSRF Token -->
+                  <input
+                    type="hidden"
+                    th:name="${_csrf.parameterName}"
+                    th:value="${_csrf.token}"
                   />
-                  <div class="media-body ml-4">
-                    <form
-                      th:action="@{/upload-profile-image}"
-                      method="post"
-                      enctype="multipart/form-data"
-                    >
-                      <label class="btn btn-outline-primary">
-                        Upload New Photo
-                        <input
-                          type="file"
-                          name="profileImage"
-                          class="account-settings-fileinput"
-                          accept="image/*"
-                        />
-                      </label>
-                      &nbsp;
-                      <button type="submit" class="btn btn-primary">
-                        Upload
-                      </button>
-                    </form>
-                    <div class="text-light small mt-1">
-                      Allowed JPG, GIF, or PNG. Max size of 800K
-                    </div>
-                  </div>
-                </div>
-                <hr class="border-light m-0" />
-                <div class="card-body">
-                  <div class="form-group">
-                    <label class="form-label">Username</label>
-                    <input
-                      type="text"
-                      class="form-control mb-1"
-                      th:value="${user.username}"
-                      readonly
-                    />
-                  </div>
-                  <div class="form-group">
-                    <label class="form-label">Name</label>
-                    <input
-                      type="text"
-                      class="form-control"
-                      th:value="${user.name}"
-                      name="name"
-                    />
-                  </div>
-                  <div class="form-group">
-                    <label class="form-label">E-mail</label>
-                    <input
-                      type="email"
-                      class="form-control mb-1"
-                      th:value="${user.email}"
-                      name="email"
-                    />
-                  </div>
-                </div>
-              </div>
+                  <div class="col-md-6 content-kiri">
+                    <div class="card-body media align-items-center">
+                      <img
+                        id="profilePreview"
+                        th:if="${user.profileImage != null}"
+                        th:src="@{/${user.profileImage}}"
+                        alt="Profile Image"
+                        class="d-block ui-w-160 user-icon"
+                        width="150"
+                      />
+                      <img
+                        th:unless="${user.profileImage != null}"
+                        th:src="@{/images/default_avatar.jpg}"
+                        alt="Default Profile Image"
+                        class="d-block ui-w-160 user-icon"
+                        width="150"
+                      />
 
-              <!-- Change password tab -->
-              <div class="tab-pane fade" id="account-change-password">
-                <div class="card-body">
-                  <form th:action="@{/change-password}" method="post">
+                      <div
+                        class="media-body ml-4 upload-section"
+                        th:if="${user.role != 'ADMIN'}"
+                      >
+                        <div class="form-group upload-photo">
+                          <label for="profileImage">Upload New Photo:</label>
+                          <input
+                            type="file"
+                            id="profileImage"
+                            name="profileImage"
+                            accept="image/*"
+                            class="form-control-file"
+                          />
+                        </div>
+                        <div class="text-light small mt-1">
+                          JPG, GIF, PNG. Maks. 800K
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <hr class="border-light m-0" />
+                  <div class="card-body">
                     <div class="form-group">
-                      <label class="form-label">Current Password</label>
+                      <label class="form-label">Username</label>
                       <input
-                        type="password"
-                        class="form-control"
-                        name="currentPassword"
+                        type="text"
+                        class="form-control mb-3"
+                        th:value="${user.username}"
+                        name="username"
+                        id="username"
+                        th:readonly="${user.role == 'ADMIN'}"
                         required
+                      />
+                      <div
+                        class="error-message text-danger"
+                        id="usernameError"
+                      ></div>
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">Name</label>
+                      <input
+                        type="text"
+                        class="form-control mb-3"
+                        th:value="${user.name}"
+                        name="name"
+                        readonly
                       />
                     </div>
                     <div class="form-group">
-                      <label class="form-label">New Password</label>
+                      <label class="form-label">Email</label>
                       <input
-                        type="password"
-                        class="form-control"
-                        name="newPassword"
+                        type="email"
+                        class="form-control mb-3"
+                        th:value="${user.email}"
+                        name="email"
+                        id="email"
+                        th:readonly="${user.role == 'ADMIN'}"
                         required
                       />
+                      <div
+                        class="error-message text-danger"
+                        id="emailError"
+                      ></div>
                     </div>
-                    <div class="form-group">
-                      <label class="form-label">Confirm New Password</label>
+                    <div th:if="${user.role == 'CUSTOMER'}" class="form-group">
+                      <label for="phone">No Telepon:</label>
                       <input
-                        type="password"
-                        class="form-control"
-                        name="confirmPassword"
+                        type="text"
+                        id="phone"
+                        name="phone"
+                        th:value="${phoneNumber}"
+                        class="form-control mb-3"
                         required
                       />
+                      <div
+                        class="error-message text-danger"
+                        id="phoneError"
+                      ></div>
                     </div>
-                    <button type="submit" class="btn btn-primary">
-                      Change Password
+                  </div>
+
+                  <!-- Tombol -->
+                  <div
+                    th:if="${user.role == 'CUSTOMER'}"
+                    class="text-right mt-3 button-group"
+                  >
+                    <button
+                      type="submit"
+                      class="btn btn-primary"
+                      id="saveChanges"
+                    >
+                      Save Changes
                     </button>
-                  </form>
-                </div>
+                    <button
+                      type="button"
+                      class="btn btn-secondary"
+                      id="cancelChanges"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </form>
               </div>
             </div>
           </div>
+          <!-- Kolom Kanan: Gambar Karakter -->
+          <div class="col-md-6 d-flex justify-content-center align-items-start">
+            <img
+              src="/images/karakter_user.png"
+              alt="User Icon"
+              class="user-icon karakter-gambar"
+            />
+          </div>
         </div>
-      </div>
-      <div class="text-right mt-3">
-        <button type="button" class="btn btn-primary">Save changes</button
-        >&nbsp;
-        <button type="button" class="btn btn-default">Cancel</button>
       </div>
     </div>
     <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="/js/darkmode.js" th:src="@{/js/darkmode.js}"></script>
     <script src="/js/script.js" th:src="@{/js/script.js}"></script>
+    <script src="/js/log.js" th:src="@{/js/log.js}"></script>
   </body>
 </html>

@@ -40,8 +40,9 @@ public class WebSecurityConfig {
             )
             .authorizeHttpRequests(authz -> authz
                 .requestMatchers("/", "/css/**", "/js/**", "/images/**", "/login", "/register", "/error").permitAll()
-                .requestMatchers("/admin/**", "/dashboardAdmin").hasRole("ADMIN") // Tambahkan "/admin/**"
+                .requestMatchers("/admin/**", "/dashboardAdmin").hasRole("ADMIN")
                 .requestMatchers("/dashboard").hasAnyRole("ADMIN", "CUSTOMER")
+                .requestMatchers("/booking/**").hasRole("CUSTOMER")
                 .requestMatchers("/calendar", "/notifications", "/history", "/wallet", "/booking/**").authenticated()
                 .anyRequest().authenticated()
             )
