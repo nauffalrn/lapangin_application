@@ -8,6 +8,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
@@ -18,6 +19,9 @@ public class Booking {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "username", nullable = false)
+    private String username; // Menyimpan username yang melakukan pemesanan
 
     @ManyToOne
     @JoinColumn(name = "customer_id", nullable = false)
@@ -34,17 +38,24 @@ public class Booking {
     @Column(name = "booking_date", nullable = false)
     private LocalDateTime bookingDate;
 
-    @Column(nullable = false)
-    private int duration; // Dalam jam
+    @Column(name = "jam_mulai", nullable = false)
+    private int jamMulai; 
+
+    @Column(name = "jam_selesai", nullable = false)
+    private int jamSelesai; 
 
     @Column(name = "total_price", nullable = false)
     private double totalPrice;
 
-    @Column(name = "payment_status")
-    private String status = "PENDING";
+    @Lob
+    @Column(name = "payment_proof", nullable = true, columnDefinition = "MEDIUMBLOB")
+    private byte[] paymentProof;
 
-    @Column(name = "payment_proof")
-    private String paymentProof;
+    @Column(name = "payment_proof_filename", nullable = true)
+    private String paymentProofFilename;
+
+    // Constructor default
+    public Booking() {}
 
     // Getters dan Setters
     public Long getId() {
@@ -55,12 +66,23 @@ public class Booking {
         this.id = id;
     }
 
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
     public Customer getCustomer() {
         return customer;
     }
 
     public void setCustomer(Customer customer) {
         this.customer = customer;
+        if (customer != null) {
+            this.username = customer.getUsername(); // Otomatis set username dari Customer
+        }
     }
 
     public Lapangan getLapangan() {
@@ -87,12 +109,20 @@ public class Booking {
         this.bookingDate = bookingDate;
     }
 
-    public int getDuration() {
-        return duration;
+    public int getJamMulai() {
+        return jamMulai;
     }
 
-    public void setDuration(int duration) {
-        this.duration = duration;
+    public void setJamMulai(int jamMulai) {
+        this.jamMulai = jamMulai;
+    }
+
+    public int getJamSelesai() {
+        return jamSelesai;
+    }
+
+    public void setJamSelesai(int jamSelesai) {
+        this.jamSelesai = jamSelesai;
     }
 
     public double getTotalPrice() {
@@ -103,19 +133,19 @@ public class Booking {
         this.totalPrice = totalPrice;
     }
 
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public String getPaymentProof() {
+    public byte[] getPaymentProof() {
         return paymentProof;
     }
 
-    public void setPaymentProof(String paymentProof) {
+    public void setPaymentProof(byte[] paymentProof) {
         this.paymentProof = paymentProof;
+    }
+
+    public String getPaymentProofFilename() {
+        return paymentProofFilename;
+    }
+
+    public void setPaymentProofFilename(String paymentProofFilename) {
+        this.paymentProofFilename = paymentProofFilename;
     }
 }

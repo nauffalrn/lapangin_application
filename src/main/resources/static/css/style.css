@@ -2014,30 +2014,32 @@ body {
 
 /* payment */
 .payment-container {
-  max-width: 600px;
-  margin: 2rem auto;
-  padding: 2rem;
-  background: var(--bg-secondary);
+  background-color: #f0f0f0; /* Abu muda */
+  padding: 20px;
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  max-width: 600px;
+  margin: 40px auto;
 }
 
 .booking-details, 
 .payment-info {
-  margin-bottom: 2rem;
-  padding: 1rem;
-  background: var(--facility-bg);
-  border-radius: 4px;
+  background-color: #f0f0f0;
+  padding: 15px;
+  border-radius: 6px;
+  margin-top: 20px;
+  text-align: center;
 }
 
+.qr-code {
+  width: 150px;
+  height: 150px;
+  margin: 10px auto;
+}
+
+/* Bank Account */
 .bank-account {
   font-size: 1.2rem;
-  font-weight: bold;
-  color: var(--text-primary);
-  text-align: center;
-  padding: 1rem;
-  background: #f8f9fa;
-  border-radius: 4px;
+  color: #333;
 }
 
 .upload-section {
@@ -2063,4 +2065,37 @@ body {
 
 .upload-btn:hover {
   background: #45a049;
+}
+
+/* Highlight hari ini */
+.calendar-day.today {
+  border: 2px solid #007bff; /* Biru */
+  border-radius: 4px;
+}
+
+/* Highlight hari dengan booking */
+.calendar-day.has-booking {
+  border: 2px solid #28a745; /* Hijau */
+  border-radius: 4px;
+}
+
+/* Opsional: Efek hover untuk hari */
+.calendar-day:hover {
+  background-color: #e0e0e0;
+  cursor: pointer;
+}
+
+/* Menangani hari kosong */
+.calendar-day.empty {
+  background-color: #f9f9f9;
+  border: none;
+}
+
+/* Styling umum untuk calendar-day */
+.calendar-day {
+  padding: 10px;
+  text-align: center;
+  background-color: #f0f0f0;
+  border-radius: 8px;
+  transition: all 0.3s ease;
 }

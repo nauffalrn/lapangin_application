@@ -1,73 +1,44 @@
-document.addEventListener("DOMContentLoaded", function () {
-  // Initialize dates
+document.addEventListener("DOMContentLoaded", () => {
   initializeDates();
-
-  // Setup event listeners
-  setupImagePreview();
   setupModalHandlers();
-
-  // Handle date item clicks
-  const dateItems = document.querySelectorAll(".date-item");
-  dateItems.forEach((item) => {
-    item.addEventListener("click", function () {
-      // Remove active class dari semua item
-      dateItems.forEach((di) => di.classList.remove("active"));
-      // Tambahkan active class ke item yang diklik
-      this.classList.add("active");
-
-      // Update tampilan jadwal
-      updateScheduleForDate(this.dataset.date);
-    });
-  });
+  setupTimeSlotAvailability();
 });
 
 let selectedSlots = [];
 let totalPrice = 0;
 
 function initializeDates() {
-  const dateScroll = document.querySelector(".date-scroll");
+  const dateScroll = document.getElementById("dateScroll");
   if (!dateScroll) return;
 
   dateScroll.innerHTML = "";
   const days = ["Min", "Sen", "Sel", "Rab", "Kam", "Jum", "Sab"];
   const months = [
-    "Jan",
-    "Feb",
-    "Mar",
-    "Apr",
-    "Mei",
-    "Jun",
-    "Jul",
-    "Ags",
-    "Sep",
-    "Okt",
-    "Nov",
-    "Des",
+    "Jan", "Feb", "Mar", "Apr", "Mei", "Jun",
+    "Jul", "Ags", "Sep", "Okt", "Nov", "Des",
   ];
 
   const today = new Date();
   for (let i = 0; i < 7; i++) {
     const nextDate = new Date(today);
     nextDate.setDate(today.getDate() + i);
+    const isoDate = nextDate.toISOString().split('T')[0];
 
     const dateItem = document.createElement("div");
-    dateItem.className = "date-item" + (i === 0 ? " active" : "");
-    const isoDate = nextDate.toISOString().split("T")[0];
-    dateItem.dataset.date = isoDate;
+    dateItem.className = "date-item";
+    dateItem.dataset.date = isoDate; // Add data-date attribute
     dateItem.innerHTML = `
       <span class="day">${days[nextDate.getDay()]}</span>
-      <span class="date">${nextDate.getDate()} ${
-      months[nextDate.getMonth()]
-    }</span>
+      <span class="date">${nextDate.getDate()} ${months[nextDate.getMonth()]}</span>
     `;
     dateItem.addEventListener("click", () => {
-      document
-        .querySelectorAll(".date-item")
-        .forEach((di) => di.classList.remove("active"));
+      document.querySelectorAll(".date-item").forEach(di => di.classList.remove("active"));
       dateItem.classList.add("active");
       updateScheduleForDate(isoDate);
-      document.getElementById("selectedDate").textContent =
-        formatDisplayDate(isoDate);
+      document.getElementById("selectedDate").textContent = formatDisplayDate(isoDate);
+      
+      // Reset selections when date changes
+      resetSelectedSlots();
     });
     dateScroll.appendChild(dateItem);
   }
@@ -86,26 +57,33 @@ function showImagePreview(imageSrc) {
   const modal = document.createElement("div");
   modal.className = "image-preview-modal";
   modal.innerHTML = `
-        <div class="modal-content">
-            <span class="close-modal">&times;</span>
-            <img src="${imageSrc}" alt="Preview">
-        </div>
-    `;
+    <div class="modal-content">
+      <span class="close-modal">&times;</span>
+      <img src="${imageSrc}" alt="Preview">
+    </div>
+  `;
 
   document.body.appendChild(modal);
 
-  // Handler untuk menutup modal
+  // Handler to close modal
   modal.querySelector(".close-modal").onclick = () => modal.remove();
   modal.onclick = (e) => {
     if (e.target === modal) modal.remove();
   };
 
-  // Cegah scroll saat modal terbuka
+  // Prevent scrolling when modal is open
   document.body.style.overflow = "hidden";
   modal.addEventListener("click", () => {
     document.body.style.overflow = "";
     modal.remove();
   });
+
+  // Reset selections when modal is closed
+  const closeModal = () => {
+    resetSelectedSlots();
+  };
+
+  modal.querySelector(".close-modal").addEventListener("click", closeModal);
 }
 
 function setupModalHandlers() {
@@ -113,22 +91,25 @@ function setupModalHandlers() {
   const closeBtn = document.querySelector(".detail-close-modal");
 
   if (modal && closeBtn) {
-    // Tutup saat tombol X diklik
+    // Close when X is clicked
     closeBtn.onclick = () => {
       tutupModal();
+      resetSelectedSlots();
     };
 
-    // Tutup saat klik di luar modal
+    // Close when clicking outside the modal content
     window.onclick = (e) => {
       if (e.target === modal) {
         tutupModal();
+        resetSelectedSlots();
       }
     };
 
-    // Handler untuk tombol Escape
+    // Close when Escape key is pressed
     document.addEventListener("keydown", (e) => {
       if (e.key === "Escape" && modal.style.display === "flex") {
         tutupModal();
+        resetSelectedSlots();
       }
     });
   }
@@ -162,152 +143,262 @@ function updateScheduleForDate(date) {
     return;
   }
 
-  // Get lapangan detail
-  fetch(`/booking/lapangan/${venueId}`)
+  // Mendapatkan detail lapangan
+  fetch(`/api/booking/lapangan/${venueId}`)
     .then((response) => response.json())
     .then((lapangan) => {
-      // Get jadwal
-      fetch(`/booking/jadwal?lapanganId=${venueId}&tanggal=${date}`)
-        .then((response) => response.json())
+      if (!lapangan) {
+        console.error("Data lapangan tidak ditemukan.");
+        return;
+      }
+
+      // Mendapatkan jadwal
+      fetch(`/api/booking/jadwal?lapanganId=${venueId}&tanggal=${date}`)
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error(`Error fetching jadwal: ${response.statusText}`);
+          }
+          return response.json();
+        })
         .then((jadwalList) => {
+          if (!Array.isArray(jadwalList)) {
+            console.error("Jadwal tidak terdefinisi atau bukan array.");
+            return;
+          }
           updateScheduleDisplay(jadwalList, lapangan);
         })
-        .catch((error) => console.error("Error fetching jadwal:", error));
+        .catch((error) => {
+          console.error("Error saat mengambil jadwal:", error);
+        });
     })
-    .catch((error) => console.error("Error fetching lapangan:", error));
+    .catch((error) => {
+      console.error("Error saat mengambil detail lapangan:", error);
+    });
 }
 
 function updateScheduleDisplay(jadwalList, lapangan) {
-  const scheduleGrid = document.querySelector(".detail-schedule-grid");
+  const scheduleGrid = document.getElementById("scheduleGrid");
   scheduleGrid.innerHTML = "";
 
+  if (jadwalList.length === 0) {
+    scheduleGrid.innerHTML = "<p>Tidak ada jadwal tersedia untuk tanggal ini.</p>";
+    return;
+  }
+
   jadwalList.forEach((jadwal) => {
+    console.log("Jadwal diterima:", jadwal); // Untuk debugging
+
     const slot = document.createElement("div");
-    slot.className = `time-slot ${jadwal.tersedia ? "available" : "booked"}`;
-    slot.dataset.time = jadwal.jam;
+    slot.className = `time-slot ${jadwal.available ? "available" : "booked"}`;
+    slot.dataset.time = jadwal.waktu; // Gunakan 'waktu' sesuai respons
     slot.dataset.price = jadwal.harga;
+    slot.dataset.courtId = lapangan.id;
+
+    // Tentukan status
+    let statusText = "";
+    if (jadwal.available) {
+      statusText = "Tersedia";
+    } else {
+      statusText = "Jadwal sudah terisi";
+    }
 
     slot.innerHTML = `
       <div class="time-slot-content">
-        <span class="time">${jadwal.jam}</span>
-        <span class="status">${
-          jadwal.tersedia ? "Tersedia" : "Sudah Dipesan"
-        }</span>
+        <span class="time">${jadwal.waktu}</span>
         <span class="price">${formatCurrency(jadwal.harga)}</span>
+        <span class="status">${statusText}</span>
       </div>
     `;
 
-    if (jadwal.tersedia) {
+    if (jadwal.available) {
       slot.addEventListener("click", () =>
-        selectTimeSlot(slot, jadwal.jam, jadwal.harga, lapangan.id)
+        selectTimeSlot(slot, jadwal.waktu, jadwal.harga, lapangan.id)
       );
     }
+
     scheduleGrid.appendChild(slot);
   });
+
+  setupTimeSlotAvailability();
 }
 
-function selectTimeSlot(slotElement, time, price, courtId) {
-  const isSelected = slotElement.classList.contains("selected");
+function selectTimeSlot(slotElement, waktu, price, courtId) {
+  const slotIndex = selectedSlots.findIndex(
+    (slot) => slot.waktu === waktu && slot.courtId === courtId
+  );
 
-  if (isSelected) {
-    // Unselect slot
+  if (slotIndex > -1) {
+    // Slot sudah dipilih, hapus dari selectedSlots
+    selectedSlots.splice(slotIndex, 1);
     slotElement.classList.remove("selected");
-    selectedSlots = selectedSlots.filter((slot) => slot.time !== time);
-    totalPrice -= price;
   } else {
-    // Select slot
+    // Pilih slot, tambahkan ke selectedSlots
+    selectedSlots.push({ waktu, price: parseInt(price, 10), courtId });
     slotElement.classList.add("selected");
-    selectedSlots.push({
-      time: time,
-      price: price,
-      courtId: courtId,
-    });
-    totalPrice += price;
   }
 
-  // Update UI
+  // Perbarui total harga
+  totalPrice = selectedSlots.reduce((acc, slot) => acc + slot.price, 0);
   updateSelectionSummary();
+
+  // Tampilkan atau sembunyikan tombol checkout
+  const checkoutButton = document.getElementById("checkoutButton");
+  if (selectedSlots.length > 0) {
+    checkoutButton.style.display = "block";
+    checkoutButton.disabled = false;
+  } else {
+    checkoutButton.style.display = "none";
+  }
 }
 
 function updateSelectionSummary() {
-  const selectedSlotsCount = document.getElementById("selectedSlotsCount");
-  const totalPriceElement = document.getElementById("totalPrice");
-  const checkoutButton = document.getElementById("checkoutButton");
-
-  selectedSlotsCount.textContent = selectedSlots.length;
-  totalPriceElement.textContent = formatCurrency(totalPrice).replace("IDR", "");
-
-  // Enable/disable checkout button
-  checkoutButton.disabled = selectedSlots.length === 0;
+  document.getElementById("selectedSlotsCount").textContent = selectedSlots.length;
+  document.getElementById("totalPrice").textContent = formatCurrency(totalPrice);
 }
 
 function lanjutPembayaran() {
-    if (selectedSlots.length === 0) {
-        alert("Pilih jadwal terlebih dahulu");
-        return;
+  if (selectedSlots.length === 0) {
+    alert("Pilih jadwal terlebih dahulu");
+    return;
+  }
+
+  // Fetch CSRF tokens
+  const csrfTokenElement = document.querySelector('meta[name="_csrf"]');
+  const csrfHeaderElement = document.querySelector('meta[name="_csrf_header"]');
+
+  if (!csrfTokenElement || !csrfHeaderElement) {
+    alert("CSRF token tidak ditemukan.");
+    return;
+  }
+
+  const csrfToken = csrfTokenElement.content;
+  const csrfHeader = csrfHeaderElement.content;
+
+  // Data booking
+  const activeDateItem = document.querySelector(".date-item.active");
+  if (!activeDateItem) {
+    alert("Tanggal tidak dipilih.");
+    return;
+  }
+  const bookingDate = activeDateItem.dataset.date; // ISO date string 'YYYY-MM-DD'
+
+  // Check if customer has an available promo
+  const hasPromoElement = document.getElementById("hasPromo");
+  const hasPromo = hasPromoElement ? hasPromoElement.value === "true" : false;
+
+  const bookingData = {
+    tanggal: bookingDate,
+    lapanganId: selectedSlots[0].courtId,
+    jadwalList: selectedSlots.map(slot => ({
+      waktu: slot.waktu, // Pastikan ini benar
+      harga: slot.harga
+    }))
+  };
+
+  // Include kodePromo only if hasPromo is true
+  if (hasPromo) {
+    bookingData.kodePromo = "Lapangin2024";
+  }
+
+  // Send request with CSRF token
+  fetch('/api/booking/create', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      [csrfHeader]: csrfToken,
+      'X-Requested-With': 'XMLHttpRequest'
+    },
+    credentials: 'same-origin',
+    body: JSON.stringify(bookingData)
+  })
+  .then(response => {
+    console.log("Status response:", response.status);
+    if (!response.ok) {
+      return response.text().then(text => {
+        throw new Error(text || 'HTTP error! status: ' + response.status);
+      });
     }
-
-    // Ambil token CSRF
-    const csrfToken = document.querySelector('meta[name="_csrf"]').content;
-    const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
-
-    // Data booking
-    const bookingData = {
-        lapanganId: selectedSlots[0].courtId,
-        jadwalList: selectedSlots.map(slot => ({
-            waktu: slot.time,
-            harga: slot.price
-        }))
-    };
-
-    console.log("Mengirim data booking:", bookingData); // Debug log
-
-    // Kirim request dengan CSRF token
-    fetch('/booking/create', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            [csrfHeader]: csrfToken,
-            'X-Requested-With': 'XMLHttpRequest'
-        },
-        credentials: 'same-origin',
-        body: JSON.stringify(bookingData)
-    })
-    .then(response => {
-        console.log("Status response:", response.status); // Debug log
-        if (!response.ok) {
-            return response.text().then(text => {
-                throw new Error(text || 'HTTP error! status: ' + response.status);
-            });
-        }
-        return response.json();
-    })
-    .then(data => {
-        console.log("Response data:", data); // Debug log
-        if (data.success) {
-            window.location.href = `/booking/payment/${data.bookingId}`;
-        } else {
-            alert(data.message || "Gagal membuat booking");
-        }
-    })
-    .catch(error => {
-        console.error("Error detail:", error); // Debug log
-        alert(`Gagal membuat booking: ${error.message}`);
-    });
+    return response.json();
+  })
+  .then(data => {
+    console.log("Response data:", data);
+    if (data.success) {
+      window.location.href = `/booking/payment/${data.bookingId}`;
+    } else {
+      alert(data.message || "Gagal membuat booking");
+      resetSelectedSlots();
+    }
+  })
+  .catch(error => {
+    console.error("Error creating booking:", error);
+    alert(`Gagal membuat booking: ${error.message}`);
+    resetSelectedSlots();
+  });
 }
 
-// Add style for selected slots
-const style = document.createElement("style");
-style.textContent = `
-  .time-slot.selected {
-    background-color: #4CAF50;
-    color: white;
+function resetSelectedSlots() {
+  selectedSlots = [];
+  totalPrice = 0;
+  document.getElementById('selectedSlotsCount').innerText = '0';
+  document.getElementById('totalPrice').innerText = '0';
+  const checkoutButton = document.getElementById("checkoutButton");
+  checkoutButton.style.display = "none";
+  checkoutButton.disabled = true;
+
+  // Clear selections in the UI
+  const selectedElements = document.querySelectorAll(".time-slot.selected");
+  selectedElements.forEach(slot => slot.classList.remove("selected"));
+}
+
+function setupTimeSlotAvailability() {
+  const activeDateItem = document.querySelector(".date-item.active");
+  if (!activeDateItem) return;
+  const selectedDate = activeDateItem.dataset.date; // 'YYYY-MM-DD'
+
+  const now = new Date();
+
+  const timeSlots = document.querySelectorAll(".time-slot.available");
+  timeSlots.forEach((slot) => {
+    const slotTime = slot.getAttribute("data-time"); // "HH:mm"
+    const [hour, minute] = slotTime.split(":").map(Number);
+    const slotDateTime = new Date(selectedDate);
+    slotDateTime.setHours(hour, minute, 0, 0);
+
+    if (slotDateTime < now) {
+      // Disable the slot
+      slot.classList.remove("available");
+      slot.classList.add("disabled");
+      slot.classList.remove("selected");
+      slot.removeEventListener("click", selectTimeSlot);
+      slot.title = "Jam sudah lewat";
+
+      // Update the status text
+      const statusSpan = slot.querySelector(".status");
+      if (statusSpan) {
+        statusSpan.textContent = "Jam sudah lewat";
+      }
+    }
+  });
+
+  // Cek tombol checkout
+  const remainingAvailable = document.querySelectorAll(".time-slot.available").length;
+  const checkoutButton = document.getElementById("checkoutButton");
+  if (remainingAvailable === 0) {
+    checkoutButton.style.display = "none";
+    checkoutButton.disabled = true;
+  } else {
+    if (selectedSlots.length > 0) {
+      checkoutButton.style.display = "block";
+      checkoutButton.disabled = false;
+    } else {
+      checkoutButton.style.display = "none";
+      checkoutButton.disabled = true;
+    }
   }
-  .time-slot.selected .time-slot-content {
-    color: white;
-  }
-`;
-document.head.appendChild(style);
+
+  // Update ringkasan seleksi
+  updateSelectionSummary();
+}
 
 function getContextPath() {
   const metaContextPath = document.querySelector("meta[name='context-path']");
@@ -320,12 +411,7 @@ function getVenueId() {
 }
 
 function formatCurrency(amount) {
-  return new Intl.NumberFormat("id-ID", {
-    style: "currency",
-    currency: "IDR",
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  }).format(amount);
+  return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(amount);
 }
 
 function formatDisplayDate(dateStr) {

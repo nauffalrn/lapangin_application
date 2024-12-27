@@ -2,73 +2,79 @@
 <html xmlns:th="http://www.thymeleaf.org">
   <head>
     <title>Pembayaran - Lapangin</title>
+    <!-- Meta Tags untuk CSRF Token -->
+    <meta name="_csrf" th:content="${_csrf.token}" />
+    <meta name="_csrf_header" th:content="${_csrf.headerName}" />
     <link rel="stylesheet" th:href="@{/css/style.css}" />
+    <link rel="stylesheet" th:href="@{/css/detail_lapangan.css}" />
   </head>
   <body>
     <div class="payment-container">
-      <h2>Detail Pembayaran</h2>
-
+      <!-- Detail Booking -->
       <div class="booking-details">
         <p>
-          Lapangan: <span th:text="${booking.lapangan.namaLapangan}"></span>
+          Lapangan:
+          <span th:text="${booking.lapangan.namaLapangan}">Nama Lapangan</span>
         </p>
         <p>
           Tanggal Main:
           <span
             th:text="${#temporals.format(booking.bookingDate, 'dd MMM yyyy')}"
-          ></span>
+            >Tanggal</span
+          >
         </p>
-        <p>Jam Main: <span th:text="${booking.jamMulai + ':00'}"></span></p>
-        <p>Total: <span th:text="${booking.totalPrice}"></span></p>
+        <p>
+          Jam Main:
+          <span th:text="${booking.jamMulai + ':00'}">00:00</span> -
+          <span th:text="${booking.jamSelesai + ':00'}">00:00</span>
+        </p>
       </div>
 
+      <!-- Payment Details Box -->
       <div class="payment-info">
         <h3>Transfer ke:</h3>
-        <p th:text="${noRek}" class="bank-account"></p>
+        <!-- QR Code Pembayaran -->
+        <img
+          src="/images/qr-code.png"
+          alt="QR Code Pembayaran"
+          class="qr-code"
+        />
+        <p th:text="${noRek}" class="bank-account">
+          BCA: 1234567890 a.n LAPANGIN
+        </p>
       </div>
 
-      <div class="upload-section">
-        <h3>Upload Bukti Transfer</h3>
-        <form id="paymentForm">
-          <input type="file" name="paymentProof" accept="image/*" required />
-          <button type="submit" class="upload-btn">
-            Konfirmasi Pembayaran
-          </button>
-        </form>
-      </div>
+      <button
+        id="cancelBookingButton"
+        class="cancel-btn"
+        th:data-booking-id="${booking.id}"
+      >
+        Batal Booking
+      </button>
+
+      <!-- Upload Payment Proof Form -->
+      <form
+        id="paymentForm"
+        enctype="multipart/form-data"
+        th:action="@{/api/booking/payment/upload}"
+        method="post"
+      >
+        <input type="hidden" name="bookingId" th:value="${booking.id}" />
+        <div>
+          <label for="paymentProof">Upload Bukti Pembayaran:</label>
+          <input
+            type="file"
+            id="paymentProof"
+            name="file"
+            accept="image/*"
+            required
+          />
+        </div>
+        <button type="submit">Konfirmasi Pembayaran</button>
+      </form>
     </div>
 
-    <script th:inline="javascript">
-      const bookingId = null;
-
-      document.getElementById('paymentForm').addEventListener('submit', async (e) => {
-          e.preventDefault();
-
-          const formData = new FormData();
-          const fileInput = document.querySelector('input[type="file"]');
-
-          formData.append('file', fileInput.files[0]);
-          formData.append('bookingId', bookingId);
-
-          try {
-              const response = await fetch('/booking/payment/upload', {
-                  method: 'POST',
-                  body: formData
-              });
-
-              const result = await response.json();
-
-              if (result.success) {
-                  alert('Pembayaran berhasil dikonfirmasi!');
-                  window.location.href = '/dashboard';
-              } else {
-                  alert(result.message || 'Gagal mengupload bukti pembayaran');
-              }
-          } catch (error) {
-              console.error('Error:', error);
-              alert('Terjadi kesalahan sistem');
-          }
-      });
-    </script>
+    <!-- Sertakan File JavaScript Eksternal dengan Thymeleaf -->
+    <script th:src="@{/js/payment.js}"></script>
   </body>
 </html>

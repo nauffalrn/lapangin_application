@@ -1,28 +1,32 @@
 package com.lapangin.web.controller;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.security.Principal;
-import java.time.LocalTime;
+import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.lapangin.web.dto.BookingRequest;
+import com.lapangin.web.dto.BookingResponse;
+import com.lapangin.web.dto.JadwalResponse;
+import com.lapangin.web.dto.LapanganResponse;
+import com.lapangin.web.dto.PromoRequest;
+import com.lapangin.web.dto.Response;
 import com.lapangin.web.model.Booking;
 import com.lapangin.web.model.Customer;
 import com.lapangin.web.model.Lapangan;
@@ -30,83 +34,78 @@ import com.lapangin.web.model.Promo;
 import com.lapangin.web.service.BookingService;
 import com.lapangin.web.service.CustomerService;
 import com.lapangin.web.service.LapanganService;
-import com.lapangin.web.service.LapanganService.JadwalResponse;
 import com.lapangin.web.service.PromoService;
 
-@Controller // Change to @Controller
-@RequestMapping("/booking")
+@CrossOrigin(origins = "*")
+@RestController
+@RequestMapping("/api/booking")
 public class BookingController {
 
     private static final Logger logger = LoggerFactory.getLogger(BookingController.class);
 
+    private final LapanganService lapanganService;
     private final BookingService bookingService;
     private final CustomerService customerService;
     private final PromoService promoService;
-    private final LapanganService lapanganService;
 
     private static final String UPLOAD_DIR = "src/main/resources/static/payment-proofs/";
 
-    // Constructor Injection yang telah diperbarui
-    public BookingController(BookingService bookingService,
+    public BookingController(LapanganService lapanganService,
+                             BookingService bookingService,
                              CustomerService customerService,
-                             PromoService promoService,
-                             LapanganService lapanganService) {
+                             PromoService promoService) {
+        this.lapanganService = lapanganService;
         this.bookingService = bookingService;
         this.customerService = customerService;
         this.promoService = promoService;
-        this.lapanganService = lapanganService;
     }
 
     @PostMapping("/create")
-    @ResponseBody
-    public ResponseEntity<?> createBooking(@RequestBody BookingRequest request, Principal principal) {
-        logger.info("Menerima request booking dari user: {}", principal != null ? principal.getName() : "unknown");
-        logger.info("Data booking: {}", request);
-
+    public ResponseEntity<Response> createBooking(@RequestBody BookingRequest bookingRequest, Principal principal) {
         try {
-            if (principal == null) {
-                logger.error("User tidak terautentikasi");
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(new Response(false, "Silakan login terlebih dahulu"));
-            }
-
             Customer customer = customerService.findByUsername(principal.getName());
             if (customer == null) {
-                logger.error("Customer tidak ditemukan untuk username: {}", principal.getName());
+                logger.warn("Customer tidak ditemukan untuk username: {}", principal.getName());
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(new Response(false, "Data customer tidak ditemukan"));
+                        .body(new Response(false, "Customer tidak ditemukan."));
             }
 
-            // Buat booking
-            Booking booking = bookingService.createBooking(customer, request.getLapanganId(), null);
-            logger.info("Booking berhasil dibuat dengan ID: {}", booking.getId());
-            
-            return ResponseEntity.ok(new BookingResponse(true, "Booking berhasil", booking.getId()));
+            String kodePromo = bookingRequest.getKodePromo();
+            Promo promo = null;
 
+            if (kodePromo != null && !kodePromo.trim().isEmpty()) {
+                promo = promoService.findByKodePromo(kodePromo);
+                if (promo == null) {
+                    logger.warn("Promo tidak valid: {}", kodePromo);
+                    return ResponseEntity.badRequest().body(new Response(false, "Promo tidak valid."));
+                }
+
+                if (promoService.isPromoClaimedByCustomer(customer, promo)) {
+                    logger.warn("Promo sudah diklaim oleh customer: {}", customer.getUsername());
+                    return ResponseEntity.badRequest().body(new Response(false, "Promo sudah diklaim."));
+                }
+
+                if (!promoService.isPromoValid(promo)) {
+                    logger.warn("Promo sudah tidak berlaku: {}", promo.getKodePromo());
+                    return ResponseEntity.badRequest().body(new Response(false, "Promo sudah tidak berlaku."));
+                }
+            }
+
+            Booking booking = bookingService.createBooking(
+                customer,
+                bookingRequest.getLapanganId(),
+                bookingRequest.getTanggal(),
+                bookingRequest.getJadwalList(),
+                kodePromo
+            );
+
+            return ResponseEntity.ok(new BookingResponse(true, "Booking berhasil dibuat.", booking.getId()));
         } catch (Exception e) {
-            logger.error("Error saat membuat booking", e);
+            logger.error("Gagal membuat booking: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(new Response(false, "Gagal membuat booking: " + e.getMessage()));
+                .body(new Response(false, "Gagal membuat booking."));
         }
     }
-
-// Add this class inside BookingController
-public static class BookingResponse extends Response {
-    private Long bookingId;
-    
-    public BookingResponse(boolean success, String message, Long bookingId) {
-        super(success, message);
-        this.bookingId = bookingId;
-    }
-    
-    public Long getBookingId() {
-        return bookingId;
-    }
-    
-    public void setBookingId(Long bookingId) {
-        this.bookingId = bookingId;
-    }
-}
 
     @PostMapping("/claim")
     public ResponseEntity<Response> claimPromo(@RequestBody PromoRequest request, Principal principal) {
@@ -114,13 +113,13 @@ public static class BookingResponse extends Response {
 
         if (principal == null || principal.getName() == null) {
             logger.warn("Pengguna tidak terautentikasi.");
-            return ResponseEntity.status(401).body(new Response(false, "Unauthorized."));
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new Response(false, "Unauthorized."));
         }
 
         Customer customer = customerService.findByUsername(principal.getName());
         if (customer == null) {
             logger.warn("Customer tidak ditemukan untuk username: {}", principal.getName());
-            return ResponseEntity.status(401).body(new Response(false, "Customer tidak ditemukan."));
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new Response(false, "Customer tidak ditemukan."));
         }
 
         Promo promo = promoService.findByKodePromo(request.getKodePromo());
@@ -135,6 +134,7 @@ public static class BookingResponse extends Response {
         }
 
         if (!promoService.isPromoValid(promo)) {
+            logger.warn("Promo sudah tidak berlaku: {}", promo.getKodePromo());
             return ResponseEntity.badRequest().body(new Response(false, "Promo sudah tidak berlaku."));
         }
 
@@ -143,8 +143,9 @@ public static class BookingResponse extends Response {
             logger.info("Promo '{}' berhasil diklaim oleh customer '{}'", promo.getKodePromo(), customer.getUsername());
             return ResponseEntity.ok(new Response(true, "Promo berhasil diklaim."));
         } catch (Exception e) {
-            logger.error("Gagal mengklaim promo '{}': {}", promo.getKodePromo(), e.getMessage());
-            return ResponseEntity.status(500).body(new Response(false, "Gagal mengklaim promo."));
+            logger.error("Gagal mengklaim promo: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new Response(false, "Gagal mengklaim promo."));
         }
     }
 
@@ -152,7 +153,7 @@ public static class BookingResponse extends Response {
     public ResponseEntity<LapanganResponse> getLapanganDetail(@PathVariable Long id) {
         Lapangan lapangan = lapanganService.getLapanganById(id);
         if (lapangan == null) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
         
         LapanganResponse response = new LapanganResponse(
@@ -169,158 +170,86 @@ public static class BookingResponse extends Response {
     @GetMapping("/jadwal")
     public ResponseEntity<List<JadwalResponse>> getJadwalLapangan(
         @RequestParam Long lapanganId,
-        @RequestParam String tanggal
+        @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate tanggal
     ) {
         try {
-            List<JadwalResponse> jadwalList = lapanganService.getJadwalTersedia(lapanganId, tanggal);
-            return ResponseEntity.ok(jadwalList);
-        } catch (RuntimeException e) {
-            logger.error("Error getting jadwal: {}", e.getMessage());
-            return ResponseEntity.notFound().build();
+            List<JadwalResponse> jadwal = bookingService.getJadwalLapangan(lapanganId, tanggal);
+            return ResponseEntity.ok(jadwal);
+        } catch (Exception e) {
+            // Log error jika diperlukan
+            return ResponseEntity.status(500).body(null);
         }
-    }
-
-    @GetMapping("/payment/{bookingId}")
-    public String showPayment(@PathVariable Long bookingId, Model model, Principal principal) {
-        if (principal == null) {
-            return "redirect:/login";
-        }
-
-        Booking booking = bookingService.getBookingById(bookingId);
-        if (booking == null) {
-            return "redirect:/error";
-        }
-
-        // Verify booking belongs to logged in user
-        if (!booking.getCustomer().getUsername().equals(principal.getName())) {
-            return "redirect:/error";
-        }
-
-        model.addAttribute("booking", booking);
-        model.addAttribute("noRek", "BCA: 1234567890 a.n LAPANGIN");
-        return "payment";
     }
 
     @PostMapping("/payment/upload")
-    @ResponseBody // Add this to return JSON
-    public ResponseEntity<?> uploadPaymentProof(
+    public ResponseEntity<Response> uploadPaymentProof(
             @RequestParam("bookingId") Long bookingId,
-            @RequestParam("file") MultipartFile file) {
+            @RequestParam("file") MultipartFile file,
+            Principal principal) {
         try {
+            if (file.isEmpty()) {
+                return ResponseEntity.badRequest().body(new Response(false, "File tidak boleh kosong."));
+            }
+
+            // Memastikan pengguna memiliki hak akses untuk booking ini
+            Customer customer = customerService.findByUsername(principal.getName());
             Booking booking = bookingService.getBookingById(bookingId);
-            if (booking == null) {
-                return ResponseEntity.notFound().build();
+            if (booking == null || !booking.getCustomer().getId().equals(customer.getId())) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(new Response(false, "Anda tidak berhak mengupload bukti untuk booking ini."));
             }
 
-            String fileName = bookingId + "_" + file.getOriginalFilename();
-            Path uploadPath = Paths.get(UPLOAD_DIR);
-            
-            if (!Files.exists(uploadPath)) {
-                Files.createDirectories(uploadPath);
-            }
-            
-            Path filePath = uploadPath.resolve(fileName);
-            Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-            
-            bookingService.updatePaymentStatus(bookingId, fileName);
-            
-            return ResponseEntity.ok(new Response(true, "Pembayaran berhasil dikonfirmasi"));
+            bookingService.updatePaymentProof(bookingId, file);
+
+            return ResponseEntity.ok(new Response(true, "Bukti pembayaran berhasil diupload."));
         } catch (Exception e) {
-            logger.error("Error uploading payment proof: ", e);
-            return ResponseEntity.status(500)
-                .body(new Response(false, "Gagal mengupload bukti pembayaran"));
+            logger.error("Gagal mengupload bukti pembayaran: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new Response(false, "Gagal mengupload bukti pembayaran."));
         }
     }
 
-    // DTO Classes
-    public static class BookingRequest {
-        private Long lapanganId;
-        private String kodePromo;
+    @DeleteMapping("/cancel/{bookingId}")
+    public ResponseEntity<Response> cancelBooking(@PathVariable Long bookingId, Principal principal) {
+        try {
+            Customer customer = customerService.findByUsername(principal.getName());
+            if (customer == null) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(new Response(false, "Unauthorized."));
+            }
 
-        // Getters dan Setters
-        public Long getLapanganId() {
-            return lapanganId;
-        }
-
-        public void setLapanganId(Long lapanganId) {
-            this.lapanganId = lapanganId;
-        }
-
-        public String getKodePromo() {
-            return kodePromo;
-        }
-
-        public void setKodePromo(String kodePromo) {
-            this.kodePromo = kodePromo;
-        }
-    }
-
-    public static class PromoRequest {
-        private String kodePromo;
-
-        // Getter
-        public String getKodePromo() {
-            return kodePromo;
-        }
-
-        // Setter
-        public void setKodePromo(String kodePromo) {
-            this.kodePromo = kodePromo;
+            boolean isCancelled = bookingService.cancelBooking(bookingId, customer);
+            if (isCancelled) {
+                return ResponseEntity.ok(new Response(true, "Booking berhasil dibatalkan."));
+            } else {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body(new Response(false, "Gagal membatalkan booking."));
+            }
+        } catch (Exception e) {
+            logger.error("Gagal membatalkan booking: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new Response(false, "Gagal membatalkan booking."));
         }
     }
 
-    public static class Response {
-        private boolean success;
-        private String message;
+    @GetMapping("/bookings")
+    public ResponseEntity<List<Booking>> getBookings(
+            @RequestParam("tanggal") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate tanggal,
+            Principal principal) {
+        try {
+            Customer customer = customerService.findByUsername(principal.getName());
+            if (customer == null) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(Collections.emptyList());
+            }
 
-        public Response(boolean success, String message) {
-            this.success = success;
-            this.message = message;
-        }
-
-        // Getters dan Setters
-        public boolean isSuccess() {
-            return success;
-        }
-
-        public void setSuccess(boolean success) {
-            this.success = success;
-        }
-
-        public String getMessage() {
-            return message;
-        }
-
-        public void setMessage(String message) {
-            this.message = message;
+            List<Booking> bookings = bookingService.getBookingsByCustomerAndDate(customer, tanggal);
+            return ResponseEntity.ok(bookings);
+        } catch (Exception e) {
+            logger.error("Error fetching bookings: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Collections.emptyList());
         }
     }
 
-    public static class LapanganResponse {
-        private Long id;
-        private String namaLapangan; 
-        private LocalTime jamBuka;
-        private LocalTime jamTutup;
-        private int price;
-        
-        public LapanganResponse(Long id, String namaLapangan, LocalTime jamBuka, LocalTime jamTutup, int price) {
-            this.id = id;
-            this.namaLapangan = namaLapangan;
-            this.jamBuka = jamBuka;
-            this.jamTutup = jamTutup;
-            this.price = price;
-        }
-
-        // Getters and setters
-        public Long getId() { return id; }
-        public void setId(Long id) { this.id = id; }
-        public String getNamaLapangan() { return namaLapangan; }
-        public void setNamaLapangan(String namaLapangan) { this.namaLapangan = namaLapangan; }
-        public LocalTime getJamBuka() { return jamBuka; }
-        public void setJamBuka(LocalTime jamBuka) { this.jamBuka = jamBuka; }
-        public LocalTime getJamTutup() { return jamTutup; }
-        public void setJamTutup(LocalTime jamTutup) { this.jamTutup = jamTutup; }
-        public int getPrice() { return price; }
-        public void setPrice(int price) { this.price = price; }
-    }
 }

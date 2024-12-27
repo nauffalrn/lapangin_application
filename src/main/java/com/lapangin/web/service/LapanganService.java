@@ -4,22 +4,35 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.lapangin.web.dto.JadwalResponse;
+import com.lapangin.web.model.Booking;
 import com.lapangin.web.model.Lapangan;
+import com.lapangin.web.repository.BookingRepository;
 import com.lapangin.web.repository.LapanganRepository;
 
 @Service
 public class LapanganService {
 
-    @Autowired
-    private LapanganRepository lapanganRepository;
+    private static final Logger logger = LoggerFactory.getLogger(LapanganService.class);
+
+    private final BookingRepository bookingRepository;
+    private final LapanganRepository lapanganRepository;
+
+    public LapanganService(BookingRepository bookingRepository, LapanganRepository lapanganRepository) {
+        this.bookingRepository = bookingRepository;
+        this.lapanganRepository = lapanganRepository;
+    }
 
     // Path direktori tempat gambar disimpan
     private final String imageDirectory = "src/main/resources/static/images/";
@@ -67,75 +80,43 @@ public class LapanganService {
         return lapanganRepository.count();
     }
 
-    public static class JadwalResponse {
-        private String jam;
-        private boolean tersedia;
-        private int harga;
-
-        public JadwalResponse(String jam, boolean tersedia, int harga) {
-            this.jam = jam;
-            this.tersedia = tersedia;
-            this.harga = harga;
-        }
-
-        // Getters & Setters
-        public String getJam() {
-            return jam;
-        }
-
-        public void setJam(String jam) {
-            this.jam = jam;
-        }
-
-        public boolean isTersedia() {
-            return tersedia;
-        }
-
-        public void setTersedia(boolean tersedia) {
-            this.tersedia = tersedia;
-        }
-
-        public int getHarga() {
-            return harga;
-        }
-
-        public void setHarga(int harga) {
-            this.harga = harga;
-        }
-    }
-
-    public List<JadwalResponse> getJadwalTersedia(Long lapanganId, String tanggal) {
+    public List<JadwalResponse> getJadwalTersedia(Long lapanganId, LocalDate tanggal) {
+        logger.debug("Mengambil jadwal tersedia untuk lapanganId: {}, tanggal: {}", lapanganId, tanggal);
         Lapangan lapangan = getLapanganById(lapanganId);
         if (lapangan == null) {
             throw new RuntimeException("Lapangan tidak ditemukan");
         }
 
         List<JadwalResponse> jadwalList = new ArrayList<>();
-        
+
         LocalTime jamBuka = lapangan.getJamBuka();
         LocalTime jamTutup = lapangan.getJamTutup();
-        
+
         // Generate slot per jam
         LocalTime currentTime = jamBuka;
         while (currentTime.isBefore(jamTutup)) {
-            LocalTime jamSelesai = currentTime.plusHours(1);
-            
             boolean tersedia = checkJadwalTersedia(lapanganId, tanggal, currentTime);
-            
             jadwalList.add(new JadwalResponse(
                 currentTime.toString(),
                 tersedia,
                 lapangan.getPrice()
             ));
-            
-            currentTime = jamSelesai;
+
+            currentTime = currentTime.plusHours(1);
         }
-        
+
         return jadwalList;
     }
 
-    private boolean checkJadwalTersedia(Long lapanganId, String tanggal, LocalTime jam) {
-        // TODO: Implement actual booking check from database
-        return true;
+    private boolean checkJadwalTersedia(Long lapanganId, LocalDate tanggal, LocalTime jam) {
+        logger.debug("Memeriksa ketersediaan untuk lapanganId: {}, tanggal: {}, jam: {}", lapanganId, tanggal, jam);
+        int jamMulai = jam.getHour();
+        LocalDateTime startOfDay = tanggal.atStartOfDay();
+        LocalDateTime endOfDay = tanggal.plusDays(1).atStartOfDay();
+
+        List<Booking> existingBookings = bookingRepository.findByLapanganIdAndBookingDateBetweenAndJamMulai(
+            lapanganId, startOfDay, endOfDay, jamMulai
+        );
+        return existingBookings.isEmpty();
     }
 }

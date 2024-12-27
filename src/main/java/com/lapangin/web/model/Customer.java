@@ -36,7 +36,7 @@ public class Customer extends User {
         this.setRole("CUSTOMER");
     }
 
-    // Getters dan Setters
+    // Getters and Setters
 
     public Set<Promo> getClaimedPromos() {
         return claimedPromos;

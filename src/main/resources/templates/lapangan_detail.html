@@ -187,6 +187,12 @@
       </div>
     </div>
 
+    <!-- Hidden Input for Promo Status -->
+    <input type="hidden" id="hasPromo" th:value="${hasPromo}" />
+
+    <!-- Hidden Input untuk ID Lapangan -->
+    <input type="hidden" id="lapanganId" th:value="${lapangan.id}" />
+
     <!-- Scripts -->
     <script th:src="@{/js/script.js}"></script>
     <script th:src="@{/js/darkmode.js}"></script>

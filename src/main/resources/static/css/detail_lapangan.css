@@ -410,41 +410,134 @@
 }
 
 .detail-schedule-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-  gap: 10px;
-  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 20px 24px;
+  max-height: 60vh;
+  overflow-y: auto;
 }
 
 .time-slot {
   padding: 10px;
-  border: 1px solid #ccc;
+  border: 1px solid #ddd;
   border-radius: 5px;
-  text-align: center;
   cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
 }
 
 .time-slot.available {
   background-color: #d4edda;
 }
 
-.time-slot.booked {
-  background-color: #f8d7da;
+.time-slot.available:hover {
+  background-color: #66bb6a;
 }
 
+.time-slot.booked {
+  background-color: #f44336;
+  color: white;
+  cursor: not-allowed;
+}
+
+.time-slot.disabled {
+  background-color: #ccc; /* Gray background */
+  color: #666; /* Dark gray text */
+  cursor: not-allowed;
+}
+
+.time-slot.selected {
+  background-color: #4caf50;
+  color: white;
+}
+
+/* Time Slot Content */
 .time-slot-content {
   display: flex;
-  flex-direction: column;
+  flex-direction: column; /* Arrange vertically */
   align-items: center;
 }
 
-.time-slot-content .time {
+.time-slot .time {
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+.time-slot .status {
+  font-size: 0.9rem;
+  color: #6c757d;
+}
+
+/* Hide Price */
+.time-slot .price {
+  display: none;
+}
+
+/* Hide Checkout Button by Default */
+#checkoutButton {
+  display: none; /* Controlled via JavaScript */
+  padding: 10px 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+#checkoutButton:hover {
+  background: #4caf50;
+  color: white;
+}
+
+#checkoutButton:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+/* Modal Footer Alignment */
+.modal-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Responsive Adjustments for Time Slots */
+@media (max-width: 768px) {
+  .time-slot {
+    padding: 8px;
+  }
+
+  .time-slot .time {
+    font-size: 1rem;
+  }
+
+  .time-slot .status {
+    font-size: 0.8rem;
+  }
+}
+
+/* Additional Styling for Disabled Slots */
+.time-slot.disabled .status {
+  color: #666;
   font-size: 14px;
 }
 
-.time-slot-content .status {
-  font-size: 12px;
-  color: #6c757d;
+/* Ensure Checkout Button Visibility */
+.checkout-btn {
+  padding: 10px 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.checkout-btn:hover {
+  background: #4caf50;
+  color: white;
+}
+
+.checkout-btn:disabled {
+  background: #ccc;
+  cursor: not-allowed;
 }
 
 .date-scroll {
@@ -562,4 +655,182 @@
   padding: 1rem;
   flex: 1;
   overflow: hidden;
+}
+
+/* Schedule Modal */
+.schedule-modal {
+  display: none; /* Hidden by default */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  justify-content: center;
+  align-items: center;
+}
+
+.schedule-modal.active {
+  display: flex;
+}
+
+.schedule-modal .modal-content {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  width: 80%;
+  max-width: 500px;
+}
+
+/* Selected Time Slot */
+.time-slot.selected {
+  background-color: #4caf50;
+  color: white;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .payment-container {
+    padding: 15px;
+  }
+
+  .payment-info {
+    padding: 10px;
+  }
+
+  .qr-code {
+    width: 100px;
+    height: 100px;
+  }
+}
+
+/* Waktu Slot */
+.time-slot {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.time-slot.available:hover {
+  background-color: #66bb6a;
+}
+
+.time-slot.selected {
+  background-color: #4caf50; /* Warna saat dipilih */
+  color: white;
+}
+
+.time-slot.booked {
+  background-color: #ff4444;
+  color: white;
+  cursor: not-allowed;
+}
+
+.time-slot.disabled {
+  background-color: #ccc; /* Gray background */
+  color: #666; /* Dark gray text */
+  cursor: not-allowed;
+}
+
+.time-slot .status {
+  display: block;
+  font-size: 0.8rem;
+  color: #333;
+}
+
+/* Tambahkan atau perbarui kelas berikut di detail_lapangan.css */
+
+/* Atur kontainer pembayaran menjadi relatif untuk positioning absolut anak-anaknya */
+.payment-container {
+  position: relative;
+  font-size: 1.2rem; /* Atur sesuai kebutuhan */
+}
+
+.payment-container .booking-details p,
+.payment-container .payment-info h3 {
+  margin: 0; /* Hapus margin bawaan */
+  font-size: 1.2rem;
+}
+.payment-container .payment-info p.bank-account,
+.payment-container #cancelBookingButton,
+.payment-container form label,
+.payment-container form button {
+  font-size: 1rem; /* Atur sesuai kebutuhan */
+}
+
+/* Atur ukuran gambar QR agar sesuai dengan ukuran aslinya */
+.qr-code {
+  width: auto;
+  height: auto;
+  max-width: 90%; /* Pastikan gambar tidak melampaui lebar kontainer */
+}
+
+/* Posisikan tombol Batal Booking di atas kiri dan ubah warnanya menjadi merah */
+.cancel-btn {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background-color: #ff4444; /* Warna merah */
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.cancel-btn:hover {
+  background-color: #cc0000; /* Warna merah lebih gelap saat hover */
+}
+
+/* payment */
+.payment-container {
+  background-color: #f0f0f0; /* Abu muda */
+  padding: 20px;
+  border-radius: 8px;
+  max-width: 600px;
+  margin: 40px auto;
+}
+
+.booking-details,
+.payment-info {
+  background-color: #f0f0f0;
+  padding: 15px;
+  border-radius: 6px;
+  margin-top: 20px;
+  text-align: center;
+}
+
+/* Bank Account */
+.bank-account {
+  font-size: 1.4rem;
+  color: #000000;
+}
+
+.upload-section {
+  text-align: center;
+}
+
+.upload-section input[type="file"] {
+  width: 100%;
+  padding: 0.5rem;
+  margin: 1rem 0;
+}
+
+.upload-btn {
+  padding: 0.8rem 2rem;
+  background: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background 0.3s;
+}
+
+.upload-btn:hover {
+  background: #45a049;
 }

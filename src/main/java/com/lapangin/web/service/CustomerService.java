@@ -1,5 +1,7 @@
 package com.lapangin.web.service;
 
+import java.util.Optional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -42,7 +44,8 @@ public class CustomerService {
 
     @Transactional(readOnly = true)
     public Customer findByUsername(String username) {
-        return customerRepository.findByUsername(username).orElse(null);
+        Optional<Customer> customer = customerRepository.findByUsername(username);
+        return customer.orElse(null);
     }
 
     @Transactional
@@ -60,7 +63,7 @@ public class CustomerService {
 
     @Transactional(readOnly = true)
     public boolean isPromoClaimedByCustomer(Customer customer, Promo promo) {
-        return customerRepository.hasClaimedPromo(customer.getId(), promo.getId());
+        return customer.getClaimedPromos().contains(promo);
     }
 
     @Transactional

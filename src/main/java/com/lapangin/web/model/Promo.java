@@ -36,7 +36,7 @@ public class Promo {
     @ManyToMany(mappedBy = "claimedPromos")
     private Set<Customer> customersClaimed = new HashSet<>();
 
-    // Getters dan Setters
+    // Getters and Setters
     public Long getId() {
         return id;
     }
