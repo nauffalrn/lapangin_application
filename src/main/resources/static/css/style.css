@@ -844,6 +844,105 @@ body.dark .forms .media-options a:hover {
   color: #555;
 }
 
+.notification-item {
+  padding: 15px;
+  border-bottom: 1px solid #eee;
+}
+
+.countdown {
+  margin-top: 10px;
+  font-weight: bold;
+  color: #333;
+  padding: 5px 10px;
+  border-radius: 4px;
+  background-color: #f0f0f0;
+}
+
+.countdown.urgent {
+  color: #ff4444;
+  background-color: #ffe5e5;
+}
+
+.countdown.expired {
+  color: #666;
+  background-color: #f5f5f5;
+}
+
+.notification-item {
+  display: flex;
+  align-items: flex-start;
+  background: #ffffff;
+  margin-bottom: 15px;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.notification-icon {
+  margin-right: 15px;
+  color: #4a90e2;
+  font-size: 24px;
+}
+
+.notification-content {
+  flex: 1;
+}
+
+.notification-content h4 {
+  margin: 0 0 5px;
+  color: #333;
+}
+
+.notification-content p {
+  margin: 0 0 10px;
+  color: #666;
+}
+
+.countdown {
+  margin-top: 8px;
+  font-weight: bold;
+}
+
+.countdown.urgent {
+  color: #ff4444;
+}
+
+.notifications-container {
+  margin: auto;
+  max-width: 600px;
+  padding: 20px;
+}
+
+.notifications-header {
+  text-align: center;
+  margin-bottom: 30px;
+  margin-top: 20px;
+}
+
+.notifications-wrapper {
+  margin-top: 20px;
+}
+
+.notification-item {
+  display: flex;
+  align-items: flex-start;
+  background: #f9f9f9;
+  margin-bottom: 15px;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.countdown {
+  margin-top: 10px;
+  font-weight: bold;
+  color: #333;
+}
+
+.countdown.urgent {
+  color: #ff4444;
+}
+
 /* wallet */
 .wallet-container {
   width: 100%;
@@ -910,19 +1009,12 @@ body.dark .forms .media-options a:hover {
 
 /* calender */
 .calendar-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  width: 80%;
-  max-width: 600px;
-  height: 80vh; /* Membuat container cukup tinggi agar kalender terpusat secara vertikal */
-  text-align: center;
+  max-width: 800px;
+  margin: 40px auto;
   padding: 20px;
-  background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  margin: auto; /* Memastikan calendar-container berada di tengah */
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .calendar {
@@ -944,7 +1036,7 @@ h1 {
 }
 
 button {
-  background-color: #2980b9;
+  background-color: #151a2d;
   color: white;
   border: none;
   padding: 10px;
@@ -966,6 +1058,19 @@ button {
   background-color: #f0f0f0;
   border-radius: 8px;
   cursor: pointer;
+}
+
+.calendar-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 10px;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.calendar-weekdays div {
+  padding: 10px;
+  font-weight: 500;
 }
 
 #calendar-days .day-header {
@@ -2021,7 +2126,7 @@ body {
   margin: 40px auto;
 }
 
-.booking-details, 
+.booking-details,
 .payment-info {
   background-color: #f0f0f0;
   padding: 15px;
@@ -2054,7 +2159,7 @@ body {
 
 .upload-btn {
   padding: 0.8rem 2rem;
-  background: #4CAF50;
+  background: #4caf50;
   color: white;
   border: none;
   border-radius: 4px;
@@ -2069,17 +2174,39 @@ body {
 
 /* Highlight hari ini */
 .calendar-day.today {
-  border: 2px solid #007bff; /* Biru */
+  border: 2px solid #151a2d;
   border-radius: 4px;
+  position: relative;
+}
+
+/* Add arrow indicator for today */
+.calendar-day.today::after {
+  content: "📌";
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  font-size: 12px;
 }
 
 /* Highlight hari dengan booking */
 .calendar-day.has-booking {
   border: 2px solid #28a745; /* Hijau */
   border-radius: 4px;
+  cursor: pointer; /* Menunjukkan bahwa elemen dapat diklik */
+  position: relative;
 }
 
-/* Opsional: Efek hover untuk hari */
+/* Menambahkan ikon centang untuk hari yang memiliki booking */
+.calendar-day.has-booking::after {
+  content: "🎯"; /* Ikon centang */
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  font-size: 12px;
+  color: #28a745;
+}
+
+/* Efek hover untuk hari */
 .calendar-day:hover {
   background-color: #e0e0e0;
   cursor: pointer;

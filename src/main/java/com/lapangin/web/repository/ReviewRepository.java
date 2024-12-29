@@ -1,13 +1,14 @@
 package com.lapangin.web.repository;
 
-import com.lapangin.web.model.Review;
-import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.lapangin.web.model.Review;
+
 public interface ReviewRepository extends JpaRepository<Review, Integer> {
-    // Query to find reviews by field
+    // Query untuk mencari review berdasarkan lapangan
     List<Review> findByLapanganId(int lapanganId);
 
-    // Query to find reviews by order
-    List<Review> findByPesananId(int pesananId);
+    List<Review> findByBookingId(int bookingId);
 }

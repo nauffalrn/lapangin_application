@@ -2,6 +2,8 @@ package com.lapangin.web.model;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -25,14 +27,17 @@ public class Booking {
 
     @ManyToOne
     @JoinColumn(name = "customer_id", nullable = false)
+    @JsonIgnore
     private Customer customer;
 
     @ManyToOne
     @JoinColumn(name = "lapangan_id", nullable = false)
+    @JsonIgnore
     private Lapangan lapangan;
 
     @ManyToOne
     @JoinColumn(name = "promo_id", referencedColumnName = "id")
+    @JsonIgnore
     private Promo promo;
 
     @Column(name = "booking_date", nullable = false)

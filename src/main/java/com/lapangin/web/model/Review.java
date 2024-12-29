@@ -27,8 +27,8 @@ public class Review {
     private Lapangan lapangan;
 
     @ManyToOne
-    @JoinColumn(name = "pesanan_id", nullable = false)
-    private Pesanan pesanan;
+    @JoinColumn(name = "booking_id", nullable = false)
+    private Booking booking;
 
     @Column(nullable = false)
     private int rating;
@@ -39,7 +39,6 @@ public class Review {
     @Temporal(TemporalType.DATE)
     @Column(name = "tanggal_review", nullable = false)
     private Date tanggalReview;
-
 
     // Getter dan Setter untuk ReviewID
     public int getReviewID() {
@@ -59,13 +58,13 @@ public class Review {
         this.lapangan = lapangan;
     }
 
-    // Getter dan Setter untuk Pesanan
-    public Pesanan getPesanan() {
-        return pesanan;
+    // Getter dan Setter untuk Booking
+    public Booking getBooking() { // Ubah nama metode
+        return booking;
     }
 
-    public void setPesanan(Pesanan pesanan) {
-        this.pesanan = pesanan;
+    public void setBooking(Booking booking) { // Ubah nama metode
+        this.booking = booking;
     }
 
     // Getter dan Setter untuk Rating

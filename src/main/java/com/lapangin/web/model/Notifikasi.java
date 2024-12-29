@@ -1,7 +1,15 @@
 package com.lapangin.web.model;
 
-import jakarta.persistence.*;
 import java.util.Date;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "notifikasi") // Pastikan nama tabel sesuai dengan di database Anda
@@ -9,24 +17,25 @@ public class Notifikasi {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int notifikasi_id; // ID notifikasi sebagai kunci utama
+    private int notifikasi_id;
 
-    @OneToOne
-    @JoinColumn(name = "pesananID", nullable = false)
-    private Pesanan pesanan; // Relasi satu-satu dengan Pesanan
+    @ManyToOne
+    @JoinColumn(name = "booking_id", nullable = false)
+    private Booking booking; // Ganti dari Pesanan ke Booking
 
     @Column(name = "waktu_notifikasi")
-    private Date waktuNotifikasi; // Waktu notifikasi
+    private Date waktuNotifikasi;
 
     @Column(name = "status_terkirim")
-    private boolean statusTerkirim; // Status pengiriman notifikasi
+    private boolean statusTerkirim;
 
-    // Metode Setter untuk statusTerkirim
-    public void setStatusTerkirim(boolean statusTerkirim) {
-        this.statusTerkirim = statusTerkirim;
-    }
+    @Column(name = "title")
+    private String title;
 
-    // Getter dan Setter
+    @Column(name = "message")
+    private String message;
+
+    // Getters dan Setters
 
     public int getNotifikasiID() {
         return notifikasi_id;
@@ -36,12 +45,12 @@ public class Notifikasi {
         this.notifikasi_id = notifikasiID;
     }
 
-    public Pesanan getPesanan() {
-        return pesanan;
+    public Booking getBooking() {
+        return booking;
     }
 
-    public void setPesanan(Pesanan pesanan) {
-        this.pesanan = pesanan;
+    public void setBooking(Booking booking) {
+        this.booking = booking;
     }
 
     public Date getWaktuNotifikasi() {
@@ -54,5 +63,25 @@ public class Notifikasi {
 
     public boolean isStatusTerkirim() {
         return statusTerkirim;
+    }
+
+    public void setStatusTerkirim(boolean statusTerkirim) {
+        this.statusTerkirim = statusTerkirim;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 }

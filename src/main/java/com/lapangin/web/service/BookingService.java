@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.lapangin.web.dto.BookingDTO;
 import com.lapangin.web.dto.JadwalRequest;
 import com.lapangin.web.dto.JadwalResponse;
 import com.lapangin.web.model.Booking;
@@ -252,15 +253,37 @@ public class BookingService {
     }
 
     // Metode untuk mengambil booking berdasarkan pelanggan dan tanggal
-    public List<Booking> getBookingsByCustomerAndDate(Customer customer, LocalDate tanggal) {
+    public List<BookingDTO> getBookingsByCustomerAndDate(Customer customer, LocalDate tanggal) {
         LocalDateTime startOfDay = tanggal.atStartOfDay();
         LocalDateTime endOfDay = tanggal.plusDays(1).atStartOfDay();
-        return bookingRepository.findByCustomerAndBookingDateBetween(customer, startOfDay, endOfDay);
+
+        List<Booking> bookings = bookingRepository.findByCustomerAndBookingDateBetween(customer, startOfDay, endOfDay);
+
+        return bookings.stream()
+                       .map(this::convertToDTO)
+                       .collect(Collectors.toList());
     }
 
     // Metode untuk mengambil booking mendatang
     public List<Booking> getUpcomingBookings(Customer customer) {
         LocalDateTime now = LocalDateTime.now();
-        return bookingRepository.findByCustomerAndBookingDateAfter(customer, now);
+        // Gunakan repository method dengan pengurutan
+        return bookingRepository.findByCustomerAndBookingDateGreaterThanOrderByBookingDateAsc(
+            customer, 
+            now
+        );
+    }
+
+    // Metode untuk mengonversi Booking ke BookingDTO
+    private BookingDTO convertToDTO(Booking booking) {
+        BookingDTO dto = new BookingDTO();
+        dto.setId(booking.getId());
+        dto.setLapangan(booking.getLapangan().getNamaLapangan());
+        dto.setBookingDate(booking.getBookingDate());
+        dto.setJamMulai(booking.getJamMulai());
+        dto.setJamSelesai(booking.getJamSelesai());
+        dto.setTotalPrice(booking.getTotalPrice());
+        dto.setPaymentProofFilename(booking.getPaymentProofFilename());
+        return dto;
     }
 }

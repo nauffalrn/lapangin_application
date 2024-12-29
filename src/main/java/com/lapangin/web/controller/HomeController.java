@@ -10,9 +10,11 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import com.lapangin.web.model.Booking;
 import com.lapangin.web.model.Customer;
 import com.lapangin.web.model.Lapangan;
 import com.lapangin.web.model.User;
+import com.lapangin.web.service.BookingService;
 import com.lapangin.web.service.CustomerService;
 import com.lapangin.web.service.LapanganService;
 import com.lapangin.web.service.UserService;
@@ -25,12 +27,14 @@ public class HomeController {
     private final LapanganService lapanganService;
     private final UserService userService;
     private final CustomerService customerService;
+    private final BookingService bookingService;
 
     // Constructor Injection
-    public HomeController(LapanganService lapanganService, UserService userService, CustomerService customerService) {
+    public HomeController(LapanganService lapanganService, UserService userService, CustomerService customerService, BookingService bookingService) {
         this.lapanganService = lapanganService;
         this.userService = userService;
         this.customerService = customerService;
+        this.bookingService = bookingService;
     }
 
     // Mapping untuk Dashboard
@@ -68,9 +72,25 @@ public class HomeController {
 
     // Mapping untuk Notifications
     @GetMapping("/notifications")
-    public String showNotifications(Model model) {
-        // Tambahkan logika jika diperlukan
-        return "notifications"; // Pastikan ada notifications.html di templates
+    public String showNotifications(Model model, Principal principal) {
+        try {
+            if (principal == null) {
+                return "redirect:/login";
+            }
+            
+            Customer customer = customerService.findByUsername(principal.getName());
+            if (customer == null) {
+                return "redirect:/login";
+            }
+            
+            List<Booking> bookings = bookingService.getUpcomingBookings(customer);
+            model.addAttribute("bookings", bookings);
+            
+            return "notifications";
+        } catch (Exception e) {
+            logger.error("Error saat mengambil notifikasi", e);
+            return "error";
+        }
     }
 
     // Mapping untuk History

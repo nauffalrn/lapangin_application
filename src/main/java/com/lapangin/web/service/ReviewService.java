@@ -23,4 +23,9 @@ public class ReviewService {
     public List<Review> getReviewsByLapangan(int lapanganID) {
         return reviewRepository.findByLapanganId(lapanganID);
     }
+
+    // Jika ada metode yang menggunakan findByPesananId, ubah menjadi findByBookingId
+    public List<Review> getReviewsByBooking(int bookingId) {
+        return reviewRepository.findByBookingId(bookingId);
+    }
 }

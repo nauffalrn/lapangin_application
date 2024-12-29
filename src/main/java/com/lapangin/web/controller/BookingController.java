@@ -2,7 +2,6 @@ package com.lapangin.web.controller;
 
 import java.security.Principal;
 import java.time.LocalDate;
-import java.util.Collections;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -21,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.lapangin.web.dto.BookingDTO;
 import com.lapangin.web.dto.BookingRequest;
 import com.lapangin.web.dto.BookingResponse;
 import com.lapangin.web.dto.JadwalResponse;
@@ -233,22 +233,27 @@ public class BookingController {
     }
 
     @GetMapping("/bookings")
-    public ResponseEntity<List<Booking>> getBookings(
+    public ResponseEntity<List<BookingDTO>> getBookings(
             @RequestParam("tanggal") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate tanggal,
             Principal principal) {
         try {
+            if (principal == null) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(null);
+            }
+
             Customer customer = customerService.findByUsername(principal.getName());
             if (customer == null) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                        .body(Collections.emptyList());
+                        .body(null);
             }
 
-            List<Booking> bookings = bookingService.getBookingsByCustomerAndDate(customer, tanggal);
+            List<BookingDTO> bookings = bookingService.getBookingsByCustomerAndDate(customer, tanggal);
             return ResponseEntity.ok(bookings);
         } catch (Exception e) {
-            logger.error("Error fetching bookings: {}", e.getMessage());
+            logger.error("Gagal mengambil bookings:", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Collections.emptyList());
+                    .body(null);
         }
     }
 

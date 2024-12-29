@@ -22,8 +22,8 @@
 
     <title>Lapangin - Notifications</title>
   </head>
-  <!-- Sidebar -->
   <body>
+    <!-- Sidebar -->
     <aside class="sidebar">
       <header class="sidebar-header">
         <a class="header-logo">
@@ -100,35 +100,28 @@
     <section class="section-2">
       <div class="notifications-container">
         <h1 class="notifications-header">Notifications</h1>
-
-        <div class="notifications-list">
-          <!-- Iterasi melalui daftar notifikasi -->
-          <div
-            th:each="notification : ${notifications}"
-            class="notification-item"
-          >
-            <div class="notification-icon">
-              <i class="bx bx-notification"></i>
+        
+        <!-- Tambahkan margin-top di sini -->
+        <div class="notifications-wrapper">
+          <div class="notifications-list" id="notification-list">
+            <div th:each="booking : ${bookings}" class="notification-item">
+              <div class="notification-icon">
+                <i class="bx bx-notification"></i>
+              </div>
+              <div class="notification-content">
+                <h4 th:text="${booking.lapangan.namaLapangan}"></h4>
+                <p th:text="'Tanggal: ' + ${#temporals.format(booking.bookingDate, 'dd MMM yyyy HH:mm')}"></p>
+                <!-- Pastikan format waktu sesuai -->
+                <div class="countdown" 
+                     th:attr="data-time=${#temporals.format(booking.bookingDate, 'yyyy-MM-dd HH:mm:ss')}"
+                     th:data-debug="${#temporals.format(booking.bookingDate, 'yyyy-MM-dd HH:mm:ss')}">
+                </div>
+              </div>
             </div>
-            <div class="notification-content">
-              <h4 th:text="${notification.title}">Notification Title</h4>
-              <p th:text="${notification.message}">
-                Notification message goes here.
-              </p>
-              <span
-                class="notification-time"
-                th:text="${#dates.format(notification.time, 'dd MMM yyyy HH:mm')}"
-                >Time</span
-              >
-            </div>
-          </div>
 
-          <!-- Tampilkan pesan jika tidak ada notifikasi -->
-          <div
-            th:if="${#lists.isEmpty(notifications)}"
-            class="no-notifications"
-          >
-            <p>You have no new notifications.</p>
+            <div th:if="${#lists.isEmpty(bookings)}" class="no-notifications">
+              <p>Tidak ada booking aktif saat ini.</p>
+            </div>
           </div>
         </div>
       </div>

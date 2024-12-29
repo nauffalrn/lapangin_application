@@ -14,7 +14,9 @@ document.addEventListener("DOMContentLoaded", function () {
     const firstDay = new Date(year, month, 1).getDay();
     const daysInMonth = new Date(year, month + 1, 0).getDate();
 
-    monthYear.textContent = `${date.toLocaleString("default", { month: "long" })} ${year}`;
+    monthYear.textContent = `${date.toLocaleString("default", {
+      month: "long",
+    })} ${year}`;
 
     // Menambahkan sel kosong sebelum hari pertama
     for (let i = 0; i < firstDay; i++) {
@@ -23,16 +25,18 @@ document.addEventListener("DOMContentLoaded", function () {
       calendarDays.appendChild(emptyCell);
     }
 
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Set waktu ke tengah malam untuk perbandingan yang akurat
+
     for (let day = 1; day <= daysInMonth; day++) {
       const dayCell = document.createElement("div");
       dayCell.classList.add("calendar-day");
       dayCell.textContent = day;
 
       const dateObj = new Date(year, month, day);
-      const dateString = dateObj.toISOString().split("T")[0];
+      const dateString = `${dateObj.getFullYear()}-${String(dateObj.getMonth() + 1).padStart(2, '0')}-${String(dateObj.getDate()).padStart(2, '0')}`;
 
       // Tandai hari ini
-      const today = new Date();
       if (
         day === today.getDate() &&
         month === today.getMonth() &&
@@ -41,24 +45,39 @@ document.addEventListener("DOMContentLoaded", function () {
         dayCell.classList.add("today");
       }
 
-      // Fetch bookings untuk tanggal ini
-      fetch(`/api/booking/bookings?tanggal=${dateString}`)
-        .then((response) => response.json())
-        .then((bookings) => {
-          if (bookings.length > 0) {
-            dayCell.classList.add("has-booking");
-            dayCell.dataset.bookings = JSON.stringify(bookings);
-          }
-        })
-        .catch((error) => console.error("Error fetching bookings:", error));
+      const isPast = dateObj < today;
 
-      // Tambahkan event listener untuk modal
-      dayCell.addEventListener("click", () => {
-        if (dayCell.classList.contains("has-booking")) {
-          const bookings = JSON.parse(dayCell.dataset.bookings || "[]");
-          showBookingDetails(bookings);
-        }
-      });
+      if (!isPast) {
+        // Fetch bookings untuk tanggal ini
+        fetch(`/api/booking/bookings?tanggal=${dateString}`)
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+          })
+          .then((bookings) => {
+            console.log(`Bookings for ${dateString}:`, bookings); // Debugging
+            if (bookings.length > 0) {
+              dayCell.classList.add("has-booking");
+              dayCell.dataset.bookings = JSON.stringify(bookings);
+            }
+          })
+          .catch((error) => console.error("Error fetching bookings:", error));
+
+        // Tambahkan event listener untuk modal
+        dayCell.addEventListener("click", () => {
+          if (dayCell.classList.contains("has-booking")) {
+            const bookings = JSON.parse(dayCell.dataset.bookings || "[]");
+            showBookingDetails(bookings);
+          }
+        });
+      } else {
+        // Nonaktifkan interaksi untuk tanggal yang sudah lewat
+        dayCell.classList.add("disabled");
+        dayCell.style.pointerEvents = "none";
+        dayCell.style.opacity = "0.5";
+      }
 
       calendarDays.appendChild(dayCell);
     }
@@ -77,6 +96,11 @@ document.addEventListener("DOMContentLoaded", function () {
   renderCalendar(currentDate);
 });
 
+// Fungsi helper untuk memformat jam
+function formatJam(jam) {
+  return jam; // Sudah dalam format "HH:00"
+}
+
 // Fungsi untuk menampilkan detail booking
 function showBookingDetails(bookings) {
   const bookingModal = document.getElementById("bookingModal");
@@ -87,9 +111,10 @@ function showBookingDetails(bookings) {
     const detail = document.createElement("div");
     detail.classList.add("booking-detail");
     detail.innerHTML = `
-      <p><strong>Lapangan:</strong> ${booking.lapangan.namaLapangan}</p>
-      <p><strong>Jam Mulai:</strong> ${new Date(booking.waktuMulai).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</p>
-      <p><strong>Jam Selesai:</strong> ${new Date(booking.waktuSelesai).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</p>
+      <p><strong>Lapangan:</strong> ${booking.lapangan}</p>
+      <p><strong>Jam:</strong> ${formatJam(
+        booking.jamMulaiFormatted
+      )} - ${formatJam(booking.jamSelesaiFormatted)}</p>
     `;
     bookingDetails.appendChild(detail);
   });

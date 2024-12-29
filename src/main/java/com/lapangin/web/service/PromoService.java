@@ -10,8 +10,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.lapangin.web.model.Customer;
-import com.lapangin.web.model.Pesanan;
+import com.lapangin.web.model.Booking;
+import com.lapangin.web.model.Customer; // Tambahkan import Booking
 import com.lapangin.web.model.Promo;
 import com.lapangin.web.repository.CustomerRepository;
 import com.lapangin.web.repository.PromoRepository;
@@ -65,9 +65,10 @@ public class PromoService {
         return promoRepository.findActivePromosByCustomer(customer.getId(), today);
     }
 
-    public double calculateTotalPrice(Pesanan pesanan) {
-        double basePrice = pesanan.getLapangan().getPrice() * (pesanan.getJamSelesai() - pesanan.getJamMulai());
-        Promo promo = pesanan.getPromo();
+    // Ubah metode calculateTotalPrice untuk menggunakan Booking
+    public double calculateTotalPrice(Booking booking) {
+        double basePrice = booking.getLapangan().getPrice() * (booking.getJamSelesai() - booking.getJamMulai());
+        Promo promo = booking.getPromo();
         return promo != null ? basePrice * (1 - promo.getDiskonPersen() / 100) : basePrice;
     }
 }

@@ -1,6 +1,7 @@
 package com.lapangin.web.repository;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -65,6 +66,13 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
      * @return List of Booking
      */
     List<Booking> findByCustomerAndBookingDateAfter(
+        Customer customer, 
+        LocalDateTime now
+    );
+
+    List<Booking> findByBookingDateBetween(Date start, Date end);
+
+    List<Booking> findByCustomerAndBookingDateGreaterThanOrderByBookingDateAsc(
         Customer customer, 
         LocalDateTime now
     );

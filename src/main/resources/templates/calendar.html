@@ -12,7 +12,6 @@
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-      integrity="sha512-p8RE1E7DAaLcvF6fWB3XFNq3nJ+rP/CYblxXmEr1Juh+ezf3E3+eFZwOPxprVxkK+8bte+ZeqlrG+NDgtOygCg=="
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     />
@@ -27,7 +26,6 @@
     <header>
       <div class="back-header">
         <a th:href="@{/dashboard}" class="back-dashboard"> &larr; </a>
-        <span class="lapangan-title">Kalender</span>
       </div>
     </header>
 
@@ -131,9 +129,7 @@
         <!-- Modal Booking -->
         <div id="bookingModal" class="modal hidden">
           <div class="modal-content">
-            <span class="close-button" onclick="closeBookingModal()"
-              >&times;</span
-            >
+            <span class="close-button" onclick="closeBookingModal()">&times;</span>
             <h3>Detail Booking</h3>
             <div id="bookingDetails">Loading...</div>
           </div>
