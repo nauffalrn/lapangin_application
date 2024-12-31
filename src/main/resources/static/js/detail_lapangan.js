@@ -2,6 +2,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initializeDates();
   setupModalHandlers();
   setupTimeSlotAvailability();
+  fetchAndDisplayReviews(); // Tambahkan ini
 });
 
 let selectedSlots = [];
@@ -14,29 +15,44 @@ function initializeDates() {
   dateScroll.innerHTML = "";
   const days = ["Min", "Sen", "Sel", "Rab", "Kam", "Jum", "Sab"];
   const months = [
-    "Jan", "Feb", "Mar", "Apr", "Mei", "Jun",
-    "Jul", "Ags", "Sep", "Okt", "Nov", "Des",
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "Mei",
+    "Jun",
+    "Jul",
+    "Ags",
+    "Sep",
+    "Okt",
+    "Nov",
+    "Des",
   ];
 
   const today = new Date();
   for (let i = 0; i < 7; i++) {
     const nextDate = new Date(today);
     nextDate.setDate(today.getDate() + i);
-    const isoDate = nextDate.toISOString().split('T')[0];
+    const isoDate = nextDate.toISOString().split("T")[0];
 
     const dateItem = document.createElement("div");
     dateItem.className = "date-item";
     dateItem.dataset.date = isoDate; // Add data-date attribute
     dateItem.innerHTML = `
       <span class="day">${days[nextDate.getDay()]}</span>
-      <span class="date">${nextDate.getDate()} ${months[nextDate.getMonth()]}</span>
+      <span class="date">${nextDate.getDate()} ${
+      months[nextDate.getMonth()]
+    }</span>
     `;
     dateItem.addEventListener("click", () => {
-      document.querySelectorAll(".date-item").forEach(di => di.classList.remove("active"));
+      document
+        .querySelectorAll(".date-item")
+        .forEach((di) => di.classList.remove("active"));
       dateItem.classList.add("active");
       updateScheduleForDate(isoDate);
-      document.getElementById("selectedDate").textContent = formatDisplayDate(isoDate);
-      
+      document.getElementById("selectedDate").textContent =
+        formatDisplayDate(isoDate);
+
       // Reset selections when date changes
       resetSelectedSlots();
     });
@@ -181,7 +197,8 @@ function updateScheduleDisplay(jadwalList, lapangan) {
   scheduleGrid.innerHTML = "";
 
   if (jadwalList.length === 0) {
-    scheduleGrid.innerHTML = "<p>Tidak ada jadwal tersedia untuk tanggal ini.</p>";
+    scheduleGrid.innerHTML =
+      "<p>Tidak ada jadwal tersedia untuk tanggal ini.</p>";
     return;
   }
 
@@ -252,8 +269,10 @@ function selectTimeSlot(slotElement, waktu, price, courtId) {
 }
 
 function updateSelectionSummary() {
-  document.getElementById("selectedSlotsCount").textContent = selectedSlots.length;
-  document.getElementById("totalPrice").textContent = formatCurrency(totalPrice);
+  document.getElementById("selectedSlotsCount").textContent =
+    selectedSlots.length;
+  document.getElementById("totalPrice").textContent =
+    formatCurrency(totalPrice);
 }
 
 function lanjutPembayaran() {
@@ -282,72 +301,77 @@ function lanjutPembayaran() {
   }
   const bookingDate = activeDateItem.dataset.date; // ISO date string 'YYYY-MM-DD'
 
-  // Check if customer has an available promo
-  const hasPromoElement = document.getElementById("hasPromo");
-  const hasPromo = hasPromoElement ? hasPromoElement.value === "true" : false;
+  // Sort selected slots by time
+  selectedSlots.sort((a, b) => parseInt(a.waktu) - parseInt(b.waktu));
 
+  // Create booking data
   const bookingData = {
     tanggal: bookingDate,
     lapanganId: selectedSlots[0].courtId,
-    jadwalList: selectedSlots.map(slot => ({
-      waktu: slot.waktu, // Pastikan ini benar
-      harga: slot.harga
-    }))
+    jadwalList: selectedSlots.map((slot) => ({
+      jam: parseInt(slot.waktu.split(":")[0], 10),
+      harga: slot.price,
+    })),
   };
+
+  // Check if customer has an available promo
+  const hasPromoElement = document.getElementById("hasPromo");
+  const hasPromo = hasPromoElement ? hasPromoElement.value === "true" : false;
 
   // Include kodePromo only if hasPromo is true
   if (hasPromo) {
     bookingData.kodePromo = "Lapangin2024";
   }
 
+  console.log("Sending booking data:", bookingData); // Debug log
+
   // Send request with CSRF token
-  fetch('/api/booking/create', {
-    method: 'POST',
+  fetch("/api/booking/create", {
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
       [csrfHeader]: csrfToken,
-      'X-Requested-With': 'XMLHttpRequest'
+      "X-Requested-With": "XMLHttpRequest",
     },
-    credentials: 'same-origin',
-    body: JSON.stringify(bookingData)
+    credentials: "same-origin",
+    body: JSON.stringify(bookingData),
   })
-  .then(response => {
-    console.log("Status response:", response.status);
-    if (!response.ok) {
-      return response.text().then(text => {
-        throw new Error(text || 'HTTP error! status: ' + response.status);
-      });
-    }
-    return response.json();
-  })
-  .then(data => {
-    console.log("Response data:", data);
-    if (data.success) {
-      window.location.href = `/booking/payment/${data.bookingId}`;
-    } else {
-      alert(data.message || "Gagal membuat booking");
+    .then((response) => {
+      if (!response.ok) {
+        return response.text().then((text) => {
+          throw new Error(text || "HTTP error! status: " + response.status);
+        });
+      }
+      return response.json();
+    })
+    .then((data) => {
+      console.log("Response data:", data);
+      if (data.success) {
+        window.location.href = `/booking/payment/${data.bookingId}`;
+      } else {
+        alert(data.message || "Gagal membuat booking");
+        resetSelectedSlots();
+      }
+    })
+    .catch((error) => {
+      console.error("Error creating booking:", error);
+      alert(`Gagal membuat booking: ${error.message}`);
       resetSelectedSlots();
-    }
-  })
-  .catch(error => {
-    console.error("Error creating booking:", error);
-    alert(`Gagal membuat booking: ${error.message}`);
-    resetSelectedSlots();
-  });
+    });
 }
 
 function resetSelectedSlots() {
   selectedSlots = [];
   totalPrice = 0;
-  document.getElementById('selectedSlotsCount').innerText = '0';
-  document.getElementById('totalPrice').innerText = '0';
+  document.getElementById("selectedSlotsCount").innerText = "0";
+  document.getElementById("totalPrice").innerText = "0";
   const checkoutButton = document.getElementById("checkoutButton");
   checkoutButton.style.display = "none";
   checkoutButton.disabled = true;
 
   // Clear selections in the UI
   const selectedElements = document.querySelectorAll(".time-slot.selected");
-  selectedElements.forEach(slot => slot.classList.remove("selected"));
+  selectedElements.forEach((slot) => slot.classList.remove("selected"));
 }
 
 function setupTimeSlotAvailability() {
@@ -381,7 +405,9 @@ function setupTimeSlotAvailability() {
   });
 
   // Cek tombol checkout
-  const remainingAvailable = document.querySelectorAll(".time-slot.available").length;
+  const remainingAvailable = document.querySelectorAll(
+    ".time-slot.available"
+  ).length;
   const checkoutButton = document.getElementById("checkoutButton");
   if (remainingAvailable === 0) {
     checkoutButton.style.display = "none";
@@ -411,10 +437,72 @@ function getVenueId() {
 }
 
 function formatCurrency(amount) {
-  return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(amount);
+  return new Intl.NumberFormat("id-ID", {
+    style: "currency",
+    currency: "IDR",
+  }).format(amount);
 }
 
 function formatDisplayDate(dateStr) {
   const options = { year: "numeric", month: "long", day: "numeric" };
   return new Date(dateStr).toLocaleDateString("id-ID", options);
+}
+
+function fetchAndDisplayReviews() {
+  const lapanganId = getVenueId();
+  if (!lapanganId) {
+    console.error("Lapangan ID tidak ditemukan.");
+    return;
+  }
+
+  fetch(`/api/booking/reviews/${lapanganId}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      "X-Requested-With": "XMLHttpRequest",
+    },
+    credentials: "same-origin",
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`Error fetching reviews: ${response.statusText}`);
+      }
+      return response.json();
+    })
+    .then((reviews) => {
+      displayReviews(reviews);
+    })
+    .catch((error) => {
+      console.error("Error fetching reviews:", error);
+      document.getElementById("reviewsContainer").innerHTML =
+        "<p>Gagal memuat reviews.</p>";
+    });
+}
+
+function displayReviews(reviews) {
+  const container = document.getElementById("reviewsContainer");
+  container.innerHTML = "";
+
+  if (reviews.length === 0) {
+    container.innerHTML = "<p>Belum ada reviews untuk lapangan ini.</p>";
+    return;
+  }
+
+  reviews.forEach((review) => {
+    const reviewElement = document.createElement("div");
+    reviewElement.className = "review-item";
+    reviewElement.innerHTML = `
+      <div class="review-header">
+        <span class="username">${review.username}</span>
+        <span class="tanggalBooking">${formatDisplayDate(
+          review.tanggalReview
+        )}</span>
+      </div>
+      <div class="review-content">
+        <span class="rating">⭐ ${review.rating}</span>
+        <span class="komentar">${review.komentar}</span>
+      </div>
+    `;
+    container.appendChild(reviewElement);
+  });
 }

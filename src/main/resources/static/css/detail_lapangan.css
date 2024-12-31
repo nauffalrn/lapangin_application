@@ -834,3 +834,69 @@
 .upload-btn:hover {
   background: #45a049;
 }
+
+/* review di detail lapangan bagian bawah */
+.review-item {
+  border-bottom: 1px solid #ddd;
+  padding: 15px 0;
+}
+
+.review-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.review-header .username {
+  font-weight: bold;
+}
+
+.review-header .tanggalBooking {
+  font-size: 0.9rem;
+  color: #000000;
+}
+
+.review-header .rating {
+  color: #f39c12;
+}
+
+.review-komentar {
+  margin-left: 10px;
+  font-size: 1rem;
+  color: #000000;
+}
+
+/* Harga Lapangan */
+.detail-price {
+  background-color: #ffffff; /* Latar belakang kuning muda */
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+.detail-price h2 {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1.7rem;
+  color: #155724; 
+  margin-bottom: 10px;
+}
+
+.detail-price span {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1.6rem;
+  color: #155724; 
+  font-weight: bold;
+}
+
+/* Harga Di Payment */
+.original-price {
+  text-decoration: line-through;
+  color: #888;
+  margin-right: 10px;
+}
+
+.discounted-price {
+  color: #155724; /* Warna hijau untuk harga diskon */
+  font-weight: bold;
+}

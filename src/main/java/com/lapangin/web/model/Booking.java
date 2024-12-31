@@ -4,14 +4,16 @@ import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -23,7 +25,7 @@ public class Booking {
     private Long id;
 
     @Column(name = "username", nullable = false)
-    private String username; // Menyimpan username yang melakukan pemesanan
+    private String username; 
 
     @ManyToOne
     @JoinColumn(name = "customer_id", nullable = false)
@@ -32,7 +34,6 @@ public class Booking {
 
     @ManyToOne
     @JoinColumn(name = "lapangan_id", nullable = false)
-    @JsonIgnore
     private Lapangan lapangan;
 
     @ManyToOne
@@ -52,17 +53,17 @@ public class Booking {
     @Column(name = "total_price", nullable = false)
     private double totalPrice;
 
-    @Lob
     @Column(name = "payment_proof", nullable = true, columnDefinition = "MEDIUMBLOB")
     private byte[] paymentProof;
 
     @Column(name = "payment_proof_filename", nullable = true)
     private String paymentProofFilename;
 
-    // Constructor default
-    public Booking() {}
+    @OneToOne(mappedBy = "booking", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Review review;
 
     // Getters dan Setters
+
     public Long getId() {
         return id;
     }
@@ -152,5 +153,13 @@ public class Booking {
 
     public void setPaymentProofFilename(String paymentProofFilename) {
         this.paymentProofFilename = paymentProofFilename;
+    }
+
+    public Review getReview() {
+        return review;
+    }
+
+    public void setReview(Review review) {
+        this.review = review;
     }
 }

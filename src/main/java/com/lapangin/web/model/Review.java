@@ -1,6 +1,6 @@
 package com.lapangin.web.model;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -9,9 +9,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
 
 @Entity
 @Table(name = "review")
@@ -19,55 +18,36 @@ public class Review {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "review_id")
-    private int reviewID;
+    @Column(name = "review_id", nullable = false)
+    private Long id;
+
+    @Column(nullable = false)
+    private int rating;
+
+    @Column(nullable = false)
+    private String komentar;
+
+    @Column(name = "tanggal_review", nullable = false)
+    private LocalDateTime tanggalReview;
+
+    @OneToOne
+    @JoinColumn(name = "booking_id", nullable = false)
+    private Booking booking;
 
     @ManyToOne
     @JoinColumn(name = "lapangan_id", nullable = false)
     private Lapangan lapangan;
 
-    @ManyToOne
-    @JoinColumn(name = "booking_id", nullable = false)
-    private Booking booking;
+    // Getters and Setters
 
-    @Column(nullable = false)
-    private int rating;
-
-    @Column
-    private String komentar;
-
-    @Temporal(TemporalType.DATE)
-    @Column(name = "tanggal_review", nullable = false)
-    private Date tanggalReview;
-
-    // Getter dan Setter untuk ReviewID
-    public int getReviewID() {
-        return reviewID;
+    public Long getId() {
+        return id;
     }
 
-    public void setReviewID(int reviewID) {
-        this.reviewID = reviewID;
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    // Getter dan Setter untuk Lapangan
-    public Lapangan getLapangan() {
-        return lapangan;
-    }
-
-    public void setLapangan(Lapangan lapangan) {
-        this.lapangan = lapangan;
-    }
-
-    // Getter dan Setter untuk Booking
-    public Booking getBooking() { // Ubah nama metode
-        return booking;
-    }
-
-    public void setBooking(Booking booking) { // Ubah nama metode
-        this.booking = booking;
-    }
-
-    // Getter dan Setter untuk Rating
     public int getRating() {
         return rating;
     }
@@ -76,7 +56,6 @@ public class Review {
         this.rating = rating;
     }
 
-    // Getter dan Setter untuk Komentar
     public String getKomentar() {
         return komentar;
     }
@@ -85,12 +64,27 @@ public class Review {
         this.komentar = komentar;
     }
 
-    // Getter dan Setter untuk TanggalReview
-    public Date getTanggalReview() {
+    public LocalDateTime getTanggalReview() {
         return tanggalReview;
     }
 
-    public void setTanggalReview(Date tanggalReview) {
+    public void setTanggalReview(LocalDateTime tanggalReview) {
         this.tanggalReview = tanggalReview;
+    }
+
+    public Booking getBooking() {
+        return booking;
+    }
+
+    public void setBooking(Booking booking) {
+        this.booking = booking;
+    }
+
+    public Lapangan getLapangan() {
+        return lapangan;
+    }
+
+    public void setLapangan(Lapangan lapangan) {
+        this.lapangan = lapangan;
     }
 }

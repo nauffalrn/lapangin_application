@@ -1,30 +1,22 @@
 package com.lapangin.web.dto;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-
 public class JadwalRequest {
+    private int jam;
+    private double harga;
 
-    @NotBlank(message = "Waktu tidak boleh kosong.")
-    private String waktu;
-
-    @NotNull(message = "Harga tidak boleh kosong.")
-    private int harga;
-
-    // Getters and Setters
-    public String getWaktu() {
-        return waktu;
+    public int getJam() {
+        return jam;
     }
 
-    public void setWaktu(String waktu) {
-        this.waktu = waktu;
+    public void setJam(int jam) {
+        this.jam = jam;
     }
 
-    public int getHarga() {
+    public double getHarga() {
         return harga;
     }
 
-    public void setHarga(int harga) {
+    public void setHarga(double harga) {
         this.harga = harga;
     }
 }

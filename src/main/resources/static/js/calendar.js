@@ -57,10 +57,18 @@ document.addEventListener("DOMContentLoaded", function () {
             return response.json();
           })
           .then((bookings) => {
-            console.log(`Bookings for ${dateString}:`, bookings); // Debugging
-            if (bookings.length > 0) {
+            const now = new Date();
+            const updatedBookings = bookings.filter((booking) => {
+              const bookingEnd = new Date(booking.bookingDate);
+              bookingEnd.setHours(booking.jamSelesaiFormatted.split(':')[0], 0, 0, 0);
+              return bookingEnd > now;
+            });
+
+            if (updatedBookings.length > 0) {
               dayCell.classList.add("has-booking");
-              dayCell.dataset.bookings = JSON.stringify(bookings);
+              dayCell.dataset.bookings = JSON.stringify(updatedBookings);
+            } else {
+              dayCell.classList.remove("has-booking");
             }
           })
           .catch((error) => console.error("Error fetching bookings:", error));

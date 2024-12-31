@@ -4,12 +4,13 @@ import java.time.LocalDateTime;
 
 public class BookingDTO {
     private Long id;
-    private String lapangan;
+    private LapanganDTO lapangan;
     private LocalDateTime bookingDate;
     private int jamMulai;
     private int jamSelesai;
     private double totalPrice;
     private String paymentProofFilename;
+    private ReviewDTO review; // Tambahkan field review
 
     // Getters dan Setters
     public Long getId() {
@@ -18,10 +19,10 @@ public class BookingDTO {
     public void setId(Long id) {
         this.id = id;
     }
-    public String getLapangan() {
+    public LapanganDTO getLapangan() {
         return lapangan;
     }
-    public void setLapangan(String lapangan) {
+    public void setLapangan(LapanganDTO lapangan) {
         this.lapangan = lapangan;
     }
     public LocalDateTime getBookingDate() {
@@ -54,6 +55,14 @@ public class BookingDTO {
     public void setPaymentProofFilename(String paymentProofFilename) {
         this.paymentProofFilename = paymentProofFilename;
     }   
+
+    public ReviewDTO getReview() {
+        return review;
+    }
+
+    public void setReview(ReviewDTO review) {
+        this.review = review;
+    }
 
     // Tambahkan metode untuk mendapatkan format waktu
     public String getJamMulaiFormatted() {

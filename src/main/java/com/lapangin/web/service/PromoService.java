@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.lapangin.web.model.Booking;
-import com.lapangin.web.model.Customer; // Tambahkan import Booking
+import com.lapangin.web.model.Customer;
 import com.lapangin.web.model.Promo;
 import com.lapangin.web.repository.CustomerRepository;
 import com.lapangin.web.repository.PromoRepository;
@@ -63,6 +63,13 @@ public class PromoService {
     public List<Promo> getActivePromosByCustomer(Customer customer) {
         LocalDate today = LocalDate.now();
         return promoRepository.findActivePromosByCustomer(customer.getId(), today);
+    }
+
+    // Tambahkan metode berikut untuk mendapatkan promo yang tersedia bagi customer
+    @Transactional(readOnly = true)
+    public List<Promo> getAvailablePromosForCustomer(Customer customer) {
+        LocalDate today = LocalDate.now();
+        return promoRepository.findActivePromosNotClaimedByCustomer(customer.getId(), today);
     }
 
     // Ubah metode calculateTotalPrice untuk menggunakan Booking

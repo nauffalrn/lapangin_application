@@ -76,4 +76,13 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
         Customer customer, 
         LocalDateTime now
     );
+
+    /**
+     * Mencari booking yang sudah selesai berdasarkan customer dan tanggal.
+     *
+     * @param customer Objek Customer
+     * @param now Waktu saat ini
+     * @return List of Booking yang sudah selesai
+     */
+    List<Booking> findByCustomerAndBookingDateBefore(Customer customer, LocalDateTime now);
 }

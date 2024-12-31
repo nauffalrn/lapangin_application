@@ -35,19 +35,19 @@ public class Lapangan {
     @Column(name = "price", nullable = false)
     private int price;
 
-    @Column(name = "rating")
+    @Column(name = "rating", nullable = false)
     private double rating = 0.0;
 
-    @Column(name = "reviews")
+    @Column(name = "reviews", nullable = false)
     private int reviews = 0;
 
     @Column(name = "cabang_olahraga", nullable = false)
     private String cabangOlahraga;
 
-    @Column(name = "alamat_lapangan")
+    @Column(name = "alamat_lapangan", nullable = false)
     private String alamatLapangan;
 
-    @Column(name = "facilities")
+    @Column(name = "facilities", nullable = false)
     private String facilities;
 
     @Column(name = "jam_buka", nullable = false)
@@ -194,5 +194,15 @@ public class Lapangan {
             return buka + " - " + tutup;
         }
         return "-";
+    }
+
+    /**
+     * Memperbarui rating dan jumlah reviews.
+     *
+     * @param newRating Rating baru yang diberikan oleh customer.
+     */
+    public void updateRating(double newRating) {
+        this.rating = ((this.rating * this.reviews) + newRating) / (this.reviews + 1);
+        this.reviews += 1;
     }
 }

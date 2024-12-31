@@ -6,11 +6,11 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -18,34 +18,40 @@ import org.springframework.web.multipart.MultipartFile;
 import com.lapangin.web.dto.BookingDTO;
 import com.lapangin.web.dto.JadwalRequest;
 import com.lapangin.web.dto.JadwalResponse;
+import com.lapangin.web.dto.LapanganDTO;
+import com.lapangin.web.dto.ReviewDTO;
 import com.lapangin.web.model.Booking;
 import com.lapangin.web.model.Customer;
 import com.lapangin.web.model.Lapangan;
 import com.lapangin.web.model.Promo;
+import com.lapangin.web.model.Review;
 import com.lapangin.web.repository.BookingRepository;
 
 @Service
 public class BookingService {
 
     private final BookingRepository bookingRepository;
-    private final LapanganService lapanganService;
     private final PromoService promoService;
+    private final LapanganService lapanganService;
     private final CustomerService customerService;
+    private final ReviewService reviewService;
 
-    // Constructor Injection
-    public BookingService(BookingRepository bookingRepository, 
+    @Autowired
+    public BookingService(BookingRepository bookingRepository,
                           LapanganService lapanganService,
                           PromoService promoService,
-                          CustomerService customerService) {
+                          CustomerService customerService,
+                          ReviewService reviewService) {
         this.bookingRepository = bookingRepository;
         this.lapanganService = lapanganService;
         this.promoService = promoService;
         this.customerService = customerService;
+        this.reviewService = reviewService;
     }
 
     public Booking getBookingById(Long id) {
-        Optional<Booking> booking = bookingRepository.findById(id);
-        return booking.orElse(null);
+        return bookingRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Booking tidak ditemukan."));
     }
 
     public void saveBooking(Booking booking) {
@@ -66,57 +72,29 @@ public class BookingService {
         }
         booking.setLapangan(lapangan);
 
-        // Inisialisasi jamMulai dan jamSelesai
-        int jamMulai = Integer.MAX_VALUE;
-        int jamSelesai = Integer.MIN_VALUE;
+        // Validasi jadwal dan hitung total harga
         double totalPrice = 0.0;
-
-        // Validasi jadwal dan hitung jam mulai serta jam selesai
         for (JadwalRequest jadwal : jadwalList) {
-            String waktu = jadwal.getWaktu();
-            LocalTime jamMulaiTime;
-            try {
-                jamMulaiTime = LocalTime.parse(waktu);
-            } catch (Exception e) {
-                throw new RuntimeException("Format waktu salah: " + waktu);
+            // Validasi jam operasional
+            if (jadwal.getJam() < lapangan.getJamBuka().getHour() || jadwal.getJam() >= lapangan.getJamTutup().getHour()) {
+                throw new RuntimeException("Jam " + jadwal.getJam() + " tidak dalam jam operasional lapangan.");
             }
-
-            LocalDateTime jadwalDateTime = LocalDateTime.of(tanggal, jamMulaiTime);
-            if (jadwalDateTime.isBefore(LocalDateTime.now())) {
-                throw new RuntimeException("Tidak bisa memesan jadwal yang sudah lewat.");
-            }
-
-            // Cek ketersediaan
-            boolean isAvailable = !bookingRepository.existsByLapanganIdAndBookingDateBetweenAndJamMulai(
-                lapanganId, 
-                tanggal.atStartOfDay(),
-                tanggal.atTime(23, 59),
-                jamMulaiTime.getHour()
-            );
-
-            if (!isAvailable) {
-                throw new RuntimeException("Jadwal " + waktu + " sudah dibooking.");
-            }
-
-            // Update jamMulai dan jamSelesai
-            int currentJam = jamMulaiTime.getHour();
-            if (currentJam < jamMulai) {
-                jamMulai = currentJam;
-            }
-            if (currentJam + 1 > jamSelesai) {
-                jamSelesai = currentJam + 1;
-            }
-
-            // Jumlahkan total harga
             totalPrice += jadwal.getHarga();
         }
 
-        // Set booking date setelah jamMulai dihitung
-        LocalDateTime scheduledDateTime = tanggal.atTime(jamMulai, 0);
-        booking.setBookingDate(scheduledDateTime);
+        // Set bookingDate berdasarkan tanggal dan jam mulai dari jadwal pertama
+        if (jadwalList.isEmpty()) {
+            throw new RuntimeException("Jadwal tidak boleh kosong.");
+        }
+        int jamMulai = jadwalList.get(0).getJam();
+        LocalDateTime bookingDateTime = tanggal.atTime(jamMulai, 0);
+        booking.setBookingDate(bookingDateTime);
 
         booking.setJamMulai(jamMulai);
-        booking.setJamSelesai(jamSelesai);
+        // Asumsikan jamSelesai adalah jamMulai + durasi
+        booking.setJamSelesai(jamMulai + jadwalList.size()); // Sesuaikan dengan logika bisnis Anda
+
+        // Set totalPrice
         booking.setTotalPrice(totalPrice);
 
         // Terapkan promo jika tersedia
@@ -126,8 +104,9 @@ public class BookingService {
                 promoService.claimPromo(customer, promo);
                 booking.setPromo(promo);
                 // Terapkan diskon
-                double discount = (booking.getTotalPrice() * promo.getDiskonPersen()) / 100;
-                booking.setTotalPrice(booking.getTotalPrice() - discount);
+                double discount = (totalPrice * promo.getDiskonPersen()) / 100.0;
+                double discountedPrice = totalPrice - discount;
+                booking.setTotalPrice(discountedPrice);
             } else {
                 throw new RuntimeException("Promo tidak valid atau sudah digunakan.");
             }
@@ -163,7 +142,7 @@ public class BookingService {
     @Transactional
     public boolean cancelBooking(Long bookingId, Customer customer) {
         Booking booking = bookingRepository.findById(bookingId)
-            .orElseThrow(() -> new RuntimeException("Booking tidak ditemukan."));
+                .orElseThrow(() -> new RuntimeException("Booking tidak ditemukan."));
 
         // Verifikasi bahwa booking milik customer yang sama
         if (!booking.getCustomer().getId().equals(customer.getId())) {
@@ -181,14 +160,14 @@ public class BookingService {
     @Transactional
     public void deleteBooking(Long bookingId) {
         Booking booking = bookingRepository.findById(bookingId)
-            .orElseThrow(() -> new RuntimeException("Booking tidak ditemukan."));
+                .orElseThrow(() -> new RuntimeException("Booking tidak ditemukan."));
         bookingRepository.delete(booking);
         // Jika ada entitas terkait atau pembaruan ketersediaan jadwal, tangani di sini
     }
 
     public List<JadwalResponse> getJadwalLapangan(Long lapanganId, LocalDate tanggal) {
         LocalDateTime startOfDay = tanggal.atStartOfDay();
-        LocalDateTime endOfDay = tanggal.atTime(23, 59, 59);
+        LocalDateTime endOfDay = tanggal.plusDays(1).atStartOfDay();
 
         List<Booking> bookings = bookingRepository.findByLapanganIdAndBookingDateBetween(lapanganId, startOfDay, endOfDay);
 
@@ -252,7 +231,6 @@ public class BookingService {
         return jadwalList;
     }
 
-    // Metode untuk mengambil booking berdasarkan pelanggan dan tanggal
     public List<BookingDTO> getBookingsByCustomerAndDate(Customer customer, LocalDate tanggal) {
         LocalDateTime startOfDay = tanggal.atStartOfDay();
         LocalDateTime endOfDay = tanggal.plusDays(1).atStartOfDay();
@@ -264,26 +242,79 @@ public class BookingService {
                        .collect(Collectors.toList());
     }
 
-    // Metode untuk mengambil booking mendatang
     public List<Booking> getUpcomingBookings(Customer customer) {
         LocalDateTime now = LocalDateTime.now();
-        // Gunakan repository method dengan pengurutan
         return bookingRepository.findByCustomerAndBookingDateGreaterThanOrderByBookingDateAsc(
             customer, 
             now
         );
     }
 
-    // Metode untuk mengonversi Booking ke BookingDTO
+    @Transactional
+    public List<BookingDTO> getBookingHistoryDTO(Customer customer) {
+        List<Booking> bookings = bookingRepository.findByCustomerAndBookingDateBefore(customer, LocalDateTime.now());
+        return bookings.stream()
+                       .map(this::convertToDTO)
+                       .collect(Collectors.toList());
+    }
+
     private BookingDTO convertToDTO(Booking booking) {
         BookingDTO dto = new BookingDTO();
         dto.setId(booking.getId());
-        dto.setLapangan(booking.getLapangan().getNamaLapangan());
+
+        LapanganDTO lapanganDTO = new LapanganDTO();
+        lapanganDTO.setId(booking.getLapangan().getId());
+        lapanganDTO.setNamaLapangan(booking.getLapangan().getNamaLapangan());
+        lapanganDTO.setAlamatLapangan(booking.getLapangan().getAlamatLapangan());
+
+        dto.setLapangan(lapanganDTO);
         dto.setBookingDate(booking.getBookingDate());
         dto.setJamMulai(booking.getJamMulai());
         dto.setJamSelesai(booking.getJamSelesai());
         dto.setTotalPrice(booking.getTotalPrice());
         dto.setPaymentProofFilename(booking.getPaymentProofFilename());
+
+        // Tambahkan review jika ada
+        Review review = booking.getReview();
+        if (review != null) {
+            ReviewDTO reviewDTO = new ReviewDTO();
+            reviewDTO.setRating(review.getRating());
+            reviewDTO.setKomentar(review.getKomentar());
+            reviewDTO.setUsername(review.getBooking().getCustomer().getUsername());
+            reviewDTO.setTanggalReview(review.getTanggalReview());
+            dto.setReview(reviewDTO);
+        }
+
         return dto;
+    }
+
+    public List<Booking> getBookingHistory(Customer customer) {
+        return bookingRepository.findByCustomerAndBookingDateBefore(customer, LocalDateTime.now());
+    }
+
+    @Transactional
+    public void addReview(Long bookingId, int rating, String komentar) {
+        Booking booking = bookingRepository.findById(bookingId)
+            .orElseThrow(() -> new RuntimeException("Booking tidak ditemukan."));
+
+        if (booking.getBookingDate().isAfter(LocalDateTime.now())) {
+            throw new RuntimeException("Booking masih berlangsung.");
+        }
+
+        if (booking.getReview() != null) {
+            throw new RuntimeException("Review sudah ada untuk booking ini.");
+        }
+
+        Review review = new Review();
+        review.setBooking(booking);
+        review.setRating(rating);
+        review.setKomentar(komentar);
+        review.setTanggalReview(LocalDateTime.now());
+        review.setLapangan(booking.getLapangan()); // Set Lapangan
+
+        reviewService.addReview(review);
+
+        booking.setReview(review);
+        bookingRepository.save(booking);
     }
 }

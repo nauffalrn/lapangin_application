@@ -104,6 +104,11 @@
             </div>
           </div>
 
+          <div class="detail-section detail-price">
+            <h2>Harga Sewa / Jam</h2>
+            <span th:text="${lapangan.formattedPrice}">Rp. 0</span>
+          </div>
+
           <div class="detail-section">
             <h2>Alamat Lapangan</h2>
             <span
@@ -144,6 +149,14 @@
 
             <div class="ticket-list" id="ticketList">
               <!-- Daftar court akan diisi oleh JavaScript -->
+            </div>
+          </div>
+
+          <!-- Reviews Section -->
+          <div class="detail-section">
+            <h2>Reviews</h2>
+            <div id="reviewsContainer">
+              <!-- Reviews akan diisi oleh JavaScript -->
             </div>
           </div>
         </div>

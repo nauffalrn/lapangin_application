@@ -43,7 +43,7 @@ public class WebSecurityConfig {
                 .requestMatchers("/admin/**", "/dashboardAdmin").hasRole("ADMIN")
                 .requestMatchers("/dashboard").hasAnyRole("ADMIN", "CUSTOMER")
                 .requestMatchers("/booking/**").hasRole("CUSTOMER")
-                .requestMatchers("/calendar", "/notifications", "/history", "/wallet", "/booking/**").authenticated()
+                .requestMatchers("/calendar", "/notifications", "/history", "/booking/**").authenticated()
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form

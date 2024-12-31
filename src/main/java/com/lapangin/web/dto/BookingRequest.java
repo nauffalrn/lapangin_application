@@ -20,7 +20,8 @@ public class BookingRequest {
 
     private String kodePromo;
 
-    // Getters and Setters
+    // Getters dan Setters
+
     public LocalDate getTanggal() {
         return tanggal;
     }
