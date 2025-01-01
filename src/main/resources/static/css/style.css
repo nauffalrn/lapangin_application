@@ -335,7 +335,7 @@ body.dark-mode .sidebar.collapsed .toggle-dark-mode .slider {
 }
 
 .filter-container button {
-  background-color: #a2001a;
+  background-color: #151a2d;
   color: #ffffff;
   font-weight: bold;
   border: none;
@@ -344,13 +344,13 @@ body.dark-mode .sidebar.collapsed .toggle-dark-mode .slider {
 }
 
 .filter-container button:hover {
-  background-color: #870017;
+  background-color: #151a2d;
 }
 
 .filter-container .small-button {
   background-color: #fcecec;
   border: none;
-  color: #a2001a;
+  color: #151a2d;
   font-weight: bold;
   width: 40px;
   height: 40px;

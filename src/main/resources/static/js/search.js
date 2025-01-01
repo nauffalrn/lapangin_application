@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
-    const searchInput = document.querySelector('input[placeholder="Cari nama venue"]');
+    const searchInput = document.querySelector('input[placeholder="Nama Lapangan"]');
     const kotaSelect = document.querySelector('select:nth-of-type(1)');
     const olahragaSelect = document.querySelector('select:nth-of-type(2)');
     const cariButton = document.querySelector('.filter-container button:last-of-type'); // Tombol "Cari venue"

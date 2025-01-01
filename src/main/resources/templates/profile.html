@@ -164,24 +164,6 @@
                         class="d-block ui-w-160 user-icon"
                         width="150"
                       />
-
-                      <div
-                        class="media-body ml-4 upload-section"
-                        th:if="${user.role != 'ADMIN'}"
-                      >
-                        <div class="form-group upload-photo">
-                          <label for="profileImage">Upload New Photo:</label>
-                          <input
-                            type="file"
-                            id="profileImage"
-                            name="profileImage"
-                            accept="image/*"
-                            class="form-control-file"
-                          />
-                        </div>
-                        <div class="text-light small mt-1">
-                          JPG, GIF, PNG. Maks. 800K
-                        </div>
                       </div>
                     </div>
                   </div>
@@ -196,8 +178,7 @@
                         th:value="${user.username}"
                         name="username"
                         id="username"
-                        th:readonly="${user.role == 'ADMIN'}"
-                        required
+                        readonly
                       />
                       <div
                         class="error-message text-danger"
@@ -222,8 +203,7 @@
                         th:value="${user.email}"
                         name="email"
                         id="email"
-                        th:readonly="${user.role == 'ADMIN'}"
-                        required
+                        readonly
                       />
                       <div
                         class="error-message text-danger"
@@ -238,34 +218,13 @@
                         name="phone"
                         th:value="${phoneNumber}"
                         class="form-control mb-3"
-                        required
+                        readonly
                       />
                       <div
                         class="error-message text-danger"
                         id="phoneError"
                       ></div>
                     </div>
-                  </div>
-
-                  <!-- Tombol -->
-                  <div
-                    th:if="${user.role == 'CUSTOMER'}"
-                    class="text-right mt-3 button-group"
-                  >
-                    <button
-                      type="submit"
-                      class="btn btn-primary"
-                      id="saveChanges"
-                    >
-                      Save Changes
-                    </button>
-                    <button
-                      type="button"
-                      class="btn btn-secondary"
-                      id="cancelChanges"
-                    >
-                      Cancel
-                    </button>
                   </div>
                 </form>
               </div>
