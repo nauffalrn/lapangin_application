@@ -33,37 +33,60 @@ async function getCustomerPromos() {
 
 // Fungsi untuk menerapkan promo
 async function applyPromo() {
-  const promoCode = document.getElementById("promoSelect").value;
+  const promoSelect = document.getElementById("promoSelect");
+  const promoCode = promoSelect.value;
   const bookingId = document.getElementById("cancelBookingButton").dataset.bookingId;
   const { csrfToken, csrfHeader } = getCsrfTokens();
 
-  if (!promoCode) {
-    alert("Pilih promo terlebih dahulu.");
-    return;
-  }
-
   try {
-    const response = await fetch(`/api/booking/apply-promo?bookingId=${bookingId}&kodePromo=${promoCode}`, {
-      method: "POST",
-      headers: {
-        [csrfHeader]: csrfToken,
-        "Content-Type": "application/json",
-      },
-    });
-    const result = await response.json();
-    if (response.ok) {
-      alert("Promo berhasil diterapkan!");
-      document.querySelector(".original-price").style.textDecoration = "line-through";
-      document.querySelector(".discounted-price").style.display = "inline";
-      document.querySelector(".discounted-price").textContent = `Rp. ${result.totalPrice}`;
+    let response;
+    if (promoCode) {
+      // Jika ada promo yang dipilih, terapkan promo
+      response = await fetch(`/api/booking/apply-promo?bookingId=${bookingId}&kodePromo=${promoCode}`, {
+        method: "POST",
+        headers: {
+          [csrfHeader]: csrfToken,
+          "Content-Type": "application/json",
+        },
+      });
     } else {
-      alert(result.message || "Gagal menerapkan promo.");
+      // Jika tidak ada promo, reset promo
+      response = await fetch(`/api/booking/reset-promo?bookingId=${bookingId}`, {
+        method: "POST",
+        headers: {
+          [csrfHeader]: csrfToken,
+          "Content-Type": "application/json",
+        },
+      });
+    }
+
+    const result = await response.json();
+
+    if (response.ok) {
+      alert(result.message); // "Promo berhasil diterapkan!" atau "Promo berhasil dihapus!"
+      if (promoCode) {
+        // Tampilkan harga diskon
+        document.querySelector(".original-price").style.textDecoration = "line-through";
+        document.querySelector(".original-price").style.display = "inline"; // Pastikan original-price terlihat
+        document.querySelector(".discounted-price").style.display = "inline";
+        document.querySelector(".discounted-price").textContent = `Rp. ${result.totalPrice}`;
+      } else {
+        // Reset harga ke default
+        document.querySelector(".original-price").style.display = "none"; // Sembunyikan original-price
+        document.querySelector(".discounted-price").style.display = "inline";
+        document.querySelector(".discounted-price").textContent = `Rp. ${result.defaultPrice}`;
+      }
+    } else {
+      alert(result.message || "Gagal memproses promo.");
     }
   } catch (error) {
     console.error("Error:", error);
     alert("Terjadi kesalahan sistem.");
   }
 }
+
+// Event listener untuk perubahan pada promoSelect
+document.getElementById("promoSelect").addEventListener("change", applyPromo);
 
 // Handle Payment Form Submission
 document.getElementById("paymentForm").addEventListener("submit", async (e) => {
@@ -134,3 +157,13 @@ document.getElementById("cancelBookingButton").addEventListener("click", () => {
 
 // Panggil fungsi untuk mendapatkan promo yang dimiliki customer saat halaman dimuat
 document.addEventListener("DOMContentLoaded", getCustomerPromos);
+
+// Pastikan harga awal ditampilkan dengan benar saat halaman dimuat
+document.addEventListener("DOMContentLoaded", () => {
+  const originalPrice = document.querySelector(".original-price");
+  const discountedPrice = document.querySelector(".discounted-price");
+
+  // Tampilkan hanya discounted-price dengan harga awal
+  originalPrice.style.display = "none";
+  discountedPrice.style.display = "inline";
+});

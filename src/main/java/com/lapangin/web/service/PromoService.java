@@ -46,7 +46,7 @@ public class PromoService {
     }
 
     public boolean isPromoClaimedByCustomer(Customer customer, Promo promo) {
-        return customer.getClaimedPromos().contains(promo);
+        return promoRepository.existsByIdAndCustomersClaimed_Id(promo.getId(), customer.getId());
     }
 
     @Transactional

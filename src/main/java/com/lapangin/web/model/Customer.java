@@ -1,6 +1,7 @@
 package com.lapangin.web.model;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import jakarta.persistence.Column;
@@ -67,11 +68,11 @@ public class Customer extends User {
         if (this == o) return true;
         if (!(o instanceof Customer)) return false;
         Customer customer = (Customer) o;
-        return getId().equals(customer.getId());
+        return Objects.equals(getId(), customer.getId());
     }
 
     @Override
     public int hashCode() {
-        return getId().hashCode();
+        return Objects.hash(getId());
     }
 }

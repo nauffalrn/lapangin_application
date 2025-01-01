@@ -26,4 +26,6 @@ public interface PromoRepository extends JpaRepository<Promo, Long> {
     @Query("SELECT p FROM Promo p WHERE p.tanggalMulai <= :today AND p.tanggalSelesai >= :today AND p NOT IN " +
            "(SELECT pr FROM Promo pr JOIN pr.customersClaimed cc WHERE cc.id = :customerId)")
     List<Promo> findActivePromosNotClaimedByCustomer(@Param("customerId") Long customerId, @Param("today") LocalDate today);
+
+    boolean existsByIdAndCustomersClaimed_Id(Long promoId, Long customerId);
 }

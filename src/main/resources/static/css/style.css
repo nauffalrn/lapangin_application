@@ -444,6 +444,20 @@ body.dark-mode .sidebar.collapsed .toggle-dark-mode .slider {
   object-fit: cover;
 }
 
+.profile-image-section .image-container {
+  width: 140px; /* Adjusted size */
+  height: 140px;
+  overflow: hidden;
+  border-radius: 50%;
+  border: 3px solid #ffffff;
+}
+
+.profile-image-section .image-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
 .location-overlay {
   position: absolute;
   bottom: 10px;

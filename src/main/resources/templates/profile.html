@@ -50,9 +50,7 @@
           </li>
           <li class="nav-item" th:if="${user.role == 'ADMIN'}">
             <a th:href="@{/admin}" class="nav-link">
-              <span class="nav-icon material-symbols-rounded"
-                >admin_panel_settings</span
-              >
+              <span class="nav-icon material-symbols-rounded">admin_panel_settings</span>
               <span class="nav-label">Admin Management</span>
             </a>
             <span class="nav-tooltip">Admin Management</span>
@@ -75,9 +73,7 @@
           </li>
           <li class="nav-item" th:if="${user.role == 'CUSTOMER'}">
             <a th:href="@{/notifications}" class="nav-link">
-              <span class="nav-icon material-symbols-rounded"
-                >notifications</span
-              >
+              <span class="nav-icon material-symbols-rounded">notifications</span>
               <span class="nav-label">Notifications</span>
             </a>
             <span class="nav-tooltip">Notifications</span>
@@ -102,9 +98,7 @@
           </li>
           <li class="nav-item" th:if="${user != null}">
             <a th:href="@{/profile}" class="nav-link">
-              <span class="nav-icon material-symbols-rounded"
-                >account_circle</span
-              >
+              <span class="nav-icon material-symbols-rounded">account_circle</span>
               <span class="nav-label">Profile</span>
             </a>
             <span class="nav-tooltip">Profile</span>
@@ -131,6 +125,7 @@
       <h2 class="profile-settings-title">Profile Settings</h2>
       <div class="card overflow-hidden">
         <div class="row no-gutters row-bordered row-border-light">
+          <!-- Kolom Kiri: Data User -->
           <div class="col-md-6">
             <div class="tab-content">
               <!-- General tab -->
@@ -147,28 +142,23 @@
                     th:name="${_csrf.parameterName}"
                     th:value="${_csrf.token}"
                   />
-                  <div class="col-md-6 content-kiri">
-                    <div class="card-body media align-items-center">
+                  <!-- Updated Profile Image Section -->
+                  <div class="profile-image-section">
+                    <div class="image-container">
                       <img
-                        id="profilePreview"
                         th:if="${user.profileImage != null}"
                         th:src="@{/${user.profileImage}}"
                         alt="Profile Image"
-                        class="d-block ui-w-160 user-icon"
-                        width="150"
+                        class="user-icon img-fluid"
                       />
                       <img
                         th:unless="${user.profileImage != null}"
                         th:src="@{/images/default_avatar.jpg}"
                         alt="Default Profile Image"
-                        class="d-block ui-w-160 user-icon"
-                        width="150"
+                        class="user-icon img-fluid"
                       />
-                      </div>
                     </div>
                   </div>
-
-                  <hr class="border-light m-0" />
                   <div class="card-body">
                     <div class="form-group">
                       <label class="form-label">Username</label>
@@ -231,11 +221,13 @@
             </div>
           </div>
           <!-- Kolom Kanan: Gambar Karakter -->
-          <div class="col-md-6 d-flex justify-content-center align-items-start">
+          <div
+            class="col-md-6 d-flex justify-content-center align-items-center"
+          >
             <img
               src="/images/karakter_user.png"
               alt="User Icon"
-              class="user-icon karakter-gambar"
+              class="user-icon karakter-gambar img-fluid"
             />
           </div>
         </div>

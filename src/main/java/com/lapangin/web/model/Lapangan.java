@@ -196,13 +196,8 @@ public class Lapangan {
         return "-";
     }
 
-    /**
-     * Memperbarui rating dan jumlah reviews.
-     *
-     * @param newRating Rating baru yang diberikan oleh customer.
-     */
     public void updateRating(double newRating) {
-        this.rating = ((this.rating * this.reviews) + newRating) / (this.reviews + 1);
+        this.rating = Math.round(((this.rating * this.reviews) + newRating) / (this.reviews + 1) * 10.0) / 10.0;
         this.reviews += 1;
     }
 }

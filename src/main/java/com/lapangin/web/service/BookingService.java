@@ -164,33 +164,38 @@ public class BookingService {
     public List<JadwalResponse> getJadwalLapangan(Long lapanganId, LocalDate tanggal) {
         LocalDateTime startOfDay = tanggal.atStartOfDay();
         LocalDateTime endOfDay = tanggal.plusDays(1).atStartOfDay();
-
+    
         List<Booking> bookings = bookingRepository.findByLapanganIdAndBookingDateBetween(lapanganId, startOfDay, endOfDay);
-
-        // Asumsikan jam operasional lapangan adalah 08:00 - 22:00
-        List<Integer> jamOperasional = IntStream.rangeClosed(8, 22).boxed().collect(Collectors.toList());
-
-        // Tentukan jam yang sudah dibooking
-        Set<Integer> jamBooked = bookings.stream()
-                                         .flatMap(booking -> IntStream.range(booking.getJamMulai(), booking.getJamSelesai()).boxed())
-                                         .collect(Collectors.toSet());
-
+    
         // Ambil data lapangan
         Lapangan lapangan = lapanganService.getLapanganById(lapanganId);
         if (lapangan == null) {
             throw new RuntimeException("Lapangan tidak ditemukan");
         }
-
+    
+        // Dapatkan jam operasional dari lapangan
+        // Menggunakan getHour() untuk mendapatkan nilai jam sebagai int
+        int jamBuka = lapangan.getJamBuka().getHour(); 
+        int jamTutup = lapangan.getJamTutup().getHour(); 
+    
+        // Generasikan jam operasional sesuai jam buka dan tutup
+        List<Integer> jamOperasional = IntStream.range(jamBuka, jamTutup).boxed().collect(Collectors.toList());
+    
+        // Tentukan jam yang sudah dibooking
+        Set<Integer> jamBooked = bookings.stream()
+                                         .flatMap(booking -> IntStream.range(booking.getJamMulai(), booking.getJamSelesai()).boxed())
+                                         .collect(Collectors.toSet());
+    
         int hargaLapangan = lapangan.getPrice(); // Pastikan tipe data sesuai
-
+    
         List<JadwalResponse> jadwalResponses = jamOperasional.stream()
             .map(jam -> new JadwalResponse(
                     String.format("%02d:00", jam), // Konversi jam ke format String
                     !jamBooked.contains(jam),      // available
-                    hargaLapangan    // harga dari lapangan
+                    hargaLapangan                  // harga dari lapangan
                 ))
             .collect(Collectors.toList());
-
+    
         return jadwalResponses;
     }
 
@@ -300,7 +305,45 @@ public class BookingService {
 
         reviewService.addReview(review);
 
+        // Update rating dan jumlah review pada Lapangan
+        Lapangan lapangan = booking.getLapangan();
+        lapangan.updateRating(rating);
+        lapanganService.saveLapangan(lapangan); // Simpan perubahan pada Lapangan
+
         booking.setReview(review);
         bookingRepository.save(booking);
+    }
+
+    @Transactional
+    public Booking applyPromo(Long bookingId, String kodePromo) {
+        Booking booking = bookingRepository.findById(bookingId)
+            .orElseThrow(() -> new RuntimeException("Booking tidak ditemukan."));
+
+        Promo promo = promoService.findByKodePromo(kodePromo);
+        if (promo == null || !promoService.isPromoValid(promo)) {
+            throw new RuntimeException("Promo tidak valid atau sudah digunakan.");
+        }
+
+        promoService.claimPromo(booking.getCustomer(), promo);
+        booking.setPromo(promo);
+        double discount = (booking.getTotalPrice() * promo.getDiskonPersen()) / 100.0;
+        double discountedPrice = booking.getTotalPrice() - discount;
+        booking.setTotalPrice(discountedPrice);
+        bookingRepository.save(booking);
+
+        return booking; // Return the updated booking
+    }
+
+    @Transactional
+    public Booking resetPromo(Long bookingId) {
+        Booking booking = bookingRepository.findById(bookingId)
+            .orElseThrow(() -> new RuntimeException("Booking tidak ditemukan."));
+        
+        booking.setPromo(null);
+        double defaultPrice = booking.getLapangan().getPrice() * (booking.getJamSelesai() - booking.getJamMulai());
+        booking.setTotalPrice(defaultPrice);
+        bookingRepository.save(booking);
+        
+        return booking;
     }
 }

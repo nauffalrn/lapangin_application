@@ -2,7 +2,9 @@ package com.lapangin.web.controller;
 
 import java.security.Principal;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -413,25 +415,38 @@ public class BookingController {
         return ResponseEntity.ok(promoDTOs);
     }
 
+    // BookingController.java
     @PostMapping("/apply-promo")
     public ResponseEntity<?> applyPromo(@RequestParam Long bookingId, @RequestParam String kodePromo) {
-        Booking booking = bookingService.getBookingById(bookingId);
-        if (booking == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"message\": \"Booking tidak ditemukan.\"}");
+        try {
+            Booking booking = bookingService.applyPromo(bookingId, kodePromo);
+            
+            Map<String, Object> response = new HashMap<>();
+            response.put("message", "Promo berhasil diterapkan.");
+            response.put("totalPrice", booking.getTotalPrice());
+
+            return ResponseEntity.ok(response);
+        } catch (RuntimeException e) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
         }
+    }
 
-        Promo promo = promoService.findByKodePromo(kodePromo);
-        if (promo == null || !promoService.isPromoValid(promo) || promoService.isPromoClaimedByCustomer(booking.getCustomer(), promo)) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"message\": \"Promo tidak valid atau sudah digunakan.\"}");
+    @PostMapping("/reset-promo")
+    public ResponseEntity<?> resetPromo(@RequestParam Long bookingId) {
+        try {
+            Booking booking = bookingService.resetPromo(bookingId);
+            
+            Map<String, Object> response = new HashMap<>();
+            response.put("message", "Promo berhasil dihapus.");
+            response.put("defaultPrice", booking.getLapangan().getPrice() * (booking.getJamSelesai() - booking.getJamMulai()));
+            
+            return ResponseEntity.ok(response);
+        } catch (RuntimeException e) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
         }
-
-        promoService.claimPromo(booking.getCustomer(), promo);
-        booking.setPromo(promo);
-        double discount = (booking.getTotalPrice() * promo.getDiskonPersen()) / 100.0;
-        double discountedPrice = booking.getTotalPrice() - discount;
-        booking.setTotalPrice(discountedPrice);
-        bookingService.saveBooking(booking);
-
-        return ResponseEntity.ok("{\"message\": \"Promo berhasil diterapkan.\", \"totalPrice\": " + discountedPrice + "}");
     }
 }
