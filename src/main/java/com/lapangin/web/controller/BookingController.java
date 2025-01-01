@@ -386,4 +386,52 @@ public class BookingController {
         return ResponseEntity.ok(promoDTOs);
     }
 
+    @GetMapping("/promos/customer")
+    public ResponseEntity<List<PromoDTO>> getCustomerPromos(Principal principal) {
+        if (principal == null || principal.getName() == null) {
+            logger.warn("Pengguna tidak terautentikasi.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        }
+
+        Customer customer = customerService.findByUsername(principal.getName());
+        if (customer == null) {
+            logger.warn("Customer tidak ditemukan untuk username: {}", principal.getName());
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        }
+
+        List<Promo> customerPromos = promoService.getPromosByCustomer(customer);
+        List<PromoDTO> promoDTOs = customerPromos.stream().map(promo -> {
+            PromoDTO dto = new PromoDTO();
+            dto.setId(promo.getId());
+            dto.setKodePromo(promo.getKodePromo());
+            dto.setDiskonPersen(promo.getDiskonPersen());
+            dto.setTanggalMulai(promo.getTanggalMulai());
+            dto.setTanggalSelesai(promo.getTanggalSelesai());
+            return dto;
+        }).collect(Collectors.toList());
+
+        return ResponseEntity.ok(promoDTOs);
+    }
+
+    @PostMapping("/apply-promo")
+    public ResponseEntity<?> applyPromo(@RequestParam Long bookingId, @RequestParam String kodePromo) {
+        Booking booking = bookingService.getBookingById(bookingId);
+        if (booking == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"message\": \"Booking tidak ditemukan.\"}");
+        }
+
+        Promo promo = promoService.findByKodePromo(kodePromo);
+        if (promo == null || !promoService.isPromoValid(promo) || promoService.isPromoClaimedByCustomer(booking.getCustomer(), promo)) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"message\": \"Promo tidak valid atau sudah digunakan.\"}");
+        }
+
+        promoService.claimPromo(booking.getCustomer(), promo);
+        booking.setPromo(promo);
+        double discount = (booking.getTotalPrice() * promo.getDiskonPersen()) / 100.0;
+        double discountedPrice = booking.getTotalPrice() - discount;
+        booking.setTotalPrice(discountedPrice);
+        bookingService.saveBooking(booking);
+
+        return ResponseEntity.ok("{\"message\": \"Promo berhasil diterapkan.\", \"totalPrice\": " + discountedPrice + "}");
+    }
 }

@@ -78,20 +78,22 @@
           <!-- Judul dan Info Venue -->
           <div class="detail-venue-title">
             <h1 th:text="${lapangan.namaLapangan}">Nama Lapangan</h1>
-            <div class="detail-venue-info">
-              <div class="detail-venue-location">
-                <i class="fas fa-map-marker-alt"></i>
-                <span th:text="${lapangan.city}">Daerah</span>
-              </div>
-              <div class="detail-venue-status">
-                <span th:text="${lapangan.cabangOlahraga}">Jenis Olahraga</span>
-              </div>
-              <div class="detail-venue-rating">
-                <span>⭐ <span th:text="${lapangan.rating}"></span></span>
-                <span
-                  >(<span th:text="${lapangan.reviews}"></span> reviews)</span
-                >
-              </div>
+          </div>
+
+          <div class="detail-venue-info">
+            <div class="detail-venue-location">
+              <i class="fas fa-map-marker-alt"></i>
+              <span th:text="${lapangan.city}">Daerah</span>
+            </div>
+            <div class="detail-venue-status">
+              <i class="fas fa-clock"></i>
+              <span th:text="'Jam Operasional: ' + ${lapangan.jamBuka} + ' - ' + ${lapangan.jamTutup}">Jam Operasional</span>
+            </div>
+            <div class="detail-venue-rating">
+              <span>⭐ <span th:text="${lapangan.rating}"></span></span>
+              <span
+                >(<span th:text="${lapangan.reviews}"></span> reviews)</span
+              >
             </div>
           </div>
 

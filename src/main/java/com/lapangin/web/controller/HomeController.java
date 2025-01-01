@@ -77,15 +77,15 @@ public class HomeController {
             if (principal == null) {
                 return "redirect:/login";
             }
-            
+
             Customer customer = customerService.findByUsername(principal.getName());
             if (customer == null) {
                 return "redirect:/login";
             }
-            
+
             List<Booking> bookings = bookingService.getUpcomingBookings(customer);
             model.addAttribute("bookings", bookings);
-            
+
             return "notifications";
         } catch (Exception e) {
             logger.error("Error saat mengambil notifikasi", e);

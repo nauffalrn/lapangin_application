@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <title>Pembayaran - Lapangin</title>
-    
+
     <!-- CSRF Token untuk keamanan -->
     <meta name="_csrf" th:content="${_csrf.token}" />
     <meta name="_csrf_header" th:content="${_csrf.headerName}" />
@@ -16,41 +16,90 @@
     <div class="payment-container">
       <!-- Detail Booking -->
       <div class="booking-details">
-        <p>Booking ID: <span th:text="${booking.id}">ID</span></p>
-        <p>Lapangan: <span th:text="${booking.lapangan.namaLapangan}">Nama Lapangan</span></p>
-        <p>Tanggal Main: <span th:text="${#temporals.format(booking.bookingDate, 'dd MMM yyyy')}">Tanggal</span></p>
         <p>
-          Jam Main: 
-          <span th:text="${T(java.lang.String).format('%02d:00', booking.jamMulai)}">00:00</span> - 
-          <span th:text="${T(java.lang.String).format('%02d:00', booking.jamSelesai)}">00:00</span>
+          Lapangan:
+          <span th:text="${booking.lapangan.namaLapangan}">Nama Lapangan</span>
+        </p>
+        <p>
+          Tanggal Main:
+          <span
+            th:text="${#temporals.format(booking.bookingDate, 'dd MMM yyyy')}"
+            >Tanggal</span
+          >
+        </p>
+        <p>
+          Jam Main:
+          <span
+            th:text="${T(java.lang.String).format('%02d:00', booking.jamMulai)}"
+            >00:00</span
+          >
+          -
+          <span
+            th:text="${T(java.lang.String).format('%02d:00', booking.jamSelesai)}"
+            >00:00</span
+          >
         </p>
         <p>
           Harga:
-          <span th:if="${booking.promo != null}">
-            <span class="original-price" th:text="'Rp. ' + (${booking.lapangan.price * (booking.jamSelesai - booking.jamMulai)})"></span>
-            <span class="discounted-price" th:text="'Rp. ' + ${booking.totalPrice}"></span>
-          </span>
-          <span th:if="${booking.promo == null}" th:text="'Rp. ' + ${booking.totalPrice}"></span>
+          <span
+            class="original-price" style="display: none";
+            th:text="'Rp. ' + (${booking.lapangan.price * (booking.jamSelesai - booking.jamMulai)})"
+          ></span>
+          <span
+            class="discounted-price"
+            th:text="'Rp. ' + ${booking.totalPrice}"
+          ></span>
         </p>
+      </div>
+
+      <!-- Form untuk memilih promo -->
+      <div class="promo-code">
+        <label for="promoSelect">Pilih Promo:</label>
+        <select id="promoSelect" name="promoSelect" onchange="applyPromo()">
+          <option value="">Pilih Promo</option>
+        </select>
       </div>
 
       <!-- Payment Details Box -->
       <div class="payment-info">
         <h3>Transfer ke:</h3>
         <!-- QR Code Pembayaran -->
-        <img src="/images/qr-code.png" alt="QR Code Pembayaran" class="qr-code" />
-        <p th:text="${noRek}" class="bank-account">BCA: 1234567890 a.n LAPANGIN</p>
+        <img
+          src="/images/qr-code.png"
+          alt="QR Code Pembayaran"
+          class="qr-code"
+        />
+        <p th:text="${noRek}" class="bank-account">
+          BCA: 1234567890 a.n LAPANGIN
+        </p>
       </div>
 
       <!-- Tombol Batal Booking -->
-      <button id="cancelBookingButton" class="cancel-btn" th:data-booking-id="${booking.id}">Batal Booking</button>
+      <button
+        id="cancelBookingButton"
+        class="cancel-btn"
+        th:data-booking-id="${booking.id}"
+      >
+        Batal Booking
+      </button>
 
       <!-- Upload Bukti Pembayaran -->
-      <form id="paymentForm" enctype="multipart/form-data" th:action="@{/api/booking/payment/upload}" method="post">
+      <form
+        id="paymentForm"
+        enctype="multipart/form-data"
+        th:action="@{/api/booking/payment/upload}"
+        method="post"
+      >
         <input type="hidden" name="bookingId" th:value="${booking.id}" />
         <div>
           <label for="paymentProof">Upload Bukti Pembayaran:</label>
-          <input type="file" id="paymentProof" name="file" accept="image/*" required />
+          <input
+            type="file"
+            id="paymentProof"
+            name="file"
+            accept="image/*"
+            required
+          />
         </div>
         <button type="submit">Konfirmasi Pembayaran</button>
       </form>

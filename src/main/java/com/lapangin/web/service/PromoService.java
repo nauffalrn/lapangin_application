@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +25,7 @@ public class PromoService {
     private final CustomerService customerService;
     private final CustomerRepository customerRepository;
 
+    @Autowired
     public PromoService(PromoRepository promoRepository, CustomerService customerService, CustomerRepository customerRepository) {
         this.promoRepository = promoRepository;
         this.customerService = customerService;
@@ -44,7 +46,7 @@ public class PromoService {
     }
 
     public boolean isPromoClaimedByCustomer(Customer customer, Promo promo) {
-        return customerService.isPromoClaimedByCustomer(customer, promo);
+        return customer.getClaimedPromos().contains(promo);
     }
 
     @Transactional
@@ -65,17 +67,24 @@ public class PromoService {
         return promoRepository.findActivePromosByCustomer(customer.getId(), today);
     }
 
-    // Tambahkan metode berikut untuk mendapatkan promo yang tersedia bagi customer
     @Transactional(readOnly = true)
     public List<Promo> getAvailablePromosForCustomer(Customer customer) {
         LocalDate today = LocalDate.now();
         return promoRepository.findActivePromosNotClaimedByCustomer(customer.getId(), today);
     }
 
-    // Ubah metode calculateTotalPrice untuk menggunakan Booking
+    public List<Promo> getPromosByCustomer(Customer customer) {
+        return promoRepository.findPromosByCustomer(customer.getId());
+    }
+
     public double calculateTotalPrice(Booking booking) {
         double basePrice = booking.getLapangan().getPrice() * (booking.getJamSelesai() - booking.getJamMulai());
         Promo promo = booking.getPromo();
         return promo != null ? basePrice * (1 - promo.getDiskonPersen() / 100) : basePrice;
+    }
+
+    public boolean shouldShowPromo(Customer customer) {
+        List<Promo> activePromos = getActivePromosByCustomer(customer);
+        return !activePromos.isEmpty() && !isPromoClaimedByCustomer(customer, activePromos.get(0));
     }
 }

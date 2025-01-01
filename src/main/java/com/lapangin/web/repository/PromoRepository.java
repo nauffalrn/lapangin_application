@@ -19,6 +19,9 @@ public interface PromoRepository extends JpaRepository<Promo, Long> {
     @Query("SELECT p FROM Promo p JOIN p.customersClaimed c WHERE c.id = :customerId AND p.tanggalMulai <= :today AND p.tanggalSelesai >= :today")
     List<Promo> findActivePromosByCustomer(@Param("customerId") Long customerId, @Param("today") LocalDate today);
 
+    @Query("SELECT p FROM Promo p JOIN p.customersClaimed c WHERE c.id = :customerId")
+    List<Promo> findPromosByCustomer(@Param("customerId") Long customerId);
+
     // Tambahkan metode berikut untuk mengambil promo aktif yang belum diklaim oleh customer
     @Query("SELECT p FROM Promo p WHERE p.tanggalMulai <= :today AND p.tanggalSelesai >= :today AND p NOT IN " +
            "(SELECT pr FROM Promo pr JOIN pr.customersClaimed cc WHERE cc.id = :customerId)")

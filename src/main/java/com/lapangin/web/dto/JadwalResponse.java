@@ -2,15 +2,15 @@ package com.lapangin.web.dto;
 
 public class JadwalResponse {
     private String waktu;
-    private boolean available;
+    private boolean tersedia;
     private int harga;
 
     // Konstruktor
     public JadwalResponse() {}
 
-    public JadwalResponse(String waktu, boolean available, int harga) {
+    public JadwalResponse(String waktu, boolean tersedia, int harga) {
         this.waktu = waktu;
-        this.available = available;
+        this.tersedia = tersedia;
         this.harga = harga;
     }
 
@@ -23,12 +23,12 @@ public class JadwalResponse {
         this.waktu = waktu;
     }
 
-    public boolean isAvailable() {
-        return available;
+    public boolean isTersedia() {
+        return tersedia;
     }
 
-    public void setAvailable(boolean available) {
-        this.available = available;
+    public void setTersedia(boolean tersedia) {
+        this.tersedia = tersedia;
     }
 
     public int getHarga() {

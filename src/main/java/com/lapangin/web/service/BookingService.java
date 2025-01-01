@@ -82,20 +82,14 @@ public class BookingService {
             totalPrice += jadwal.getHarga();
         }
 
-        // Set bookingDate berdasarkan tanggal dan jam mulai dari jadwal pertama
-        if (jadwalList.isEmpty()) {
-            throw new RuntimeException("Jadwal tidak boleh kosong.");
-        }
-        int jamMulai = jadwalList.get(0).getJam();
-        LocalDateTime bookingDateTime = tanggal.atTime(jamMulai, 0);
+        // Set bookingDate berdasarkan waktu saat customer melakukan booking
+        LocalDateTime bookingDateTime = LocalDateTime.now();
         booking.setBookingDate(bookingDateTime);
 
+        // Set jam mulai dan jam selesai
+        int jamMulai = jadwalList.get(0).getJam();
         booking.setJamMulai(jamMulai);
-        // Asumsikan jamSelesai adalah jamMulai + durasi
         booking.setJamSelesai(jamMulai + jadwalList.size()); // Sesuaikan dengan logika bisnis Anda
-
-        // Set totalPrice
-        booking.setTotalPrice(totalPrice);
 
         // Terapkan promo jika tersedia
         if (kodePromo != null && !kodePromo.trim().isEmpty()) {
@@ -110,6 +104,8 @@ public class BookingService {
             } else {
                 throw new RuntimeException("Promo tidak valid atau sudah digunakan.");
             }
+        } else {
+            booking.setTotalPrice(totalPrice);
         }
 
         return bookingRepository.save(booking);
@@ -176,7 +172,7 @@ public class BookingService {
 
         // Tentukan jam yang sudah dibooking
         Set<Integer> jamBooked = bookings.stream()
-                                         .map(Booking::getJamMulai)
+                                         .flatMap(booking -> IntStream.range(booking.getJamMulai(), booking.getJamSelesai()).boxed())
                                          .collect(Collectors.toSet());
 
         // Ambil data lapangan
@@ -234,57 +230,47 @@ public class BookingService {
     public List<BookingDTO> getBookingsByCustomerAndDate(Customer customer, LocalDate tanggal) {
         LocalDateTime startOfDay = tanggal.atStartOfDay();
         LocalDateTime endOfDay = tanggal.plusDays(1).atStartOfDay();
-
         List<Booking> bookings = bookingRepository.findByCustomerAndBookingDateBetween(customer, startOfDay, endOfDay);
-
-        return bookings.stream()
-                       .map(this::convertToDTO)
-                       .collect(Collectors.toList());
+        return bookings.stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
     public List<Booking> getUpcomingBookings(Customer customer) {
-        LocalDateTime now = LocalDateTime.now();
-        return bookingRepository.findByCustomerAndBookingDateGreaterThanOrderByBookingDateAsc(
-            customer, 
-            now
-        );
+        return bookingRepository.findByCustomerAndBookingDateAfter(customer, LocalDateTime.now());
     }
 
     @Transactional
     public List<BookingDTO> getBookingHistoryDTO(Customer customer) {
         List<Booking> bookings = bookingRepository.findByCustomerAndBookingDateBefore(customer, LocalDateTime.now());
-        return bookings.stream()
-                       .map(this::convertToDTO)
-                       .collect(Collectors.toList());
+        return bookings.stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
     private BookingDTO convertToDTO(Booking booking) {
         BookingDTO dto = new BookingDTO();
         dto.setId(booking.getId());
-
+    
+        // Inisialisasi LapanganDTO
         LapanganDTO lapanganDTO = new LapanganDTO();
         lapanganDTO.setId(booking.getLapangan().getId());
         lapanganDTO.setNamaLapangan(booking.getLapangan().getNamaLapangan());
         lapanganDTO.setAlamatLapangan(booking.getLapangan().getAlamatLapangan());
-
         dto.setLapangan(lapanganDTO);
+    
         dto.setBookingDate(booking.getBookingDate());
         dto.setJamMulai(booking.getJamMulai());
         dto.setJamSelesai(booking.getJamSelesai());
         dto.setTotalPrice(booking.getTotalPrice());
         dto.setPaymentProofFilename(booking.getPaymentProofFilename());
-
-        // Tambahkan review jika ada
-        Review review = booking.getReview();
-        if (review != null) {
+    
+        // Inisialisasi ReviewDTO jika review tidak null
+        if (booking.getReview() != null) {
             ReviewDTO reviewDTO = new ReviewDTO();
-            reviewDTO.setRating(review.getRating());
-            reviewDTO.setKomentar(review.getKomentar());
-            reviewDTO.setUsername(review.getBooking().getCustomer().getUsername());
-            reviewDTO.setTanggalReview(review.getTanggalReview());
+            reviewDTO.setRating(booking.getReview().getRating());
+            reviewDTO.setKomentar(booking.getReview().getKomentar());
+            reviewDTO.setUsername(booking.getCustomer().getUsername());
+            reviewDTO.setTanggalReview(booking.getReview().getTanggalReview());
             dto.setReview(reviewDTO);
         }
-
+    
         return dto;
     }
 

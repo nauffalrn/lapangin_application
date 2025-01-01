@@ -10,52 +10,44 @@ let totalPrice = 0;
 
 function initializeDates() {
   const dateScroll = document.getElementById("dateScroll");
-  if (!dateScroll) return;
-
-  dateScroll.innerHTML = "";
-  const days = ["Min", "Sen", "Sel", "Rab", "Kam", "Jum", "Sab"];
+  const days = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
   const months = [
-    "Jan",
-    "Feb",
-    "Mar",
-    "Apr",
-    "Mei",
-    "Jun",
-    "Jul",
-    "Ags",
-    "Sep",
-    "Okt",
-    "Nov",
-    "Des",
+    "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+    "Juli", "Agustus", "September", "Oktober", "November", "Desember"
   ];
 
   const today = new Date();
   for (let i = 0; i < 7; i++) {
-    const nextDate = new Date(today);
+    // Clone objek `today` untuk setiap iterasi
+    let nextDate = new Date(today);
     nextDate.setDate(today.getDate() + i);
-    const isoDate = nextDate.toISOString().split("T")[0];
+    
+    // Perbaiki format tanggal
+    let isoDate = nextDate.toISOString().split('T')[0];
 
     const dateItem = document.createElement("div");
-    dateItem.className = "date-item";
-    dateItem.dataset.date = isoDate; // Add data-date attribute
+    dateItem.classList.add("date-item");
+    if (i === 0) {
+      dateItem.classList.add("active");
+    }
+    dateItem.dataset.date = isoDate;
+
     dateItem.innerHTML = `
       <span class="day">${days[nextDate.getDay()]}</span>
-      <span class="date">${nextDate.getDate()} ${
-      months[nextDate.getMonth()]
-    }</span>
+      <span class="date">${nextDate.getDate()} ${months[nextDate.getMonth()]}</span>
     `;
-    dateItem.addEventListener("click", () => {
-      document
-        .querySelectorAll(".date-item")
-        .forEach((di) => di.classList.remove("active"));
-      dateItem.classList.add("active");
-      updateScheduleForDate(isoDate);
-      document.getElementById("selectedDate").textContent =
-        formatDisplayDate(isoDate);
 
-      // Reset selections when date changes
+    // Tambahkan event listener di dalam loop dengan variabel lokal
+    dateItem.addEventListener("click", () => {
+      document.querySelectorAll(".date-item").forEach((di) => di.classList.remove("active"));
+      dateItem.classList.add("active");
+      updateScheduleForDate(isoDate); // Pastikan isoDate yang benar dipassing
+      document.getElementById("selectedDate").textContent = formatDisplayDate(isoDate);
+
+      // Reset selections saat tanggal berubah
       resetSelectedSlots();
     });
+
     dateScroll.appendChild(dateItem);
   }
 }
@@ -137,10 +129,9 @@ function lihatKalender() {
     modal.style.display = "flex";
     const activeDateItem = document.querySelector(".date-item.active");
     if (activeDateItem) {
-      updateScheduleForDate(activeDateItem.dataset.date);
-      document.getElementById("selectedDate").textContent = formatDisplayDate(
-        activeDateItem.dataset.date
-      );
+      const selectedDate = activeDateItem.dataset.date;
+      updateScheduleForDate(selectedDate); // Pastikan tanggal yang benar dipassing
+      document.getElementById("selectedDate").textContent = formatDisplayDate(selectedDate);
     }
   }
 }
@@ -197,8 +188,7 @@ function updateScheduleDisplay(jadwalList, lapangan) {
   scheduleGrid.innerHTML = "";
 
   if (jadwalList.length === 0) {
-    scheduleGrid.innerHTML =
-      "<p>Tidak ada jadwal tersedia untuk tanggal ini.</p>";
+    scheduleGrid.innerHTML = "<p>Tidak ada jadwal tersedia untuk tanggal ini.</p>";
     return;
   }
 
@@ -206,14 +196,14 @@ function updateScheduleDisplay(jadwalList, lapangan) {
     console.log("Jadwal diterima:", jadwal); // Untuk debugging
 
     const slot = document.createElement("div");
-    slot.className = `time-slot ${jadwal.available ? "available" : "booked"}`;
+    slot.className = `time-slot ${jadwal.tersedia ? "available" : "booked"}`;
     slot.dataset.time = jadwal.waktu; // Gunakan 'waktu' sesuai respons
     slot.dataset.price = jadwal.harga;
     slot.dataset.courtId = lapangan.id;
 
     // Tentukan status
     let statusText = "";
-    if (jadwal.available) {
+    if (jadwal.tersedia) {
       statusText = "Tersedia";
     } else {
       statusText = "Jadwal sudah terisi";
@@ -227,7 +217,7 @@ function updateScheduleDisplay(jadwalList, lapangan) {
       </div>
     `;
 
-    if (jadwal.available) {
+    if (jadwal.tersedia) {
       slot.addEventListener("click", () =>
         selectTimeSlot(slot, jadwal.waktu, jadwal.harga, lapangan.id)
       );

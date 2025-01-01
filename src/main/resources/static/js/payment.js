@@ -5,6 +5,66 @@ function getCsrfTokens() {
   return { csrfToken, csrfHeader };
 }
 
+// Fungsi untuk mendapatkan promo yang dimiliki customer
+async function getCustomerPromos() {
+  const { csrfToken, csrfHeader } = getCsrfTokens();
+
+  try {
+    const response = await fetch("/api/booking/promos/customer", {
+      method: "GET",
+      headers: {
+        [csrfHeader]: csrfToken,
+        "Content-Type": "application/json",
+      },
+    });
+    const promos = await response.json();
+    const promoSelect = document.getElementById("promoSelect");
+
+    promos.forEach(promo => {
+      const option = document.createElement("option");
+      option.value = promo.kodePromo;
+      option.text = `${promo.kodePromo} - Diskon ${promo.diskonPersen}%`;
+      promoSelect.appendChild(option);
+    });
+  } catch (error) {
+    console.error("Error fetching customer promos:", error);
+  }
+}
+
+// Fungsi untuk menerapkan promo
+async function applyPromo() {
+  const promoCode = document.getElementById("promoSelect").value;
+  const bookingId = document.getElementById("cancelBookingButton").dataset.bookingId;
+  const { csrfToken, csrfHeader } = getCsrfTokens();
+
+  if (!promoCode) {
+    alert("Pilih promo terlebih dahulu.");
+    return;
+  }
+
+  try {
+    const response = await fetch(`/api/booking/apply-promo?bookingId=${bookingId}&kodePromo=${promoCode}`, {
+      method: "POST",
+      headers: {
+        [csrfHeader]: csrfToken,
+        "Content-Type": "application/json",
+      },
+    });
+    const result = await response.json();
+    if (response.ok) {
+      alert("Promo berhasil diterapkan!");
+      document.querySelector(".original-price").style.textDecoration = "line-through";
+      document.querySelector(".discounted-price").style.display = "inline";
+      document.querySelector(".discounted-price").textContent = `Rp. ${result.totalPrice}`;
+    } else {
+      alert(result.message || "Gagal menerapkan promo.");
+    }
+  } catch (error) {
+    console.error("Error:", error);
+    alert("Terjadi kesalahan sistem.");
+  }
+}
+
 // Handle Payment Form Submission
 document.getElementById("paymentForm").addEventListener("submit", async (e) => {
   e.preventDefault();
@@ -71,3 +131,6 @@ document.getElementById("cancelBookingButton").addEventListener("click", () => {
       });
   }
 });
+
+// Panggil fungsi untuk mendapatkan promo yang dimiliki customer saat halaman dimuat
+document.addEventListener("DOMContentLoaded", getCustomerPromos);

@@ -7,14 +7,15 @@ document.addEventListener("DOMContentLoaded", () => {
  */
 function fetchHistory() {
   fetch("/api/booking/history")
-    .then((response) => response.json())
-    .then((data) => {
+    .then(response => response.json())
+    .then(data => {
       const historyContent = document.getElementById("historyContent");
       if (data.length === 0) {
         historyContent.innerHTML = '<div class="empty-state"><p>Anda belum memiliki history booking.</p></div>';
         return;
       }
 
+      const now = new Date();
       let table = `
         <table class="table table-bordered table-striped table-hover">
           <thead class="thead-dark bg-primary text-white">
@@ -31,44 +32,49 @@ function fetchHistory() {
       `;
 
       data.forEach((booking, index) => {
-        const hasReview = booking.review !== null;
-        table += `
-          <tr>
-            <td>${index + 1}</td>
-            <td>${booking.lapangan.namaLapangan}</td>
-            <td>${booking.lapangan.alamatLapangan}</td>
-            <td>${formatDateTime(booking.bookingDate)}</td>
-            <td>${booking.jamMulai}:00 - ${booking.jamSelesai}:00</td>
-            <td>
-              ${
-                hasReview
-                  ? `
-                    <span>⭐ ${booking.review.rating}</span>
-                    <p>${booking.review.komentar}</p>
-                    <small>Oleh: ${booking.review.username} pada ${formatDateTime(
-                      booking.review.tanggalReview
-                    )}</small>
-                  `
-                  : `
-                    <button class="btn btn-primary btn-sm" onclick="showReviewForm(${booking.id})">Berikan Review</button>
-                    <div id="reviewForm-${booking.id}" class="mt-2" style="display:none;">
-                      <form onsubmit="submitReview(event, ${booking.id})">
-                        <div class="mb-3">
-                          <label for="rating-${booking.id}" class="form-label">Rating (0-5)</label>
-                          <input type="number" min="0" max="5" class="form-control" id="rating-${booking.id}" required>
-                        </div>
-                        <div class="mb-3">
-                          <label for="komentar-${booking.id}" class="form-label">Komentar</label>
-                          <textarea class="form-control" id="komentar-${booking.id}" rows="3" required></textarea>
-                        </div>
-                        <button type="submit" class="btn btn-success btn-sm">Submit</button>
-                      </form>
-                    </div>
-                  `
-              }
-            </td>
-          </tr>
-        `;
+        const bookingEndTime = new Date(booking.bookingDate);
+        bookingEndTime.setHours(booking.jamSelesai, 0, 0, 0);
+
+        if (now > bookingEndTime) {
+          const hasReview = booking.review !== null;
+          table += `
+            <tr>
+              <td>${index + 1}</td>
+              <td>${booking.lapangan.namaLapangan}</td>
+              <td>${booking.lapangan.alamatLapangan}</td>
+              <td>${formatDateTime(booking.bookingDate)}</td>
+              <td>${booking.jamMulai}:00 - ${booking.jamSelesai}:00</td>
+              <td>
+                ${
+                  hasReview
+                    ? `
+                      <span>⭐ ${booking.review.rating}</span>
+                      <p>${booking.review.komentar}</p>
+                      <small>Oleh: ${booking.review.username} pada ${formatDateTime(
+                        booking.review.tanggalReview
+                      )}</small>
+                    `
+                    : `
+                      <button class="btn btn-primary btn-sm" onclick="showReviewForm(${booking.id})">Berikan Review</button>
+                      <div id="reviewForm-${booking.id}" class="mt-2" style="display:none;">
+                        <form onsubmit="submitReview(event, ${booking.id})">
+                          <div class="mb-3">
+                            <label for="rating-${booking.id}" class="form-label">Rating (0-5)</label>
+                            <input type="number" min="0" max="5" class="form-control" id="rating-${booking.id}" required>
+                          </div>
+                          <div class="mb-3">
+                            <label for="komentar-${booking.id}" class="form-label">Komentar</label>
+                            <textarea class="form-control" id="komentar-${booking.id}" rows="3" required></textarea>
+                          </div>
+                          <button type="submit" class="btn btn-success btn-sm">Submit</button>
+                        </form>
+                      </div>
+                    `
+                }
+              </td>
+            </tr>
+          `;
+        }
       });
 
       table += `
@@ -77,7 +83,7 @@ function fetchHistory() {
       `;
       historyContent.innerHTML = table;
     })
-    .catch((error) => {
+    .catch(error => {
       console.error("Error fetching history:", error);
       alert(`Gagal mengambil history: ${error.message}`);
     });

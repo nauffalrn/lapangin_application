@@ -52,7 +52,7 @@
 
 .detail-venue-info {
   display: flex;
-  justify-content: center;
+  justify-content: flex-start; 
   gap: 2rem;
   flex-wrap: wrap;
   margin-bottom: 2rem;

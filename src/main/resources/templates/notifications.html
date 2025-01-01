@@ -100,31 +100,19 @@
     <section class="section-2">
       <div class="notifications-container">
         <h1 class="notifications-header">Notifications</h1>
-        
-        <!-- Tambahkan margin-top di sini -->
         <div class="notifications-wrapper">
           <div class="notifications-list" id="notification-list">
-            <div th:each="booking : ${bookings}" class="notification-item">
-              <div class="notification-icon">
-                <i class="bx bx-notification"></i>
-              </div>
-              <div class="notification-content">
-                <h4 th:text="${booking.lapangan.namaLapangan}"></h4>
-                <p th:text="'Tanggal: ' + ${#temporals.format(booking.bookingDate, 'dd MMM yyyy HH:mm')}"></p>
-                <!-- Pastikan format waktu sesuai -->
-                <div class="countdown" 
-                     th:attr="data-time=${#temporals.format(booking.bookingDate, 'yyyy-MM-dd HH:mm:ss')}"
-                     th:data-debug="${#temporals.format(booking.bookingDate, 'yyyy-MM-dd HH:mm:ss')}">
-                </div>
-              </div>
-            </div>
-
-            <div th:if="${#lists.isEmpty(bookings)}" class="empty-state">
-              <p>Tidak ada notifikasi saat ini.</p>
-            </div>
+            <!-- Notifikasi akan ditambahkan di sini oleh JavaScript -->
           </div>
         </div>
       </div>
+
+      <!-- Definisikan variabel bookings untuk JavaScript -->
+      <script th:inline="javascript">
+        /*<![CDATA[*/
+        const bookings = /*[[${bookings}]]*/ [];
+        /*]]>*/
+      </script>
 
       <!-- Include JavaScript Files -->
       <script th:src="@{/js/darkmode.js}"></script>
