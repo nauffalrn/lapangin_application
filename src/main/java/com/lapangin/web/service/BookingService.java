@@ -82,14 +82,14 @@ public class BookingService {
             totalPrice += jadwal.getHarga();
         }
 
+        // Set bookingDate berdasarkan waktu saat customer melakukan booking
+        LocalDateTime bookingDateTime = LocalDateTime.now();
+        booking.setBookingDate(bookingDateTime);
+
         // Set jam mulai dan jam selesai
         int jamMulai = jadwalList.get(0).getJam();
         booking.setJamMulai(jamMulai);
         booking.setJamSelesai(jamMulai + jadwalList.size()); // Sesuaikan dengan logika bisnis Anda
-
-        // Set bookingDate berdasarkan tanggal dan jam mulai yang dipilih
-        LocalDateTime bookingDateTime = tanggal.atTime(jamMulai, 0);
-        booking.setBookingDate(bookingDateTime);
 
         // Terapkan promo jika tersedia
         if (kodePromo != null && !kodePromo.trim().isEmpty()) {

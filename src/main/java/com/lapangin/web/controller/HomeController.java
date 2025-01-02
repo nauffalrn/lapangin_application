@@ -52,7 +52,7 @@ public class HomeController {
 
     // Mapping untuk Detail Lapangan
     @GetMapping("/lapangan/detail/{id}")
-    public String showLapanganDetail(@PathVariable("id") Long id, Model model) {
+    public String showLapanganDetail(@PathVariable("id") Long id, Model model, Principal principal) {
         Lapangan lapangan = lapanganService.getLapanganById(id);
         if (lapangan == null) {
             logger.warn("Lapangan dengan ID {} tidak ditemukan.", id);
@@ -60,6 +60,15 @@ public class HomeController {
         }
         logger.info("Menampilkan detail Lapangan: {}", lapangan.getNamaLapangan());
         model.addAttribute("lapangan", lapangan);
+
+        // Menambahkan role pengguna ke model
+        if (principal != null) {
+            User user = userService.findByUsername(principal.getName());
+            if (user != null) {
+                model.addAttribute("userRole", user.getRole());
+            }
+        }
+
         return "lapangan_detail";
     }
 

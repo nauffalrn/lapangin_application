@@ -24,7 +24,63 @@
   </head>
   <body>
     <div class="container">
-      <aside class="sidebar">
+      <aside class="sidebar" th:if="${userRole == 'ADMIN'}">
+        <header class="sidebar-header">
+          <a class="header-logo">
+            <img th:src="@{/images/LA.png}" alt="Lapangin" />
+          </a>
+          <button class="toggler sidebar-toggler">
+            <span class="material-symbols-rounded">chevron_left</span>
+          </button>
+        </header>
+
+        <nav class="sidebar-nav">
+          <ul class="nav-list primary-nav">
+            <li class="nav-item">
+              <a th:href="@{/dashboardAdmin}" class="nav-link">
+                <span class="nav-icon material-symbols-rounded">dashboard</span>
+                <span class="nav-label">Dashboard</span>
+              </a>
+              <span class="nav-tooltip">Dashboard</span>
+            </li>
+            <li class="nav-item">
+              <a th:href="@{/admin}" class="nav-link">
+                <span class="nav-icon material-symbols-rounded">admin_panel_settings</span>
+                <span class="nav-label">Admin Management</span>
+              </a>
+              <span class="nav-tooltip">Admin Management</span>
+            </li>
+          </ul>
+
+          <ul class="nav-list secondary-nav">
+            <li class="nav-item toggle-dark-mode">
+              <span class="dark-mode-label">Dark Mode</span>
+              <label class="toggle-switch">
+                <input type="checkbox" id="dark-mode-toggle" />
+                <span class="slider"></span>
+              </label>
+            </li>
+            <li class="nav-item">
+              <a th:href="@{/profile}" class="nav-link">
+                <span class="nav-icon material-symbols-rounded"
+                  >account_circle</span
+                >
+                <span class="nav-label">Profile</span>
+              </a>
+              <span class="nav-tooltip">Profile</span>
+            </li>
+            <li class="nav-item">
+              <a th:href="@{/login}" class="nav-link">
+                <span class="nav-icon material-symbols-rounded">logout</span>
+                <span class="nav-label">Logout</span>
+              </a>
+              <span class="nav-tooltip">Logout</span>
+            </li>
+          </ul>
+        </nav>
+      </aside>
+
+      <aside class="sidebar" th:if="${userRole != 'ADMIN'}">
         <header class="sidebar-header">
           <a class="header-logo">
             <img th:src="@{/images/LA.png}" alt="Lapangin" />
@@ -42,6 +98,27 @@
                 <span class="nav-label">Dashboard</span>
               </a>
               <span class="nav-tooltip">Dashboard</span>
+            </li>
+            <li class="nav-item">
+              <a th:href="@{/calendar}" class="nav-link">
+                <span class="nav-icon material-symbols-rounded">today</span>
+                <span class="nav-label">Calendar</span>
+              </a>
+              <span class="nav-tooltip">Calendar</span>
+            </li>
+            <li class="nav-item">
+              <a th:href="@{/notifications}" class="nav-link">
+                <span class="nav-icon material-symbols-rounded">notifications</span>
+                <span class="nav-label">Notifications</span>
+              </a>
+              <span class="nav-tooltip">Notifications</span>
+            </li>
+            <li class="nav-item">
+              <a th:href="@{/history}" class="nav-link">
+                <span class="nav-icon material-symbols-rounded">history</span>
+                <span class="nav-label">History</span>
+              </a>
+              <span class="nav-tooltip">History</span>
             </li>
           </ul>
 
