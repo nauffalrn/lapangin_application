@@ -119,7 +119,7 @@ function showBookingDetails(bookings) {
     const detail = document.createElement("div");
     detail.classList.add("booking-detail");
     detail.innerHTML = `
-      <p><strong>Lapangan:</strong> ${booking.lapangan}</p>
+      <p><strong>Lapangan:</strong> ${booking.lapangan.namaLapangan}</p>
       <p><strong>Jam:</strong> ${formatJam(
         booking.jamMulaiFormatted
       )} - ${formatJam(booking.jamSelesaiFormatted)}</p>
